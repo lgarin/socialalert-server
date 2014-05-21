@@ -1,0 +1,100 @@
+<html t:type="layout"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+	xmlns:p="tapestry:parameter">
+
+	<div class="well">
+		<h1>${title}</h1>
+	</div>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span3">
+				<table>
+					<tr>
+						<td width="100px">Author</td>
+						<td><t:pagelink t:page="profileDetail" t:context="${profileId}">${creator}</t:pagelink></td>
+					</tr>
+					<tr>
+						<td>Hits</td>
+						<td><span class="badge badge-info">${hitCount}</span></td>
+					</tr>
+					<tr>
+						<td>Likes</td>
+						<td><span class="badge badge-success">${likeCount}</span></td>
+					</tr>
+					<tr>
+						<td>Dislikes</td>
+						<td><span class="badge badge-important">${dislikeCount}</span></td>
+					</tr>
+					<tr>
+						<td>Comments</td>
+						<td><span class="badge badge-warning">${commentCount}</span></td>
+					</tr>
+					<tr>
+						<td>Categories</td>
+						<td>${formattedCategories}</td>
+					</tr>
+					<tr>
+						<td>Tags</td>
+						<td>${formattedTags}</td>
+					</tr>
+					<tr>
+						<td>Date</td>
+						<td>${formattedDate}</td>
+					</tr>
+					<tr>
+						<td>Camera</td>
+						<td>${formattedCamera}</td>
+					</tr>
+					<tr>
+						<td>Position</td>
+						<td>${formattedPosition}</td>
+					</tr>
+				</table>
+				<t:form>
+					<fieldset class="span2">
+					<t:errors />
+					<div class="control-group">
+						<label class="control-label" for="title">Description</label>
+						<div class="controls">
+							<t:textfield t:id="description" name="description" class="input-xlarge" />
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+							<t:linksubmit class="btn btn-success">Update</t:linksubmit>
+						</div>
+					</div>
+		</fieldset>
+				</t:form>
+				<p class="text-center">
+					<a href="" onclick="window.open('${pictureUrl}');"><i class="icon-resize-full"></i></a>
+					 
+					<t:eventlink t:id="repost" t:context="${pictureUri}"><i class="icon-eye-open"></i></t:eventlink>
+					<!--
+					<i class="icon-adjust"></i>
+					<i class="icon-print"></i>
+					<i class="icon-tag"></i>
+						 -->
+					<t:eventlink t:id="comment" t:context="${pictureUri}"><i class="icon-comment"></i></t:eventlink>
+				</p>
+				<a onclick="window.open('${pictureUrl}');">
+					<img src="${previewUrl}" />
+				</a>
+			</div>
+			<div class="span6">
+				<t:if test="${latitude}">
+					<t:exanpe.gmap t:id="map" latitude="${latitude}"
+						longitude="${longitude}" mapType="SATELLITE" zoom="18" sidebar="true">
+						<t:exanpe.gmapMarker t:id="marker1" latitude="${prop:latitude}"
+							longitude="${prop:longitude}" title="${prop:title}" />
+					</t:exanpe.gmap>
+				</t:if>
+			</div>
+			<div class="span3">
+				<t:listComments/>
+			</div>
+		</div>
+	</div> <!-- container-fluid -->
+	
+	<t:createComment/>
+</html>

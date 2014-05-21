@@ -1,0 +1,46 @@
+<html t:type="layout"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+
+	<t:picturePager t:pageNumber="pageNumber" t:result="searchResult" t:title="Pics"/>
+	
+	<t:form t:id="search" class="form-inline">
+		<t:errors/>
+	    <fieldset class="span3">
+	        <legend>Keywords search</legend>
+	        <div class="controls-row">
+            	<div class="control-group span12">
+	        		<label>Keywords</label><t:textfield class="span12" t:id="keywords" name="keywords"  t:mixins="jquery/Autocomplete" t:minChars="3"/>
+	        	</div>
+	        </div>
+	        <div class="controls-row">
+	       	 	<div class="control-group span6">
+         			<t:linksubmit class="btn btn-primary">Search</t:linksubmit>
+         		</div>
+         		<div class="control-group span6">
+         			<t:eventlink t:id="clear" class="btn btn-success">Clear</t:eventlink>
+         		</div>
+       		 </div>
+       		 
+	    </fieldset>
+	    <fieldset class="span4">
+	        <legend>Location search</legend>
+	        
+        	<div class="controls-row">
+            	<div class="control-group span8">
+            		<t:if test="addressSelectModel">
+            			<label>Address</label><t:select t:id="addressSelect" class="span12" value="addressQuery" model="addressSelectModel" />
+            		</t:if>
+            		<t:if test="addressSelectModel" negate="true">
+	        			<label>Address</label><t:textfield class="span12" t:id="address" value="addressQuery"/>
+	        		</t:if>
+	        	</div>
+	        	<div class="control-group span4">
+	        		<label>Distance</label><t:textfield class="span12" t:id="maxDistance" name="maxDistance"/>
+	        	</div>
+	        </div>
+	        
+	    </fieldset>
+	    
+	</t:form>
+</html>

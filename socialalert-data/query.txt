@@ -1,0 +1,3 @@
+http://localhost:9090/ApplicationUser/update?stream.body=<delete><query>username:lgarin@gmx.ch</query></delete>&commit=true
+
+http://localhost:9090/ApplicationUser/update?stream.body=<add><doc><field name="lastUpdate">2013-11-27T20:53:21.916Z</field><field name="roles">USER</field><field name="nickname">laze</field><field name="username">laze.dimov@yahoo.com</field><field name="lastLoginSuccess">2013-11-27T20:53:21.916Z</field><field name="creation">2013-11-27T13:20:41.796Z</field><field name="password">817f201fb70afc155194941e5471123b3af60596a581d66c65e2db413b01d1d3</field><field name="lastLoginFailure">2013-11-27T16:52:34.164Z</field><field name="loginFailureCount">1</field><field name="state">ACTIVE</field></doc></add>&commit=true

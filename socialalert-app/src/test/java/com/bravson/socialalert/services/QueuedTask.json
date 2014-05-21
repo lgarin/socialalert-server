@@ -1,0 +1,10 @@
+[
+	{"uuid": "a95472c0-e0e6-11e2-a28f-0800200c9a66",
+	 "payload": "<activationEmail><email>test@test.com</email></activationEmail>",
+	 "trigger": "2013-06-01T12:04:01Z", 
+     "started": "2013-06-01T12:04:01Z"},
+     
+    {"uuid": "c915df90-e0e6-11e2-a28f-0800200c9a66",
+     "payload": "<activationEmail><email>test2@test.com</email></activationEmail>",
+	 "trigger": "2019-12-31T12:04:01Z"}
+]

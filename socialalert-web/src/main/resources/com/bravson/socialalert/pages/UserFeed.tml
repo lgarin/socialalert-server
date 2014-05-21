@@ -1,0 +1,30 @@
+<html t:type="layout"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+
+    <div class="row">
+        <div class="col-lg-6 feeder">
+            <ul class="media-list">
+            <t:loop source="activityList" value="currentActivity">
+                <li class="media alert alert-success">
+                    <a class="pull-left" href="#">
+                        <img class="media-object img-circle" src="${thumbnailUrl}/profiles/${currentActivity.profileId}.jpg"/>
+                    </a>
+                    <t:eventlink t:id="detail" t:context="${currentActivity.mediaUri}" class="pull-right" >
+    			  		<img src="${thumbnailUrl}/${currentActivity.mediaUri}"/>
+    		   		</t:eventlink>
+                    <div class="media-body">
+                        <h4 class="media-heading">${currentActivity.creator} <i class="icon-chevron-sign-right"></i></h4>
+                        <p>
+                        ${activityTitle}
+                        </p>
+                        <p>
+                        <i>${currentActivity.message}</i>
+                        </p>
+                    </div>
+                </li>
+            </t:loop>
+            </ul>
+        </div>
+    </div>
+</html>

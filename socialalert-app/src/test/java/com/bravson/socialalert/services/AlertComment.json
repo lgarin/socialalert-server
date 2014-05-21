@@ -1,0 +1,17 @@
+[
+	{"commentId" : "b95472c0-e0e6-11e2-a28f-0800200c9a22",
+	 "mediaUri": "20130712/7e9a5a5bd5e64171c176ac6c7b32d685.jpg",
+	 "profileId": "a95472c0-e0e6-11e2-a28f-0800200c9a77",
+	 "creation": "2013-07-13T13:04:01Z", 
+     "lastUpdate": "2013-07-13T13:04:01Z",
+     "comment": "Hello 1"
+     },
+     
+	 {"commentId" : "c95472c0-e0e6-11e2-a28f-0800200c9a33",
+	 "mediaUri": "20130712/7e9a5a5bd5e64171c176ac6c7b32d685.jpg",
+	 "profileId": "a95472c0-e0e6-11e2-a28f-0800200c9a77",
+	 "creation": "2013-08-13T13:04:01Z", 
+     "lastUpdate": "2013-08-13T13:04:01Z",
+     "comment": "Hello 2"
+     }
+]

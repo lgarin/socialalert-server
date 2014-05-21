@@ -1,0 +1,18 @@
+<t:container xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">	
+	<h2 class="text-center"><t:eventlink t:id="previousPage" disabled="previousPageDisabled">&larr;</t:eventlink> ${title} <t:eventlink t:id="nextPage" disabled="nextPageDisabled">&rarr;</t:eventlink></h2>
+	<ul class="thumbnails pics">
+    <t:loop source="profileList" value="currentProfile">
+    	<li class="span2">
+           <div class="thumbnail">
+               <t:pagelink t:page="profileDetail" t:context="${currentProfile.profileId}">
+    			  <img src="${thumbnailUrl}/${currentProfile.image}"/>
+    		   </t:pagelink>
+               <div class="well caption">
+                   <p class="text-left"><t:pagelink t:page="profileDetail" t:context="${currentProfile.profileId}">${currentProfile.Nickname} ${currentProfile.Online}</t:pagelink></p>
+               </div>
+           </div>
+       </li>
+    </t:loop> 
+	</ul>
+</t:container>

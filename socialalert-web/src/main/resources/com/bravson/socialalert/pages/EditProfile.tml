@@ -1,0 +1,87 @@
+<html t:type="layout" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+	xmlns:p="tapestry:parameter">
+
+	<h1>Edit my profile</h1>
+	<div class="span3">
+		<t:form t:id="editForm" class="form-horizontal">
+			<t:errors></t:errors>
+			<fieldset>
+				<div class="control-group">
+					<t:label class="control-label" for="firstname">Firstname</t:label>
+					<div class="controls">
+						<t:textfield t:id="firstname" class="input-xlarge" t:value="profile.firstname"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<t:label class="control-label" for="lastname">Lastname</t:label>
+					<div class="controls">
+						<t:textfield t:id="lastname" class="input-xlarge" t:value="profile.lastname"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<t:label class="control-label" for="gender">Gender</t:label>
+					<div class="controls">
+					 	<t:RadioGroup t:id="gender" t:value="profile.gender">
+					 		 <t:label class="checkbox" for="male"><t:Radio t:id="male" name="gender" />Male</t:label><br/>
+	                         <t:label class="checkbox" for="female"><t:Radio t:id="female" name="gender" />Female</t:label>
+	                	</t:RadioGroup> 
+	                </div>
+				</div>
+				<div class="control-group">
+					<t:label class="control-label" for="birthdate">Birthdate</t:label>
+					<div class="controls">
+						<t:DateField t:id="birthdate" t:format="literal:dd/MM/yyyy" t:value="profile.birthdate"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<t:label class="control-label" for="language">Language</t:label>
+					<div class="controls">
+						<t:Select t:id="language" t:model="languageNames" class="input-xlarge" t:value="profile.language"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<t:label class="control-label" for="country">Country</t:label>
+					<div class="controls">
+						<t:Select t:id="country" t:model="countryNames" class="input-xlarge"  t:value="profile.country"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<t:label class="control-label" for="biography">Biography</t:label>
+					<div class="controls">
+						<t:textarea t:id="biography" class="input-xlarge" t:value="profile.biography"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<!-- Button -->
+					<div class="controls">
+						<button class="btn btn-primary">Save</button>
+					</div>
+				</div>
+			</fieldset>
+		</t:form>
+	</div>
+	<div class="span2">
+		<t:form t:id="uploadForm"  t:mixins="UploadMediaForm" t:file="file">
+			 <fieldset>
+		        <div id="legend">
+		            <legend class="">Profile picture</legend>
+		        </div>
+		        <div class="thumbnail">
+    				<img src="${thumbnailUrl}/${imageUri}"/>
+    			</div>
+		        <t:errors/>
+		        <div class="control-group">
+			         <label class="control-label" for="title">File</label>
+			         <div class="controls">
+			             <input t:type="upload" t:id="uploadField" t:value="file"/>
+			         </div>
+			    </div>
+		        <div class="control-group">
+		        	<div class="controls">
+	                   <t:linksubmit class="btn btn-primary">Upload</t:linksubmit>
+	                </div>
+		   	 	</div>
+			 </fieldset>
+    	</t:form>
+	</div>
+</html>

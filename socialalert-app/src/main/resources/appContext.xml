@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:solr="http://www.springframework.org/schema/data/solr"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/data/solr http://www.springframework.org/schema/data/solr/spring-solr.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Config -->
+	<bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+	    <property name="locations">
+	        <list><value>classpath:app.properties</value></list>
+	    </property>
+	</bean>
+	
+	<context:property-placeholder properties-ref="properties"/>
+	
+	<!-- Base -->
+	<import resource="classpath:baseContext.xml"/>
+
+	<!--  Solr  --> 
+  	<bean class="com.bravson.socialalert.app.infrastructure.HttpMulticoreSolrServerFactory" primary="true">
+  		<property name="serverUrl" value="${solr.server.url}"/>
+  	</bean>
+	
+	<!-- Request trace -->
+	<bean id="requestTracer" class="com.bravson.socialalert.app.infrastructure.RequestTracerFilter"/>
+	
+	<!-- Tasks -->
+	<task:annotation-driven executor="executor" scheduler="scheduler"/>
+	<task:scheduler id="scheduler" pool-size="5"/>
+	<task:executor id="executor" pool-size="5"/>
+	<bean id="queuedTaskService" class="com.bravson.socialalert.app.tasks.QueuedTaskSchedulerImpl"/>
+	<bean id="userBackgroundTask" class="com.bravson.socialalert.app.tasks.UserBackgroundTaskImpl"/>
+	<bean id="reindexDocumentTask" class="com.bravson.socialalert.app.tasks.ReindexDocumentsTaskImpl"/>
+	
+	<!-- Email -->
+	<bean id="emailService" class="com.bravson.socialalert.app.services.EmailServiceImpl"/>
+	<!-- <bean id="emailService" class="com.bravson.socialalert.infrastructure.DummyEmailService"/> -->
+</beans>

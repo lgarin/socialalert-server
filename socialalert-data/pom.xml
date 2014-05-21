@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>socialalert-data</artifactId>
+	<packaging>war</packaging>
+	<name>Social Alert Data</name>
+	<properties>
+		<solr-release-version>4.8.0</solr-release-version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-core</artifactId>
+			<version>${solr-release-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-dataimporthandler</artifactId>
+			<version>${solr-release-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<finalName>socialalert-data</finalName>
+
+		<plugins>
+			<!-- Run the application using "mvn jetty:run" -->
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<configuration>
+					<systemProperties>
+						<systemProperty>
+							<name>solr.solr.home</name>
+							<value>data</value>
+						</systemProperty>
+						<systemProperty>
+							<name>solr.allow.unsafe.resourceloading</name>
+							<value>true</value>
+						</systemProperty>
+					</systemProperties>
+
+					<!-- Log to the console. -->
+					<requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
+						<append>true</append>
+					</requestLog>
+					<connectors>
+						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+							<port>9090</port>
+						</connector>
+					</connectors>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+	   <profile>
+	     <id>test</id>
+	     <build>
+	       <plugins>
+	         <plugin>
+	           <artifactId>maven-antrun-plugin</artifactId>
+	           <executions>
+	             <execution>
+	               <phase>test</phase>
+	               <goals>
+	                 <goal>run</goal>
+	               </goals>
+	               <configuration>
+	                 <tasks>
+	                   <copy file="build/log4j.test.properties"
+	                         tofile="${project.build.outputDirectory}/log4j.properties" overwrite="true"/>
+	                 </tasks>
+	               </configuration>
+	             </execution>
+	           </executions>
+	         </plugin>
+	       </plugins>
+	     </build>
+	   </profile>
+	</profiles>
+	<parent>
+		<groupId>com.bravson</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+		<artifactId>socialalert-pom</artifactId>
+		<relativePath>../socialalert-pom</relativePath>
+	</parent>
+</project>

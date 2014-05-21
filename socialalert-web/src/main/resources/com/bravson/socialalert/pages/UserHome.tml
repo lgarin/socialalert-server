@@ -1,0 +1,54 @@
+<html t:type="layout"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+
+    <h1>Welcome ${username}</h1>
+    
+    <t:if test="loginFailureDate">
+    	<h2>${loginFailureCount} login failure at ${loginFailureDate}</h2>
+    </t:if>
+    <h3>Last login at ${loginSuccessDate}</h3>
+
+	<div class="row">
+        <div class="col-lg-12 text-center">
+            <ul class="list-inline up-stats">
+                <li><a href="#">Pics: <span class="label label-warning">${statisticInfo.pictureCount}</span></a></li>
+                <li><a href="#">Visits: <span class="label label-success">${statisticInfo.hitCount}</span></a></li>
+                <li><a href="#">Likes: <span class="label label-default">${statisticInfo.likeCount}</span></a></li>
+                <li><a href="#">Comments: <span class="label label-info">${statisticInfo.commentCount}</span></a></li>
+                <li><a href="#">Followers: <span class="label label-error">${statisticInfo.followerCount}</span></a></li>
+            </ul>
+        </div>
+    </div>
+	
+
+	<t:eventlink t:id="upload">Upload picture</t:eventlink>
+	
+	<t:picturePager t:result="userPictures" t:pageNumber="pageNumber" t:title="User Pics"/>
+	
+	<h2 class="text-center">Followed profiles</h2>
+	<ul class="thumbnails pics">
+    <t:loop source="followedProfiles" value="currentProfile">
+    	<li class="span2">
+           <div class="thumbnail">
+           	   <t:pagelink t:page="profileDetail" t:context="${currentProfile.profileId}">${currentProfile.nickname}
+    		   <img src="${thumbnailUrl}/${currentProfile.image}"/>
+    		   </t:pagelink>
+           </div>
+       </li>
+    </t:loop> 
+	</ul>
+	
+	<h2 class="text-center">Follower profiles</h2>
+	<ul class="thumbnails pics">
+    <t:loop source="followerProfiles" value="currentProfile">
+    	<li class="span2">
+           <div class="thumbnail">
+           	   <t:pagelink t:page="profileDetail" t:context="${currentProfile.profileId}">${currentProfile.nickname}
+    		   <img src="${thumbnailUrl}/${currentProfile.image}"/>
+    		   </t:pagelink>
+           </div>
+       </li>
+    </t:loop> 
+	</ul>
+</html>

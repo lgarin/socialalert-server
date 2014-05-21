@@ -1,0 +1,42 @@
+<t:container xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+    
+        <t:form t:id="loginForm" class="form-horizontal">
+            <fieldset>
+                <div id="legend">
+                    <legend class="">Login</legend>
+                </div>
+                <t:errors/>
+                <div class="control-group">
+                    <!-- Username -->
+                    <label class="control-label" for="username">Username</label>
+                    <div class="controls">
+                        <t:textfield t:id="username" name="username" class="input-xlarge"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <!-- Password-->
+                    <label class="control-label" for="password">Password</label>
+                    <div class="controls">
+                        <t:passwordfield t:id="password" name="password" class="input-xlarge"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <!-- Button -->
+                    <div class="controls">
+                        <t:linksubmit class="btn btn-success">Login</t:linksubmit>
+                        <t:eventlink t:id="recovery" class="btn btn-link">Forgotten your password?</t:eventlink>
+                    </div>
+                    <br/>
+                    <div class="controls-row">
+                    	<div class="control-group">
+	                       	<t:eventlink t:id="googleLogin" class="span1"><img src="${asset:../images/google.png}" alt="Google"/></t:eventlink>
+	                      	<t:eventlink t:id="facebookLogin" class="span1"><img src="${asset:../images/facebook.png}" alt="Facebook"/></t:eventlink>
+	                       	<t:eventlink t:id="twitterLogin" class="span1"><img src="${asset:../images/twitter.png}" alt="Twitter"/></t:eventlink>
+	                       	<t:eventlink t:id="hotmailLogin" class="span1"><img src="${asset:../images/hotmail.png}" alt="Hotmail"/></t:eventlink>
+	                    </div>
+                    </div>
+                </div>
+            </fieldset>
+        </t:form>
+</t:container>

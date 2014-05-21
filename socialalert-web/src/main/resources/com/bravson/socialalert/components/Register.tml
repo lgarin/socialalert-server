@@ -1,0 +1,39 @@
+<t:container xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+   
+        <t:form t:id="registerForm" class="form-horizontal">
+        	<t:errors></t:errors>
+        	<fieldset>
+        	<div class="control-group">
+	            <label class="control-label" for="email">Email</label>
+	            <div class="controls">
+	            	<t:textfield t:id="email" class="input-xlarge"/>
+	           	</div>
+	        </div>
+            <div class="control-group">
+	            <label class="control-label" for="nickname">Nickname</label>
+	            <div class="controls">
+	            	<t:textfield t:id="nickname" class="input-xlarge"/>
+	           	</div>
+	        </div>
+            <div class="control-group">
+	            <label class="control-label" for="password">Password</label>
+	            <div class="controls">
+	            	<t:passwordfield t:id="password" class="input-xlarge"/>
+	            </div>
+	        </div>
+            <div class="control-group">
+	            <label class="control-label" for="password2">Repeat Password</label>
+	            <div class="controls">
+	            	<t:passwordfield t:id="password2" class="input-xlarge"/>
+	            </div>
+	        </div>
+            <div class="control-group">
+               <!-- Button -->
+               <div class="controls">
+                	<button class="btn btn-primary">Create Account</button>
+               </div>
+            </div>
+            </fieldset>
+        </t:form>
+ </t:container>

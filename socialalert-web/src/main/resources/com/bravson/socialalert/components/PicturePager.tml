@@ -1,0 +1,34 @@
+<t:container xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">	
+	<h2 class="text-center"><t:eventlink t:id="previousPage" disabled="previousPageDisabled">&larr;</t:eventlink> ${title} <t:eventlink t:id="nextPage" disabled="nextPageDisabled">&rarr;</t:eventlink></h2>
+	<ul class="thumbnails pics">
+    <t:loop source="pictureList" value="currentPicture">
+    	<li class="span2">
+           <div class="thumbnail">
+               <t:eventlink t:id="detail" t:context="${currentPicture.pictureUri}">
+    			  <img src="${thumbnailUrl}/${currentPicture.pictureUri}"/>
+    		   </t:eventlink>
+               <div class="well caption">
+               		<!--
+                   <p class="text-center">
+                       <i class="icon-resize-full"></i>
+                       <i class="icon-eye-open"></i>
+                       <i class="icon-adjust"></i>
+                       <i class="icon-print"></i>
+                       <i class="icon-tag"></i>
+                   </p>
+                     -->
+                   <p class="text-error">${currentPicture.title}</p>
+                   <p class="text-left"><t:pagelink t:page="profileDetail" t:context="${currentPicture.profileId}">${currentPicture.creator} ${currentPicture.online}</t:pagelink></p>
+                   <p class="text-right">
+                       <t:eventlink t:id="delete" t:context="${currentPicture.pictureUri}"><i class="icon-remove"></i></t:eventlink>
+                       <t:eventlink t:id="like" t:context="${currentPicture.pictureUri}"><i class="icon-thumbs-up"></i></t:eventlink>
+                       <t:eventlink t:id="dislike" t:context="${currentPicture.pictureUri}"><i class="icon-thumbs-down"></i></t:eventlink>
+                       <t:eventlink t:id="comment" t:context="${currentPicture.pictureUri}"><i class="icon-comment"></i></t:eventlink>
+                   </p>
+               </div>
+           </div>
+       </li>
+    </t:loop> 
+	</ul>
+</t:container>

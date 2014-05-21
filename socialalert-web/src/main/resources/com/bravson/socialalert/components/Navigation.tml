@@ -1,0 +1,75 @@
+<t:container xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a href="index-right.html" class="brand">Xtra</a>
+                <ul class="nav">
+                    <li class="divider-vertical"></li>
+                    <li class="active"><t:actionlink t:id="Home" href="#"><i class="icon-home icon-white"></i> Home</t:actionlink></li>
+                </ul>
+                <ul class="nav btn-group">
+                    <li><t:actionlink t:id="Albums" href="#" class="btn btn-inverse"><i class="icon-th icon-white"></i> Albums</t:actionlink></li>
+                    <li><t:actionlink t:id="Profiles" href="#" class="btn btn-inverse"><i class="icon-user icon-white"></i> Users</t:actionlink></li>
+                </ul>
+                <ul class="nav btn-group text-center" data-toggle="buttons-checkbox">
+                    <li class="divider-vertical"></li>
+                    <li><a class="btn btn-inverse"><i class="icon-film icon-white"></i> Vids</a></li>
+                    <li><t:actionlink class="btn btn-inverse" t:id="Picture" href="#"><i class="icon-camera icon-white"></i> Pics</t:actionlink></li>
+                    <li><a class="btn btn-inverse"><i class="icon-flag icon-white"></i> Region</a></li>
+                    <li><a class="btn btn-inverse"><i class="icon-tag icon-white"></i> Tag</a></li>
+                    <li><t:actionlink class="btn btn-inverse" t:id="Feed" href="#"><i class="icon-bullhorn icon-white"></i> Feed</t:actionlink></li>
+                    <li class="divider-vertical"></li>
+                </ul>
+                <!-- <form action="" class="navbar-search pull-right"> -->
+                    <!-- <input type="text" placeholder="Search" class="search-query" /> -->
+                    <!-- [> <button type="submit" class="btn">Search</button> <] -->
+                <!-- </form> -->
+
+                <form class="navbar-search pull-right">
+                    <div class="input-prepend input-append">
+                        <span class="add-on" title="Search user">
+                            <i class="icon-user"> </i>
+                        </span>
+                        <input class="search-query span2" placeholder="Search" type="text"/>
+                        <span class="add-on" title="Search keyword">
+                            <i class="icon-search"> </i>
+                        </span>
+                    </div>
+                </form>
+
+                <div class="collapse nav-collapse">
+                    <ul class="nav pull-right">
+                    <!-- <ul class="nav"> -->
+                        <!-- Dropdown User Menu Start -->
+                        <t:IfRole t:disallow="ANONYMOUS">
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, ${username} <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><t:actionlink t:id="editProfile" href="#"><i class="icon-cog"></i> Preferences</t:actionlink></li>
+                                <li><a href="#"><i class="icon-envelope"></i> Contact Support</a></li>
+                                <li class="divider"></li>
+                                <li><t:actionlink t:id="logout" href="#"><i class="icon-off"></i> Logout</t:actionlink></li>
+                            </ul>
+                        </li>
+                        </t:IfRole>
+                        <t:IfRole t:allow="ANONYMOUS">
+	                        <!-- Dropdown User Menu End -->
+	                        <li class="vertical-seperator"></li>
+	                        <li><a href="account.html">Content</a></li>
+	                        <li><a href="" data-target="#loginModal" data-toggle="modal">Log In</a></li>
+	                    </t:IfRole>
+                    </ul>
+                </div> <!--navig menu end-->
+            </div>
+        </div>
+    </div>
+    
+         <!-- Modal Window Start -->
+    <t:loginRegister/>
+     <!-- Modal login end -->
+ </t:container>

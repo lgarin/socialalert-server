@@ -1,0 +1,11 @@
+<html t:type="layout"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+
+	<t:if test="success">
+    	<h1>Your account has now been activated</h1>
+	</t:if>
+	<t:if test="success" negate="true">
+    	<h1>Your account has NOT been validated</h1>
+	</t:if>
+</html>

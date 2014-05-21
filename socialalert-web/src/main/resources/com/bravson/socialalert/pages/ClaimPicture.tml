@@ -1,0 +1,37 @@
+<html t:type="layout" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+	<t:form t:id="claimForm">
+		<fieldset class="span2">
+			<div id="legend">
+				<legend class="">Upload picture</legend>
+			</div>
+
+			<t:errors />
+			<div class="control-group">
+				<label class="control-label" for="title">Title</label>
+				<div class="controls">
+					<t:textfield t:id="title" name="title" class="input-xlarge" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Preview</label>
+				<img src="${pictureUrl}"/>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="categories">Categories</label>
+				<t:checklist class="controls" t:id="categories" encoder="categoryEncoder" model="categoryModel"/>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="tags">Tags</label>
+				<div class="controls">
+					<t:textfield t:id="tags" name="tags" class="input-xlarge" />
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<t:eventlink t:id="cancel" class="btn btn-cancel">Cancel</t:eventlink>
+					<t:linksubmit class="btn btn-success">Create</t:linksubmit>
+				</div>
+			</div>
+		</fieldset>
+	</t:form>
+</html>

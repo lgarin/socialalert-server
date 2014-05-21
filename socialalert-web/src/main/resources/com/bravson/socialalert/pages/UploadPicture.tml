@@ -1,0 +1,24 @@
+<html t:type="layout"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+	<t:form t:id="uploadForm" t:mixins="UploadMediaForm" t:file="file" t:nextPage="ClaimPicture" t:activationParameter="pictureUri">
+	 <fieldset>
+        <div id="legend">
+            <legend class="">Upload picture</legend>
+        </div>
+	        <t:errors/>
+	        <div class="control-group">
+		         <label class="control-label" for="title">File</label>
+		         <div class="controls">
+		             <input t:type="upload" t:id="file" t:value="file"/>
+		         </div>
+		    </div>
+	        <div class="control-group">
+	        	<div class="controls">
+                   <t:eventlink t:id="cancel" class="btn btn-cancel">Cancel</t:eventlink>
+                   <t:linksubmit class="btn btn-primary">Next</t:linksubmit>
+                </div>
+	   	 	</div>
+	 </fieldset>
+    </t:form>
+</html>

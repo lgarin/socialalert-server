@@ -1,0 +1,200 @@
+package com.bravson.socialalert.app.services;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+
+import javax.annotation.Resource;
+
+import net.coobird.thumbnailator.tasks.UnsupportedFormatException;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
+import com.bravson.socialalert.app.exceptions.DataMissingException;
+import com.bravson.socialalert.app.exceptions.SystemExeption;
+import com.drew.imaging.jpeg.JpegProcessingException;
+
+@Service
+public class MediaStorageServiceImpl implements MediaStorageService {
+
+	@Value("${media.max.size}")
+	private int maxSize;
+	
+	@Value("${media.temp.dir}")
+	private String tempDir;
+	
+	@Value("${media.base.dir}")
+	private String baseDir;
+	
+	@Value("${picture.thumbnail.prefix}")
+	private String thumbnailPrefix;
+	
+	@Value("${picture.preview.prefix}")
+	private String previewPrefix;
+	
+	@Resource
+	private PictureFileService pictureFileService;
+	
+	// TODO authorization should be done at the servlet level
+	@PreAuthorize("hasRole('USER')")
+	@Override
+	public URI storePicture(InputStream inputStream, int contentLength) throws IOException {
+		
+		if (contentLength < 0) {
+			throw new HttpClientErrorException(HttpStatus.LENGTH_REQUIRED, "Content-Length must be specified");
+		} else if (contentLength > maxSize) {
+			throw new HttpClientErrorException(HttpStatus.REQUEST_ENTITY_TOO_LARGE, "Maximum upload size exceeded");
+		}
+		
+		File tempFile = createTemporaryFile(inputStream, ".jpg");
+		String hash = computeHash(tempFile);
+		
+		File outputFile = new File(tempDir, hash + ".jpg");
+		if (outputFile.isFile()) {
+			outputFile.delete();
+		}
+		tempFile.renameTo(outputFile);
+		
+		try {
+			pictureFileService.parseJpegMetadata(outputFile);
+		} catch (JpegProcessingException|UnsupportedFormatException e) {
+			throw new HttpClientErrorException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
+		}
+		
+		return URI.create(outputFile.getName());
+	}
+	
+	@Override
+	public URI storeRemotePicture(URL sourceUrl) throws IOException {
+		URLConnection connection = sourceUrl.openConnection();
+		connection.connect();
+		try (InputStream is = connection.getInputStream()) {
+			return storePicture(is, connection.getContentLength());
+		}
+	}
+
+	private String computeHash(File tempFile) throws IOException, FileNotFoundException {
+		try (FileInputStream fileInputStream = new FileInputStream(tempFile)) {
+			return DigestUtils.md5Hex(fileInputStream);
+		}
+	}
+
+	private File createTemporaryFile(InputStream inputStream, String extension) throws IOException {
+		File tempFile = File.createTempFile("upload", extension);
+		FileUtils.copyInputStreamToFile(inputStream, tempFile);
+		return tempFile;
+	}
+	
+	@Override
+	public File resolveMediaUri(URI uri) {
+		File finalFile = new File(baseDir, uri.getPath());
+		if (finalFile.canRead()) {
+			return finalFile;
+		}
+		File tempFile = new File(tempDir, uri.getPath());
+		if (tempFile.canRead()) {
+			return tempFile;
+		}
+		File transitoryFile = new File(tempDir, tempFile.getName());
+		if (transitoryFile.canRead()) {
+			return transitoryFile;
+		}
+		return null;
+	}
+	
+	@Override
+	public File resolveThumbnailUri(URI uri) throws IOException {
+		File mediaFile = resolveMediaUri(uri);
+		if (mediaFile == null) {
+			return null;
+		}
+		File thumbnail = new File(mediaFile.getParentFile(), thumbnailPrefix + mediaFile.getName());
+		if (thumbnail.canRead()) {
+			return thumbnail;
+		}
+		return pictureFileService.createJpegThumbnail(mediaFile);
+	}
+	
+	@Override
+	public File resolvePreviewUri(URI uri) throws IOException {
+		File mediaFile = resolveMediaUri(uri);
+		if (mediaFile == null) {
+			return null;
+		}
+		File thumbnail = new File(mediaFile.getParentFile(), previewPrefix + mediaFile.getName());
+		if (thumbnail.canRead()) {
+			return thumbnail;
+		}
+		return pictureFileService.createJpegPreview(mediaFile);
+	}
+	
+	public URI buildFinalMediaUri(URI tempUri, DateTime claimDate) {
+		return URI.create(claimDate.toString("yyyyMMdd") + "/" + tempUri.getPath());
+	}
+	
+	public URI archiveMedia(URI tempUri, URI finalUri) {
+		File tempFile = new File(tempDir, tempUri.getPath());
+		if (!tempFile.isFile()) {
+			throw new DataMissingException("The media " + tempUri + " does not exists");
+		}
+		File thumbFile = new File(tempDir, thumbnailPrefix + tempUri.getPath());
+		File previewFile = new File(tempDir, previewPrefix + tempUri.getPath());
+	
+		File destFile = new File(baseDir, finalUri.getPath());
+		File destDir = destFile.getParentFile();
+		try {
+			FileUtils.forceMkdir(destDir);
+			if (destFile.exists()) {
+				deleteFile(destFile);
+			}
+			FileUtils.moveFile(tempFile, destFile);
+			if (thumbFile.isFile()) {
+				FileUtils.moveFile(thumbFile, new File(destDir, thumbnailPrefix + destFile.getName()));
+			}
+			if (previewFile.isFile()) {
+				FileUtils.moveFile(previewFile, new File(destDir, previewPrefix + destFile.getName()));
+			}
+		} catch (IOException e) {
+			throw new SystemExeption("Cannot move temp file " + tempUri + " to " + destDir, e);
+		}
+		return finalUri;
+	}
+
+	@Override
+	public void deleteMedia(URI uri) {
+		File mediaFile = resolveMediaUri(uri);
+		if (mediaFile == null) {
+			throw new DataMissingException("The media " + uri + " does not exists");
+		}
+		
+		deleteFile(mediaFile);
+	}
+
+	private void deleteFile(File mediaFile) {
+		if (!FileUtils.deleteQuietly(mediaFile)) {
+			throw new SystemExeption("Cannot delete media file " + mediaFile);
+		}
+		
+		File thumbFile = new File(mediaFile.getParentFile(), thumbnailPrefix + mediaFile.getName());
+		if (thumbFile != null && thumbFile.canWrite() && !FileUtils.deleteQuietly(thumbFile)) {
+			throw new SystemExeption("Cannot delete thumbnail file " + thumbFile);
+		}
+		
+		File previewFile = new File(mediaFile.getParentFile(), previewPrefix + mediaFile.getName());
+		if (previewFile != null && previewFile.canWrite() && !FileUtils.deleteQuietly(previewFile)) {
+			throw new SystemExeption("Cannot delete preview file " + previewFile);
+		}
+	}
+}

@@ -1,0 +1,38 @@
+[
+	{"username": "lucien@test.com",
+	 "nickname": "sg33g5",
+	 "state": "ACTIVE",
+     "roles": ["USER"],
+     "password": "178879f9ceb4af92183e5cd84cb5416097d41f386941316fbf1f2428474c1c78",
+	 "creation": "2013-06-01T12:04:01Z", 
+     "lastUpdate": "2013-06-01T12:04:01Z",
+     "profileId": "a95472c0-e0e6-11e2-a28f-0800200c9a77"},
+     
+    {"username": "unverified@test.com",
+	 "nickname": "unverified",
+	 "state": "UNVERIFIED",
+     "roles": ["GUEST"],
+     "password": "0df9cd0eb50a778c06651b5c79ee6b72ab9735ea00bb7ebeb616c1d2e1cfe5b6",
+	 "creation": "2013-06-01T12:04:01Z", 
+     "lastUpdate": "2013-06-01T12:04:01Z"},
+     
+    {"username": "webapp@test.com",
+	 "nickname": "Web Application",
+	 "state": "PASSWORD_EXPIRED",
+     "roles": ["THIRD_PARTY"],
+     "password": "decdf9f4b933670412e35f6f96bd0ea8eed88bf1dcafaa4d29f7aee17d039dff",
+	 "creation": "2013-06-01T12:04:01Z", 
+     "lastUpdate": "2013-06-01T12:04:01Z",
+     "lastLoginFailure": "2013-06-01T12:04:01Z",
+     "loginFailureCount": 2},
+     
+     {"username": "locked@test.com",
+	 "nickname": "Locked User",
+	 "state": "LOCKED",
+     "roles": ["USER"],
+     "password": "7d4a62cf765b6eb8a6f1bb1ba93f895bc3d3683cb80c9d5705393888f3af79b2",
+     "lastLoginFailure": "2013-06-01T12:04:01Z",
+     "loginFailureCount": 3,
+	 "creation": "2013-06-01T12:04:01Z", 
+     "lastUpdate": "2013-06-01T12:04:01Z"}
+]

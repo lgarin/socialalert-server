@@ -1,0 +1,4 @@
+<html><body>
+	Dear $user.nickname,<br/>
+	Here is your activation link : <a href='$link'>Activate</a>
+</body></html>

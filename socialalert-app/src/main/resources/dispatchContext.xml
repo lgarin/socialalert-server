@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		
+	<!-- JSON RPC -->
+	<bean id="jsonObjectMapper" class="com.bravson.socialalert.common.facade.JsonObjectMapper"/>
+	
+	<bean id="jsonErrorResolver" class="com.bravson.socialalert.app.infrastructure.JsonServerErrorResolver"/>
+	
+	<bean class="com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceExporter">
+		<property name="objectMapper" ref="jsonObjectMapper"/>
+		<property name="errorResolver" ref="jsonErrorResolver"/>
+		<property name="rethrowExceptions" value="false"/>
+	</bean>
+</beans>

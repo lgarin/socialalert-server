@@ -1,0 +1,170 @@
+/***********************************************************************************************/
+/* General */
+/***********************************************************************************************/
+
+/* giving padding to body for fixed navigation */
+body {
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+/***********************************************************************************************/
+/* Custom */
+/***********************************************************************************************/
+
+/* Getting rid of focus thingy just for mockup */
+button::-moz-focus-inner {
+	/*border: 0;*/
+	border-color: transparent;
+}
+
+button, a, a:visited, a:focus, a:active, a:hover {
+    outline:0 none !important;
+}
+/* Fixing stats section */
+.stats {
+    margin-top: -20px;
+}
+
+/* Fixing the hero-unit */
+.hero-unit {
+    margin-bottom: 0;
+    margin-top: 0;
+    background-color: #AB2313;
+    font-style: italic;
+    text-shadow: 1px 1px 1px #fff;
+}
+.hero-unit p, .head-shot p {
+    color: #fff;
+    text-shadow: none;
+}
+
+.head-shot {
+    margin-top: -20px;
+    padding-top: 90px;
+    height: 250px;
+    /* color: #4F0F09; */
+    color: #66130C;
+    font-style: italic;
+    background-color: #AB2313;
+}
+
+/* .nav-tabs > li, .nav-pills > li { */
+    /* float:none; */
+    /* display:inline-block; */
+    /* *display:inline; [> ie7 fix <] */
+     /* zoom:1; [> hasLayout ie7 trigger <] */
+/* } */
+
+/* .nav-tabs, .nav-pills { */
+    /* text-align:center; */
+/* } */
+
+ul.nav li.dropdown:hover ul.dropdown-menu{
+    display: block;
+    text-align: left;
+}
+
+.navbar p {
+    /* line-height: 20px !important; */
+    display: inline;
+}
+
+/* .input-prepend .add-on:first-child { */
+
+.navbar-search > .search-query {
+    border-radius: 15px 0 0 15px;
+    padding: 4px 14px;
+    border-right-style: none;
+}
+
+.input-append .add-on:last-child ,
+.input-prepend .add-on:first-child {
+    border-radius: 0 15px 15px 0;
+    -moz-transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    border-left-style: none;
+}
+
+
+.navbar-inverse .input-append .add-on:last-child,
+.navbar-inverse .input-prepend .add-on:first-child
+{
+    -moz-transition: none 0s ease 0s;
+    background-color: #515151;
+    border-color: #111111;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Styling the search part*/
+/* .input-append button.add-on { */
+    /* height: inherit !important; */
+/* } */
+/* .input-medium { */
+    /* width: auto; */
+/* } */
+
+/* Making footer navi smaller */
+footer .navbar {
+    font-size: .8em;
+}
+
+/* Logout buttons fix */
+#logoutModal .btn {
+    width: 70px;
+    height: 55px;
+}
+
+/* Sticking well area to the previous element */
+.well {
+    margin-bottom: 0;
+}
+
+.well p {
+    padding: 0px;
+    margin: 0;
+}
+
+.vids .thumbnail:hover,
+.pics .thumbnail:hover {
+    background-color: #ccc;
+}
+
+.thumbnail img {
+  opacity: .85;
+}
+.thumbnail img:hover {
+  opacity: 1;
+}
+.caption .text-center {
+    letter-spacing: 10px;
+}
+
+.caption h4 a {
+    letter-spacing: 2px;
+}
+
+.caption p {
+    font-size: .9em;
+}
+
+.user-info {
+    /* padding-left: 10px; */
+    border: 0px;
+    box-shadow: none;
+}
+
+.thumbnails li.span2 {
+    margin-bottom: 0px;
+}
+
+.separator hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: .8em 0 1.2em;
+    padding: 0;
+}

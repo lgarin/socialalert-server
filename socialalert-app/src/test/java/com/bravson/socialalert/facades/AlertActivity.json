@@ -1,0 +1,38 @@
+[
+	{"activityId" : "a95472c0-aae6-11e2-a28f-0800200c9a22",
+	 "mediaUri": "20130712/7e9a5a5bd5e64171c176ac6c7b32d685.jpg",
+	 "profileId": "a95472c0-e0e6-11e2-a28f-0800200c9a77",
+	 "creation": "2013-07-13T11:04:01Z",
+	 "lastUpdate": "2013-07-13T11:04:01Z", 
+     "activityType": "NEW_PICTURE",
+     "sourceId": "a95472c0-e0e6-11e2-a28f-0800200c9a77"
+     },
+     
+     {"activityId" : "b95472c0-aae6-11e2-a28f-0800200c9a22",
+	 "mediaUri": "20130712/7e9a5a5bd5e64171c176ac6c7b32d685.jpg",
+	 "profileId": "12345678-e0e6-11e2-a28f-0800200c9a77",
+	 "creation": "2013-07-13T12:04:01Z",
+	 "lastUpdate": "2013-07-13T12:04:01Z", 
+     "activityType": "LIKE_MEDIA",
+     "sourceId": "a95472c0-e0e6-11e2-a28f-0800200c9a77"
+     },
+     
+	 {"activityId" : "c95472c0-abe6-11e2-a28f-0800200c9a33",
+	 "mediaUri": "20130712/7e9a5a5bd5e64171c176ac6c7b32d685.jpg",
+	 "profileId": "a95472c0-e0e6-11e2-a28f-0800200c9a77",
+	 "creation": "2013-08-13T13:04:01Z",
+	 "lastUpdate": "2013-08-13T13:04:01Z",
+	 "activityType": "NEW_COMMENT",
+	 "sourceId": "a95472c0-e0e6-11e2-a28f-0800200c9a77",
+	 "commentId": "c95472c0-e0e6-11e2-a28f-0800200c9a33"
+     },
+     
+     {"activityId" : "d95472c0-aae6-11e2-a28f-0800200c9a22",
+	 "mediaUri": "20130712/7e9a5a5bd5e64171c176ac6c7b32d685.jpg",
+	 "profileId": "a95472c0-e0e6-11e2-a28f-0800200c9a77",
+	 "creation": "2013-09-13T12:34:01Z",
+	 "lastUpdate": "2013-09-13T12:34:01Z", 
+     "activityType": "LIKE_MEDIA",
+     "sourceId": "e7d166ae-9b3f-4405-be0d-fa1567728593"
+     }
+]

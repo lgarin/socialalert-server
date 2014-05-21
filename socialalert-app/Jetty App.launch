@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="RunJettyRunWebApp">
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="RunJettyRunWebAppClassPathProvider"/>
+<booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="runjettyrun.Bootstrap"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="socialalert-app"/>
+<stringAttribute key="run_jetty_run.CONTEXT_ATTR" value="/"/>
+<booleanAttribute key="run_jetty_run.ENABLE_JNDI_ATTR" value="false"/>
+<booleanAttribute key="run_jetty_run.ENABLE_NEED_CLIENT_AUTH_ATTR" value="false"/>
+<booleanAttribute key="run_jetty_run.ENABLE_PARENT_LOADER_PRIORITY_ATTR" value="true"/>
+<booleanAttribute key="run_jetty_run.ENABLE_SCANNER_ATTR" value="false"/>
+<booleanAttribute key="run_jetty_run.ENABLE_SSL_ATTR" value="false"/>
+<booleanAttribute key="run_jetty_run.IGNORE_SCAN_CLASS_WHEN_DEBUG_MODE" value="true"/>
+<stringAttribute key="run_jetty_run.JETTY_XML_PATH" value=""/>
+<stringAttribute key="run_jetty_run.KEYSTORE_ATTR" value="C:\Users\Lucien\.keystore"/>
+<stringAttribute key="run_jetty_run.KEY_PWD_ATTR" value="changeit"/>
+<stringAttribute key="run_jetty_run.PORT_ATTR" value="9091"/>
+<stringAttribute key="run_jetty_run.PWD_ATTR" value="changeit"/>
+<stringAttribute key="run_jetty_run.SCANINTERVALSECONDS_ATTR" value="5"/>
+<stringAttribute key="run_jetty_run.SELECTED_JETTY_VERSION_ATTR" value="Jetty 8.1.2.v20120308"/>
+<booleanAttribute key="run_jetty_run.SHOW_ADVANCE_ATTR" value="false"/>
+<stringAttribute key="run_jetty_run.SSL_PORT_ATTR" value="8443"/>
+<stringAttribute key="run_jetty_run.WEBAPPDIR_ATTR" value="src/main/webapp"/>
+<mapAttribute key="run_jetty_run.WEB_CONTEXT_CLASSPATH_NON_CHECKED">
+<mapEntry key="C:\Dev\workspace\socialalert-app" value="0"/>
+<mapEntry key="C:\Dev\workspace\socialalert-app\target\classes" value="0"/>
+<mapEntry key="C:\Dev\workspace\socialalert-app\target\test-classes" value="0"/>
+<mapEntry key="C:\Dev\workspace\socialalert-common" value="0"/>
+<mapEntry key="C:\Dev\workspace\socialalert-common\target\classes" value="0"/>
+<mapEntry key="C:\Dev\workspace\socialalert-common\target\test-classes" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\aopalliance\aopalliance\1.0\aopalliance-1.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\cglib\cglib-nodep\2.2\cglib-nodep-2.2.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.2.1\jackson-annotations-2.2.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.2.1\jackson-core-2.2.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.2.1\jackson-databind-2.2.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-joda\2.2.1\jackson-datatype-joda-2.2.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\com\google\guava\guava\13.0.1\guava-13.0.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\com\googlecode\jsonrpc4j\0.29-SNAPSHOT\jsonrpc4j-0.29-SNAPSHOT.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\com\spatial4j\spatial4j\0.3\spatial4j-0.3.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\commons-cli\commons-cli\1.2\commons-cli-1.2.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\commons-codec\commons-codec\1.8\commons-codec-1.8.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\commons-collections\commons-collections\3.2.1\commons-collections-3.2.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\commons-fileupload\commons-fileupload\1.3\commons-fileupload-1.3.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\commons-io\commons-io\2.4\commons-io-2.4.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\commons-lang\commons-lang\2.6\commons-lang-2.6.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\commons-logging\commons-logging\1.1.3\commons-logging-1.1.3.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\javax\resource\connector\1.0\connector-1.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\javax\servlet\servlet-api\2.5\servlet-api-2.5.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\javax\transaction\jta\1.1\jta-1.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\javax\validation\validation-api\1.0.0.GA\validation-api-1.0.0.GA.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\joda-time\joda-time\2.2\joda-time-2.2.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\junit\junit\4.11\junit-4.11.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\log4j\log4j\1.2.17\log4j-1.2.17.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\commons\commons-lang3\3.1\commons-lang3-3.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\httpcomponents\httpclient-cache\4.2.5\httpclient-cache-4.2.5.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\httpcomponents\httpclient\4.2.5\httpclient-4.2.5.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\httpcomponents\httpcore\4.2.4\httpcore-4.2.4.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\httpcomponents\httpmime\4.2.5\httpmime-4.2.5.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-analyzers-common\4.3.0\lucene-analyzers-common-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-analyzers-kuromoji\4.3.0\lucene-analyzers-kuromoji-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-analyzers-phonetic\4.3.0\lucene-analyzers-phonetic-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-codecs\4.3.0\lucene-codecs-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-core\4.3.0\lucene-core-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-grouping\4.3.0\lucene-grouping-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-highlighter\4.3.0\lucene-highlighter-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-memory\4.3.0\lucene-memory-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-misc\4.3.0\lucene-misc-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-queries\4.3.0\lucene-queries-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-queryparser\4.3.0\lucene-queryparser-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-spatial\4.3.0\lucene-spatial-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\lucene\lucene-suggest\4.3.0\lucene-suggest-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\solr\solr-core\4.3.0\solr-core-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\solr\solr-dataimporthandler\4.3.0\solr-dataimporthandler-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\solr\solr-solrj\4.3.0\solr-solrj-4.3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\apache\zookeeper\zookeeper\3.4.5\zookeeper-3.4.5.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\codehaus\woodstox\wstx-asl\3.2.7\wstx-asl-3.2.7.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\easymock\easymock\3.0\easymock-3.0.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\hibernate\hibernate-validator\4.3.1.Final\hibernate-validator-4.3.1.Final.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\jboss\logging\jboss-logging\3.1.3.GA\jboss-logging-3.1.3.GA.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\noggit\noggit\0.5\noggit-0.5.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\objenesis\objenesis\1.2\objenesis-1.2.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\restlet\jee\org.restlet.ext.servlet\2.1.1\org.restlet.ext.servlet-2.1.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\restlet\jee\org.restlet\2.1.1\org.restlet-2.1.1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\slf4j\jcl-over-slf4j\1.7.5\jcl-over-slf4j-1.7.5.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\slf4j\slf4j-api\1.7.5\slf4j-api-1.7.5.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\slf4j\slf4j-log4j12\1.7.5\slf4j-log4j12-1.7.5.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\data\spring-data-commons\1.5.0.RELEASE\spring-data-commons-1.5.0.RELEASE.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\data\spring-data-solr\1.0.0.BUILD-SNAPSHOT\spring-data-solr-1.0.0.BUILD-SNAPSHOT.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\security\spring-security-config\3.2.0.M1\spring-security-config-3.2.0.M1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\security\spring-security-core\3.2.0.M1\spring-security-core-3.2.0.M1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\security\spring-security-web\3.2.0.M1\spring-security-web-3.2.0.M1.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-aop\3.2.3.RELEASE\spring-aop-3.2.3.RELEASE.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-beans\3.2.3.RELEASE\spring-beans-3.2.3.RELEASE.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-context\3.2.3.RELEASE\spring-context-3.2.3.RELEASE.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-core\3.2.3.RELEASE\spring-core-3.2.3.RELEASE.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-expression\3.2.3.RELEASE\spring-expression-3.2.3.RELEASE.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-jdbc\3.2.0.BUILD-SNAPSHOT\spring-jdbc-3.2.0.BUILD-SNAPSHOT.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-test\3.2.3.RELEASE\spring-test-3.2.3.RELEASE.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-tx\3.2.3.RELEASE\spring-tx-3.2.3.RELEASE.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-web\3.2.3.RELEASE\spring-web-3.2.3.RELEASE.jar" value="0"/>
+<mapEntry key="C:\Users\Lucien\.m2\repository\org\springframework\spring-webmvc\3.2.3.RELEASE\spring-webmvc-3.2.3.RELEASE.jar" value="0"/>
+<mapEntry key="Default Project classpath" value="0"/>
+<mapEntry key="Default Project classpath-org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" value="0"/>
+<mapEntry key="User Custom classpath" value="0"/>
+<mapEntry key="\socialalert-app-org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" value="0"/>
+<mapEntry key="\socialalert-common-org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" value="0"/>
+</mapAttribute>
+</launchConfiguration>

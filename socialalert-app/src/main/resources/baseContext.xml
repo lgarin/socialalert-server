@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:solr="http://www.springframework.org/schema/data/solr"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/data/solr http://www.springframework.org/schema/data/solr/spring-solr.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- Marshaller -->
+	<oxm:jaxb2-marshaller id="marshaller" contextPath="com.bravson.socialalert.app.domain"/>
+
+	<!-- Transaction -->
+    <bean id="transactionManager" class="com.bravson.socialalert.app.infrastructure.LocalTransactionManager" >
+    	<property name="defaultTimeout" value="${default.tx.timeout}"/>
+    </bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager"/>
+	</bean>
+
+	<!-- Email -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+  		<property name="host" value="${email.smtp.host}"/>
+  		<property name="port" value="${email.smtp.port}"/>
+  		<property name="username" value="${email.smtp.username}"/>
+  		<property name="password" value="${email.smtp.password}"/>
+	</bean>
+	
+	<!--  Solr  --> 
+	<bean id="dummySolrServer" class="com.bravson.socialalert.app.infrastructure.DummySolrServerFactory"/>
+	<bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate">
+		<constructor-arg index="0" ref="dummySolrServer"/>
+	</bean>
+	<solr:repositories base-package="com.bravson.socialalert.app.repositories" factory-class="com.bravson.socialalert.app.infrastructure.CustomSolrRepositoryFactoryBean" solr-template-ref="solrTemplate" transaction-manager-ref="transactionManager" /> 
+	
+	<!-- Security -->
+	<bean id="passwordEncoder"
+		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<constructor-arg value="${password.encoding.strength}" />
+	</bean>
+
+	<bean id="saltSource"
+		class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+		<property name="userPropertyToUse" value="username" />
+	</bean>
+
+	<bean id="userAuth"
+		class="com.bravson.socialalert.app.services.UserDetailsServiceImpl" />
+
+	<bean id="authProvider"
+		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="passwordEncoder" ref="passwordEncoder" />
+		<property name="saltSource" ref="saltSource" />
+		<property name="userDetailsService" ref="userAuth" />
+	</bean>
+
+ 	<bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
+ 	
+	<sec:authentication-manager id="authenticationManager">
+		<sec:authentication-provider ref="authProvider" />
+	</sec:authentication-manager>
+
+	<sec:global-method-security
+		pre-post-annotations="enabled" authentication-manager-ref="authenticationManager" secured-annotations="enabled">
+	</sec:global-method-security>
+	
+	<bean id="securityEntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+	
+	<sec:http auto-config="false" entry-point-ref="securityEntryPoint" authentication-manager-ref="authenticationManager">
+		<sec:session-management>
+	        <sec:concurrency-control max-sessions="1" error-if-maximum-exceeded="true" session-registry-ref="sessionRegistry" />
+	    </sec:session-management>
+  	</sec:http>
+
+	<!-- Context -->
+	<context:component-scan base-package="com.bravson.socialalert.app" />
+	
+	<!-- Validation -->
+	<bean id="methodValidation" class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/>
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+	<!--  SocialAuth -->
+	<util:properties id="socialAuthProperties" location="classpath:oauth.properties"/>
+	
+	<bean id="socialAuthConfig" class="org.brickred.socialauth.SocialAuthConfig">
+    	<property name="applicationProperties" ref="socialAuthProperties"/>
+	</bean>
+	
+	<bean id="socialAuthManager" class="org.brickred.socialauth.SocialAuthManager" scope="prototype">
+    	<property name="socialAuthConfig" ref="socialAuthConfig"/>
+	</bean>
+
+	<!-- Velocity -->
+	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+	    <property name="velocityProperties">
+	        <props>
+	            <prop key="resource.loader">class</prop>
+	            <prop key="class.resource.loader.class">org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader</prop>
+	        </props>
+	    </property>
+	</bean>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    	<property name="basename" value="resource/message" />
+	</bean>
+</beans>
