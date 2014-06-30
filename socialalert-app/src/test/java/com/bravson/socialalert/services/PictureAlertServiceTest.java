@@ -528,9 +528,9 @@ public class PictureAlertServiceTest extends DataServiceTest {
 		assertEquals(1, result.size());
 		GeoStatistic stat = result.iterator().next();
 		assertEquals(1, stat.getCount());
-		assertEquals(46.7, stat.getLatitude(), 0.2);
-		assertEquals(7.8, stat.getLongitude(), 0.2);
-		assertEquals(stat.getRadius(), 20.0, 1.0);
+		assertEquals(46.7, stat.getLatitude(), 0.1);
+		assertEquals(7.9, stat.getLongitude(), 0.1);
+		assertEquals(19.5, stat.getRadius(), 0.1);
 	}
 	
 	@Test
@@ -541,9 +541,9 @@ public class PictureAlertServiceTest extends DataServiceTest {
 		assertEquals(1, result.size());
 		GeoStatistic stat = result.iterator().next();
 		assertEquals(1, stat.getCount());
-		assertEquals(46.7, stat.getLatitude(), 0.2);
-		assertEquals(7.8, stat.getLongitude(), 0.2);
-		assertEquals(stat.getRadius(), 20.0, 1.0);
+		assertEquals(46.7, stat.getLatitude(), 0.1);
+		assertEquals(7.9, stat.getLongitude(), 0.1);
+		assertEquals(19.5, stat.getRadius(), 0.1);
 	}
 	
 	@Test
@@ -554,9 +554,22 @@ public class PictureAlertServiceTest extends DataServiceTest {
 		assertEquals(1, result.size());
 		GeoStatistic stat = result.iterator().next();
 		assertEquals(1, stat.getCount());
-		assertEquals(46.7, stat.getLatitude(), 0.2);
-		assertEquals(7.8, stat.getLongitude(), 0.2);
-		assertEquals(stat.getRadius(), 20.0, 1.0);
+		assertEquals(46.7, stat.getLatitude(), 0.1);
+		assertEquals(7.9, stat.getLongitude(), 0.1);
+		assertEquals(19.5, stat.getRadius(), 0.1);
+	}
+	
+	@Test
+	public void mapPictureMatchCountForWorld() {
+		GeoArea area = new GeoArea(0.0, 0.0, 26000.0);
+		List<GeoStatistic> result = service.mapPictureMatchCount(area, null, 360 * DateUtils.MILLIS_PER_DAY, null);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		GeoStatistic stat = result.iterator().next();
+		assertEquals(1, stat.getCount());
+		assertEquals(67.5, stat.getLatitude(), 0.1);
+		assertEquals(22.5, stat.getLongitude(), 0.1);
+		assertEquals(2501.9, stat.getRadius(), 0.1);
 	}
 	
 	@Test

@@ -17,7 +17,7 @@ public interface GeocoderService {
 
 	public List<GeoAddress> findLocation(@NotEmpty String address, String region, String preferredLanguage);
 	
-	public String encodeLatLon(Double latitude, Double longitude, @Min(1) @Max(24) int precision);
+	public String encodeLatLon(Double latitude, Double longitude, @Min(0) @Max(24) int precision);
 	
 	public GeoArea decodeGeoHash(@NotEmpty String geoHash);
 	

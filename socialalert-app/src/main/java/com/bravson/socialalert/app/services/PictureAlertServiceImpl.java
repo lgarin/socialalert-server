@@ -180,7 +180,9 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 		PageRequest pageRequest = createPageRequest(0, maxPageSize, null);
 		
 		ArrayList<Criteria> filters = new ArrayList<>(4);
-		filters.add(new Criteria("geohash" + geohash.length()).is(geohash));
+		if (geohash.length() > 0) {
+			filters.add(new Criteria("geohash" + geohash.length()).is(geohash));
+		}
 		if (!StringUtils.isEmpty(keywords)) {
 			filters.add(new Criteria("title").is(keywords).or("tags").is(keywords));
 		}
@@ -194,7 +196,7 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 	@Override
 	public List<GeoStatistic> mapPictureMatchCount(GeoArea area, String keywords, long maxAge, List<UUID> profileIds) {
 		
-		int precision = Math.max(geocoderService.computeGeoHashLength(area) - 1, 1);
+		int precision = geocoderService.computeGeoHashLength(area) - 1;
 		String geohash = geocoderService.encodeLatLon(area.getLatitude(), area.getLongitude(), precision);
 		Page<FacetFieldEntry> page = queryWithGeohashFacet(geohash, keywords, maxAge, profileIds).getFacetResultPages().iterator().next();
 		ArrayList<GeoStatistic> result = new ArrayList<>(page.getNumberOfElements());

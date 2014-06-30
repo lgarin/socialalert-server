@@ -57,6 +57,8 @@ public class GeocoderServiceTest extends SimpleServiceTest {
 	
 	@Test
 	public void computeGeohash() {
+		String geohash0 = service.encodeLatLon(46.95, 7.50, 0);
+		assertEquals("", geohash0);
 		String geohash1 = service.encodeLatLon(46.95, 7.50, 1);
 		assertEquals("u", geohash1);
 		String geohash2 = service.encodeLatLon(46.95, 7.50, 2);
@@ -89,7 +91,7 @@ public class GeocoderServiceTest extends SimpleServiceTest {
 		GeoArea area = service.decodeGeoHash("u0m7");
 		assertEquals(46.95, area.getLatitude(), 0.1);
 		assertEquals(7.5, area.getLongitude(), 0.1);
-		assertTrue(area.getRadius() < 23.0);
+		assertTrue(area.getRadius() < 40.0);
 	}
 	
 	@Test
