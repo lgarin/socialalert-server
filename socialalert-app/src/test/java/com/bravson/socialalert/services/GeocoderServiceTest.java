@@ -91,7 +91,7 @@ public class GeocoderServiceTest extends SimpleServiceTest {
 		GeoArea area = service.decodeGeoHash("u0m7");
 		assertEquals(46.95, area.getLatitude(), 0.1);
 		assertEquals(7.5, area.getLongitude(), 0.1);
-		assertTrue(area.getRadius() < 40.0);
+		assertEquals(area.getRadius(), 39.0, 0.5);
 	}
 	
 	@Test

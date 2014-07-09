@@ -166,7 +166,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void listAllRecentPictures() {
-		QueryResult<PictureInfo> result = service.searchPictures(null, null, 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(null, null, 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -176,7 +176,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void listAllRecentPicturesByCategory() {
-		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, null, 360 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
+		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, null, 3650 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -186,14 +186,14 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void pageThroughRecentPictures() {
-		QueryResult<PictureInfo> result1 = service.searchPictures(null, null, 360 * DateUtils.MILLIS_PER_DAY, 0, 1);
+		QueryResult<PictureInfo> result1 = service.searchPictures(null, null, 3650 * DateUtils.MILLIS_PER_DAY, 0, 1);
 		assertNotNull(result1);
 		assertEquals(0, result1.getPageNumber());
 		assertEquals(2, result1.getPageCount());
 		assertNotNull(result1.getContent());
 		assertEquals(1, result1.getContent().size());
 		PictureInfo first = result1.getContent().get(0);
-		QueryResult<PictureInfo> result2 = service.searchPictures(null, null, 360 * DateUtils.MILLIS_PER_DAY, 1, 1);
+		QueryResult<PictureInfo> result2 = service.searchPictures(null, null, 3650 * DateUtils.MILLIS_PER_DAY, 1, 1);
 		assertNotNull(result2);
 		assertEquals(1, result2.getPageNumber());
 		assertEquals(2, result2.getPageCount());
@@ -205,7 +205,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void listNoRecentPictures() {
-		QueryResult<PictureInfo> result = service.searchPictures(null, null, 360 * DateUtils.MILLIS_PER_DAY, 3, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(null, null, 3650 * DateUtils.MILLIS_PER_DAY, 3, 10);
 		assertNotNull(result);
 		assertEquals(3, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -215,7 +215,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void listNoRecentPicturesInCategory() {
-		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, null, 360 * DateUtils.MILLIS_PER_DAY, "PLACES", 3, 10);
+		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, null, 3650 * DateUtils.MILLIS_PER_DAY, "PLACES", 3, 10);
 		assertNotNull(result);
 		assertEquals(3, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -225,12 +225,12 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void listRecentPicturesWithLargePageSize() {
-		service.searchPictures(null, null, 360 * DateUtils.MILLIS_PER_DAY, 0, 100000);
+		service.searchPictures(null, null, 3650 * DateUtils.MILLIS_PER_DAY, 0, 100000);
 	}
 	
 	@Test(expected=ValidationException.class)
 	public void listRecentPicturesWithInvalidParameter() {
-		service.searchPictures(null, null, 360 * DateUtils.MILLIS_PER_DAY, 0, -1);
+		service.searchPictures(null, null, 3650 * DateUtils.MILLIS_PER_DAY, 0, -1);
 	}
 	
 	@Test(expected=DataMissingException.class)
@@ -338,7 +338,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void listPicturesInArea() {
-		QueryResult<PictureInfo> result = service.searchPictures(new GeoArea(46.7, 7.8, 5.0), null, 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(new GeoArea(46.7, 7.8, 5.0), null, 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -348,7 +348,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesInAreaWithKeyword() {
-		QueryResult<PictureInfo> result = service.searchPictures(new GeoArea(46.7, 7.8, 5.0), "sport", 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(new GeoArea(46.7, 7.8, 5.0), "sport", 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -358,7 +358,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesInAreaWithBadKeyword() {
-		QueryResult<PictureInfo> result = service.searchPictures(new GeoArea(46.7, 7.8, 5.0), "abc", 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(new GeoArea(46.7, 7.8, 5.0), "abc", 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(0, result.getPageCount());
@@ -368,7 +368,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void listPicturesOutOfArea() {
-		QueryResult<PictureInfo> result = service.searchPictures(new GeoArea(46.7, 7.8, 1.0), null, 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(new GeoArea(46.7, 7.8, 1.0), null, 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(0, result.getPageCount());
@@ -383,7 +383,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesWithTitlePart() {
-		QueryResult<PictureInfo> result = service.searchPictures(null, "interlaken", 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(null, "interlaken", 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -393,7 +393,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesWithTags() {
-		QueryResult<PictureInfo> result = service.searchPictures(null, "sport", 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(null, "sport", 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -403,7 +403,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesInCategoryWithBadCategory() {
-		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, "sport", 360 * DateUtils.MILLIS_PER_DAY, "ART", 0, 10);
+		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, "sport", 3650 * DateUtils.MILLIS_PER_DAY, "ART", 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(0, result.getPageCount());
@@ -413,7 +413,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesInCategoryWithTags() {
-		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, "sport", 360 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
+		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, "sport", 3650 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -423,7 +423,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesWithTitlePartAndTags() {
-		QueryResult<PictureInfo> result = service.searchPictures(null, "sport interlaken test", 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(null, "sport interlaken test", 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -433,7 +433,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesInCategoryWithTitlePartAndTags() {
-		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, "sport interlaken test", 360 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
+		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, "sport interlaken test", 3650 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -443,7 +443,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesWithBadTag() {
-		QueryResult<PictureInfo> result = service.searchPictures(null, "land", 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = service.searchPictures(null, "land", 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(0, result.getPageCount());
@@ -453,7 +453,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	
 	@Test
 	public void searchPicturesInCategoryWithBadTag() {
-		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, "land", 360 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
+		QueryResult<PictureInfo> result = service.searchPicturesInCategory(null, "land", 3650 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(0, result.getPageCount());
@@ -523,59 +523,59 @@ public class PictureAlertServiceTest extends DataServiceTest {
 	@Test
 	public void mapPictureMatchCountWithKeyword() {
 		GeoArea area = new GeoArea(46.95, 7.5, 100.0);
-		List<GeoStatistic> result = service.mapPictureMatchCount(area, "paragliding", 360 * DateUtils.MILLIS_PER_DAY, null);
+		List<GeoStatistic> result = service.mapPictureMatchCount(area, "paragliding", 3650 * DateUtils.MILLIS_PER_DAY, null);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		GeoStatistic stat = result.iterator().next();
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.1);
 		assertEquals(7.9, stat.getLongitude(), 0.1);
-		assertEquals(19.5, stat.getRadius(), 0.1);
+		assertEquals(4.9, stat.getRadius(), 0.1);
 	}
 	
 	@Test
 	public void mapPictureMatchCountWithoutKeyword() {
 		GeoArea area = new GeoArea(46.95, 7.5, 100.0);
-		List<GeoStatistic> result = service.mapPictureMatchCount(area, null, 360 * DateUtils.MILLIS_PER_DAY, null);
+		List<GeoStatistic> result = service.mapPictureMatchCount(area, null, 3650 * DateUtils.MILLIS_PER_DAY, null);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		GeoStatistic stat = result.iterator().next();
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.1);
 		assertEquals(7.9, stat.getLongitude(), 0.1);
-		assertEquals(19.5, stat.getRadius(), 0.1);
+		assertEquals(4.9, stat.getRadius(), 0.1);
 	}
 	
 	@Test
 	public void mapPictureMatchCountWithProfiles() {
 		GeoArea area = new GeoArea(46.95, 7.5, 100.0);
-		List<GeoStatistic> result = service.mapPictureMatchCount(area, "paragliding", 360 * DateUtils.MILLIS_PER_DAY, Arrays.asList(UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77"), UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593")));
+		List<GeoStatistic> result = service.mapPictureMatchCount(area, "paragliding", 3650 * DateUtils.MILLIS_PER_DAY, Arrays.asList(UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77"), UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593")));
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		GeoStatistic stat = result.iterator().next();
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.1);
 		assertEquals(7.9, stat.getLongitude(), 0.1);
-		assertEquals(19.5, stat.getRadius(), 0.1);
+		assertEquals(4.9, stat.getRadius(), 0.1);
 	}
 	
 	@Test
 	public void mapPictureMatchCountForWorld() {
 		GeoArea area = new GeoArea(0.0, 0.0, 26000.0);
-		List<GeoStatistic> result = service.mapPictureMatchCount(area, null, 360 * DateUtils.MILLIS_PER_DAY, null);
+		List<GeoStatistic> result = service.mapPictureMatchCount(area, null, 3650 * DateUtils.MILLIS_PER_DAY, null);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		GeoStatistic stat = result.iterator().next();
 		assertEquals(1, stat.getCount());
-		assertEquals(67.5, stat.getLatitude(), 0.1);
-		assertEquals(22.5, stat.getLongitude(), 0.1);
-		assertEquals(2501.9, stat.getRadius(), 0.1);
+		assertEquals(47.8, stat.getLatitude(), 0.1);
+		assertEquals(5.6, stat.getLongitude(), 0.1);
+		assertEquals(1250.9, stat.getRadius(), 0.1);
 	}
 	
 	@Test
 	public void mapPictureMatchCountWithUnknownProfile() {
 		GeoArea area = new GeoArea(46.95, 7.5, 100.0);
-		List<GeoStatistic> result = service.mapPictureMatchCount(area, "paragliding", 360 * DateUtils.MILLIS_PER_DAY, Collections.singletonList(UUID.fromString("d95472c0-e0e6-11e2-a28f-0800200c9a77")));
+		List<GeoStatistic> result = service.mapPictureMatchCount(area, "paragliding", 3650 * DateUtils.MILLIS_PER_DAY, Collections.singletonList(UUID.fromString("d95472c0-e0e6-11e2-a28f-0800200c9a77")));
 		assertNotNull(result);
 		assertEquals(0, result.size());
 	}

@@ -359,27 +359,27 @@ public class PictureFacadeTest extends DataServiceTest {
 	@Test
 	public void mapPictureMatchCountWithKeyword() throws IOException {
 		userFacade.login("lucien@test.com", "123");
-		List<GeoStatistic> result = facade.mapPictureMatchCount(46.95, 7.5, 100.0, "paragliding", 360 * DateUtils.MILLIS_PER_DAY, null);
+		List<GeoStatistic> result = facade.mapPictureMatchCount(46.95, 7.5, 100.0, "paragliding", 3650 * DateUtils.MILLIS_PER_DAY, null);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		GeoStatistic stat = result.iterator().next();
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.2);
 		assertEquals(7.8, stat.getLongitude(), 0.2);
-		assertEquals(stat.getRadius(), 20.0, 1.0);
+		assertEquals(4.9, stat.getRadius(), 0.1);
 	}
 	
 	@Test
 	public void mapPictureMatchCountWithoutKeyword() throws IOException {
 		userFacade.login("lucien@test.com", "123");
-		List<GeoStatistic> result = facade.mapPictureMatchCount(46.95, 7.5, 100.0, null, 360 * DateUtils.MILLIS_PER_DAY, null);
+		List<GeoStatistic> result = facade.mapPictureMatchCount(46.95, 7.5, 100.0, null, 3650 * DateUtils.MILLIS_PER_DAY, null);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		GeoStatistic stat = result.iterator().next();
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.2);
 		assertEquals(7.8, stat.getLongitude(), 0.2);
-		assertEquals(stat.getRadius(), 20.0, 1.0);
+		assertEquals(4.9, stat.getRadius(), 0.1);
 	}
 	
 	@Test
@@ -417,7 +417,7 @@ public class PictureFacadeTest extends DataServiceTest {
 	@Test
 	public void searchPictures() throws IOException {
 		userFacade.login("lucien@test.com", "123");
-		QueryResult<PictureInfo> result = facade.searchPictures(null, null, null, "sport", 360 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		QueryResult<PictureInfo> result = facade.searchPictures(null, null, null, "sport", 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -428,7 +428,7 @@ public class PictureFacadeTest extends DataServiceTest {
 	@Test
 	public void searchPicturesInCategory() throws IOException {
 		userFacade.login("lucien@test.com", "123");
-		QueryResult<PictureInfo> result = facade.searchPicturesInCategory(null, null, null, "sport", 360 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
+		QueryResult<PictureInfo> result = facade.searchPicturesInCategory(null, null, null, "sport", 3650 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
 		assertNotNull(result);
 		assertEquals(0, result.getPageNumber());
 		assertEquals(1, result.getPageCount());
@@ -439,7 +439,7 @@ public class PictureFacadeTest extends DataServiceTest {
 	@Test
 	public void searchTopPicturesByCategories() throws IOException {
 		userFacade.login("lucien@test.com", "123");
-		Map<String, List<PictureInfo>> result = facade.searchTopPicturesByCategories(null, null, null, null, 360 * DateUtils.MILLIS_PER_DAY, Arrays.asList("ART", "PLACES"), 10);
+		Map<String, List<PictureInfo>> result = facade.searchTopPicturesByCategories(null, null, null, null, 3650 * DateUtils.MILLIS_PER_DAY, Arrays.asList("ART", "PLACES"), 10);
 		assertNotNull(result);
 		assertEquals(2, result.get("PLACES").size());
 		assertEquals(0, result.get("ART").size());

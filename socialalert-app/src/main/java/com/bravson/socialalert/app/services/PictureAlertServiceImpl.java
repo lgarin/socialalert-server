@@ -170,11 +170,11 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 	}
 
 	private FacetPage<PictureAlert> queryWithGeohashFacet(String geohash, String keywords, long maxAge, List<UUID> profileIds) {
-		if (geohash.length() > 6) {
-			geohash = StringUtils.substring(geohash, 0, 6);
+		if (geohash.length() > 5) {
+			geohash = StringUtils.substring(geohash, 0, 5);
 		}
 		
-		FacetOptions facetOptions = new FacetOptions("geohash" + (geohash.length() + 1));
+		FacetOptions facetOptions = new FacetOptions("geohash" + (geohash.length() + 2));
 		facetOptions.setFacetLimit(MAX_FACET_RESULTS);
 		facetOptions.setFacetMinCount(1);
 		PageRequest pageRequest = createPageRequest(0, maxPageSize, null);

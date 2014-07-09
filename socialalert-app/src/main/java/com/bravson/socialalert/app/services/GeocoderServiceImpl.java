@@ -73,9 +73,11 @@ public class GeocoderServiceImpl implements GeocoderService {
 	public GeoArea decodeGeoHash(String geoHash) {
 		Rectangle rect = GeohashUtils.decodeBoundary(geoHash, SpatialContext.GEO);
 		Point center = rect.getCenter();
-		double[] degrees = GeohashUtils.lookupDegreesSizeForHashLen(geoHash.length());
-		double degree = Math.max(degrees[0], degrees[1]);
-		double radius = DistanceUtils.toRadians(degree) * DistanceUtils.EARTH_MEAN_RADIUS_KM / 2D;
+		double degree = Math.max(rect.getHeight(), rect.getWidth());
+		double radius = DistanceUtils.degrees2Dist(degree, DistanceUtils.EARTH_MEAN_RADIUS_KM);
+		//double[] degrees = GeohashUtils.lookupDegreesSizeForHashLen(geoHash.length());
+		//double degree = Math.max(degrees[0], degrees[1]);
+		//double radius = DistanceUtils.toRadians(degree) * DistanceUtils.EARTH_MEAN_RADIUS_KM / 2D;
 		//double radius = DistanceUtils.degrees2Dist(Math.sqrt(rect.getArea(SpatialContext.GEO)), DistanceUtils.EARTH_MEAN_RADIUS_KM);
 		return new GeoArea(center.getY(), center.getX(), radius);
 	}
