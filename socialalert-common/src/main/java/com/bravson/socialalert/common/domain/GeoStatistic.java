@@ -3,7 +3,7 @@ package com.bravson.socialalert.common.domain;
 public class GeoStatistic extends GeoArea {
 
 	private long count;
-	
+
 	public GeoStatistic() {
 	}
 

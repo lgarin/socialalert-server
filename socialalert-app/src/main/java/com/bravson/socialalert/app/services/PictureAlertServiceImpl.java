@@ -169,20 +169,18 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 		}
 	}
 
-	private FacetPage<PictureAlert> queryWithGeohashFacet(String geohash, String keywords, long maxAge, List<UUID> profileIds) {
-		if (geohash.length() > 5) {
-			geohash = StringUtils.substring(geohash, 0, 5);
-		}
+	private FacetPage<PictureAlert> queryWithGeohashFacet(GeoArea area, String keywords, long maxAge, List<UUID> profileIds) {
 		
-		FacetOptions facetOptions = new FacetOptions("geohash" + (geohash.length() + 2));
+		int precision = Math.min(geocoderService.computeGeoHashLength(area) + 1, 7);
+		FacetOptions facetOptions = new FacetOptions("geohash" + precision);
 		facetOptions.setFacetLimit(MAX_FACET_RESULTS);
 		facetOptions.setFacetMinCount(1);
 		PageRequest pageRequest = createPageRequest(0, maxPageSize, null);
 		
 		ArrayList<Criteria> filters = new ArrayList<>(4);
-		if (geohash.length() > 0) {
-			filters.add(new Criteria("geohash" + geohash.length()).is(geohash));
-		}
+		GeoLocation location = new GeoLocation(area.getLatitude(), area.getLongitude());
+		Distance distance = new Distance(area.getRadius());
+		filters.add(new Criteria("pictureLocation").near(location, distance));
 		if (!StringUtils.isEmpty(keywords)) {
 			filters.add(new Criteria("title").is(keywords).or("tags").is(keywords));
 		}
@@ -195,10 +193,7 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 	
 	@Override
 	public List<GeoStatistic> mapPictureMatchCount(GeoArea area, String keywords, long maxAge, List<UUID> profileIds) {
-		
-		int precision = geocoderService.computeGeoHashLength(area) - 1;
-		String geohash = geocoderService.encodeLatLon(area.getLatitude(), area.getLongitude(), precision);
-		Page<FacetFieldEntry> page = queryWithGeohashFacet(geohash, keywords, maxAge, profileIds).getFacetResultPages().iterator().next();
+		Page<FacetFieldEntry> page = queryWithGeohashFacet(area, keywords, maxAge, profileIds).getFacetResultPages().iterator().next();
 		ArrayList<GeoStatistic> result = new ArrayList<>(page.getNumberOfElements());
 		for (FacetFieldEntry entry : page) {
 			GeoArea key = geocoderService.decodeGeoHash(entry.getValue());
