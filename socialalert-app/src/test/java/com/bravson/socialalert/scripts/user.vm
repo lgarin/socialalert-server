@@ -1,0 +1,12 @@
+<add><doc>
+	<field name="profileId">$user.profileId</field>
+    <field name="lastUpdate">2014-07-16T22:05:13.751Z</field>
+    <field name="roles">USER</field>
+    <field name="username">$user.username</field>
+    <field name="nickname">$user.nickname</field>
+    <field name="lastLoginSuccess">2014-07-16T22:05:13.751Z</field>
+    <field name="creation">2014-07-16T22:05:13.751Z</field>
+    <field name="password">$user.password</field>
+    <field name="loginFailureCount">0</field>
+    <field name="state">ACTIVE</field>
+</doc></add>

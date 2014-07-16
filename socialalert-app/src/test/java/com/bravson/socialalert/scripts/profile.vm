@@ -1,0 +1,7 @@
+<add><doc>
+	<field name="uuid">$profile.id</field>
+	<field name="nickname">$profile.nickname</field>
+	<field name="lastUpdate">2014-07-16T22:05:13.751Z</field>
+    <field name="creation">2014-07-16T22:05:13.751Z</field>
+    <field name="suggest">$profile.nickname</field>
+</doc></add>
