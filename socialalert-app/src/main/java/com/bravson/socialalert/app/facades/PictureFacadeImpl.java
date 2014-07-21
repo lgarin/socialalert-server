@@ -51,6 +51,7 @@ import com.bravson.socialalert.common.domain.GeoAddress;
 import com.bravson.socialalert.common.domain.GeoArea;
 import com.bravson.socialalert.common.domain.GeoStatistic;
 import com.bravson.socialalert.common.domain.MediaCategory;
+import com.bravson.socialalert.common.domain.MediaConstants;
 import com.bravson.socialalert.common.domain.PictureInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 import com.bravson.socialalert.common.domain.TagInfo;
@@ -246,11 +247,13 @@ public class PictureFacadeImpl implements PictureFacade {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		PictureInfo picture = alertService.getPictureInfo(pictureUri);
 		ApprovalModifier oldModifier = interactionService.setApprovalModifier(pictureUri, user.getProfileId(), modifier);
-		activityService.addActivity(pictureUri, user.getProfileId(), modifier.toActivtiyType(), null);
+		if (modifier != null) {
+			activityService.addActivity(pictureUri, user.getProfileId(), modifier.toActivtiyType(), null);
+		}
 		if (modifier == ApprovalModifier.LIKE) {
-			linkService.increaseActivityWeight(user.getProfileId(), picture.getProfileId(), 2);
+			linkService.increaseActivityWeight(user.getProfileId(), picture.getProfileId(), MediaConstants.LIKE_WEIGHT);
 		} else if (modifier == ApprovalModifier.DISLIKE) {
-			linkService.increaseActivityWeight(user.getProfileId(), picture.getProfileId(), -2);
+			linkService.increaseActivityWeight(user.getProfileId(), picture.getProfileId(), MediaConstants.DISLIKE_WEIGHT);
 		}
 		PictureInfo result = alertService.updateLikeDislike(pictureUri, oldModifier, modifier).enrich(modifier);
 		userService.populateCreators(Collections.singletonList(result));
