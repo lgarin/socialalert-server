@@ -6,8 +6,10 @@ import java.util.Collections;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,6 +81,9 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 	@Resource
 	private SessionRegistry sessionRegistry;
 
+	@Autowired(required=false)
+	private HttpServletRequest httpRequest;
+	
 	@Value("${profile.picture.retryCount}")
 	private int downloadRetryCount;
 	
@@ -184,6 +189,9 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 			userService.clearLoginFailures(user.getUsername());
 		}
 		SecurityContextHolder.clearContext();
+		if (httpRequest != null && httpRequest.getSession(false) != null) {
+			httpRequest.getSession().invalidate();
+		}
 	}
 	
 	@Override
