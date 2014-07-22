@@ -229,6 +229,7 @@ public class PictureFacadeTest extends DataServiceTest {
 		assertEquals("sg33g5", comment.getCreator());
 		assertEquals("My valuable comment", comment.getComment());
 		assertEquals(pictureUri, comment.getMediaUri());
+		assertTrue(comment.isOnline());
 	}
 	
 	@Test(expected=DataMissingException.class)

@@ -278,6 +278,7 @@ public class PictureFacadeImpl implements PictureFacade {
 		linkService.increaseActivityWeight(user.getProfileId(), picture.getProfileId(), 1);
 		alertService.increaseCommentCount(pictureUri);
 		info.setCreator(user.getNickname());
+		info.setOnline(true);
 		return info;
 	}
 	
