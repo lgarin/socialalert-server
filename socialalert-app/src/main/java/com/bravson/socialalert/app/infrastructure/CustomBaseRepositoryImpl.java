@@ -270,7 +270,7 @@ public class CustomBaseRepositoryImpl<T, ID extends Serializable> extends Simple
 		
 		List<PartialUpdate> updates = new ArrayList<>(entities.size());
 		for (T entity : entities) {
-			BeanWrapper<?,T> wrapper = BeanWrapper.create(entity, conversionService);
+			BeanWrapper<T> wrapper = BeanWrapper.create(entity, conversionService);
 			SolrPersistentProperty idProperty = persistentEntity.getIdProperty();
 			PartialUpdate update = new PartialUpdate(idProperty.getName(), wrapper.getProperty(idProperty));
 			for (String property : properties) {

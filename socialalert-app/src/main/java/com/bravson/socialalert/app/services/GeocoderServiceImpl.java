@@ -1,5 +1,6 @@
 package com.bravson.socialalert.app.services;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,7 +30,12 @@ public class GeocoderServiceImpl implements GeocoderService {
 	public List<GeoAddress> findLocation(String address, String region, String preferredLanguage) {
 		GeocoderRequest request = new GeocoderRequest(address, preferredLanguage);
 		request.setRegion(region);
-		GeocodeResponse response = geocoder.geocode(request);
+		GeocodeResponse response;
+		try {
+			response = geocoder.geocode(request);
+		} catch (IOException e) {
+			throw new RuntimeException("Geocoding failed", e);
+		}
 		switch (response.getStatus()) {
 		case ZERO_RESULTS:
 			return Collections.emptyList();
