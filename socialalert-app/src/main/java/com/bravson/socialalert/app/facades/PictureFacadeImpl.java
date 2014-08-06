@@ -40,6 +40,7 @@ import com.bravson.socialalert.app.services.PictureFileService;
 import com.bravson.socialalert.app.services.ProfileLinkService;
 import com.bravson.socialalert.app.services.SearchHistoryService;
 import com.bravson.socialalert.app.services.TagStatisticService;
+import com.bravson.socialalert.app.services.UserSessionService;
 import com.bravson.socialalert.app.tasks.QueuedTaskScheduler;
 import com.bravson.socialalert.app.utilities.SecurityUtils;
 import com.bravson.socialalert.common.domain.ActivityInfo;
@@ -100,6 +101,9 @@ public class PictureFacadeImpl implements PictureFacade {
 	
 	@Resource
 	private ProfileLinkService linkService;
+	
+	@Resource
+	private UserSessionService sessionService;
 	
 	@Value("${picture.delete.delay}")
 	private long pictureDeleteDelay;
@@ -286,6 +290,9 @@ public class PictureFacadeImpl implements PictureFacade {
 	@PreAuthorize("hasRole('USER')")
 	@Transactional(rollbackFor={Throwable.class})
 	public ActivityInfo repostComment(UUID commentId) {
+		if (!sessionService.addRepostedComment(commentId)) {
+			return null;
+		}
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		CommentInfo comment = commentService.getComment(commentId);
 		ActivityInfo activity = activityService.addActivity(comment.getMediaUri(), user.getProfileId(), ActivityType.REPOST_COMMENT, comment.getCommentId());
@@ -300,6 +307,9 @@ public class PictureFacadeImpl implements PictureFacade {
 	@PreAuthorize("hasRole('USER')")
 	@Transactional(rollbackFor={Throwable.class})
 	public ActivityInfo repostPicture(URI pictureUri) {
+		if (!sessionService.addRepostedUri(pictureUri)) {
+			return null;
+		}
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		PictureInfo picture = alertService.getPictureInfo(pictureUri);
 		ActivityInfo activity = activityService.addActivity(pictureUri, user.getProfileId(), ActivityType.REPOST_PICTURE, null);

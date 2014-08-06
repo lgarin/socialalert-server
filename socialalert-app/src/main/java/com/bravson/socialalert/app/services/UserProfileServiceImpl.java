@@ -24,6 +24,7 @@ import com.bravson.socialalert.app.domain.ExternalProfileInfo;
 import com.bravson.socialalert.app.entities.UserProfile;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.repositories.UserProfileRepository;
+import com.bravson.socialalert.app.utilities.SolrUtils;
 import com.bravson.socialalert.common.domain.ProfileInfo;
 import com.bravson.socialalert.common.domain.PublicProfileInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
@@ -139,6 +140,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 	
 	@Override
 	public QueryResult<PublicProfileInfo> searchProfiles(String keyword,  int pageNumber, int pageSize) {
+		keyword = SolrUtils.escapeSolrCharacters(keyword);
 		return toQueryResult(profileRepository.findWithKeyword(keyword, createPageRequest(pageNumber, pageSize, null)));
 	}
 

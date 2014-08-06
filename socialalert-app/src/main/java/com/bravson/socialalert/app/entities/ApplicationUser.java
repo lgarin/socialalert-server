@@ -3,10 +3,10 @@ package com.bravson.socialalert.app.entities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.solr.client.solrj.beans.Field;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -217,6 +217,6 @@ public class ApplicationUser extends VersionedEntity implements UserDetails {
 	}
 
 	public boolean isUnsafePassword(String newPassword) {
-		return ObjectUtils.equals(username, newPassword) || ObjectUtils.equals(nickname, newPassword);
+		return Objects.equals(username, newPassword) || Objects.equals(nickname, newPassword);
 	}
 }

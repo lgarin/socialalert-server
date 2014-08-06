@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.beans.Field;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.solr.core.geo.GeoLocation;
+import org.springframework.data.geo.Point;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -50,7 +50,7 @@ public class PictureAlert extends VersionedEntity {
 	private Integer pictureHeight;
 
 	@Field
-	private GeoLocation pictureLocation;
+	private Point pictureLocation;
 	
 	@Field
 	private String locality;
@@ -182,8 +182,8 @@ public class PictureAlert extends VersionedEntity {
 		info.setPictureTimestamp(pictureTimestamp);
 		info.setCameraMaker(cameraMaker);
 		info.setCameraModel(cameraModel);
-		info.setPictureLatitude(pictureLocation == null ? null : pictureLocation.getLatitude());
-		info.setPictureLongitude(pictureLocation == null ? null : pictureLocation.getLongitude());
+		info.setPictureLatitude(pictureLocation == null ? null : pictureLocation.getX());
+		info.setPictureLongitude(pictureLocation == null ? null : pictureLocation.getY());
 		info.setLocality(locality);
 		info.setCountry(country);
 		info.setCreation(creation);
@@ -198,7 +198,7 @@ public class PictureAlert extends VersionedEntity {
 	}
 
 	public boolean isOwnedBy(UUID profileId) {
-		return ObjectUtils.equals(this.profileId, profileId);
+		return Objects.equals(this.profileId, profileId);
 	}
 
 	public void updateLikeDislikeCount(int likeDelta, int dislikeDelta) {
@@ -235,11 +235,11 @@ public class PictureAlert extends VersionedEntity {
 	}
 	
 	public Double getLatitude() {
-		return pictureLocation != null ? pictureLocation.getLatitude() : null;
+		return pictureLocation != null ? pictureLocation.getX() : null;
 	}
 	
 	public Double getLongitude() {
-		return pictureLocation != null ? pictureLocation.getLongitude() : null;
+		return pictureLocation != null ? pictureLocation.getY() : null;
 	}
 	
 	public void updateLocation(Double latitude, Double longitude, String geohash, String locality, String country) {
@@ -259,7 +259,7 @@ public class PictureAlert extends VersionedEntity {
 		}
 		
 		if (latitude != null && longitude != null) {
-			this.pictureLocation = new GeoLocation(latitude, longitude);
+			this.pictureLocation = new Point(latitude, longitude);
 		} else {
 			this.pictureLocation = null;
 		}

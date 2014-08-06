@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.solr.core.geo.GeoLocation;
+import org.springframework.data.geo.Point;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
 import com.bravson.socialalert.app.infrastructure.VersionedEntity;
@@ -24,7 +24,7 @@ public class SearchHistory extends VersionedEntity {
 	private String keywords;
 	
 	@Field
-	private GeoLocation location;
+	private Point location;
 	
 	@Field
 	private Double radius;
@@ -37,7 +37,7 @@ public class SearchHistory extends VersionedEntity {
 		this.profileId = profileId;
 		this.keywords = keywords;
 		if (area != null) {
-			this.location = new GeoLocation(area.getLatitude(), area.getLongitude());
+			this.location = new Point(area.getLatitude(), area.getLongitude());
 			this.radius = area.getRadius();
 		}
 	}

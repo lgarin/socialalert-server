@@ -393,6 +393,18 @@ public class PictureFacadeTest extends DataServiceTest {
 		assertEquals("Hello 2", info.getMessage());
 	}
 	
+	@Test
+	public void repostExistingCommentTwice() throws IOException {
+		userFacade.login("lucien@test.com", "123");
+		ActivityInfo info = facade.repostComment(UUID.fromString("b95472c0-e0e6-11e2-a28f-0800200c9a22"));
+		assertNotNull(info);
+		assertEquals(ActivityType.REPOST_COMMENT, info.getActivityType());
+		assertEquals("sg33g5", info.getCreator());
+		assertEquals("Hello 1", info.getMessage());
+		ActivityInfo info2 = facade.repostComment(UUID.fromString("b95472c0-e0e6-11e2-a28f-0800200c9a22"));
+		assertNull(info2);
+	}
+	
 	@Test(expected=DataMissingException.class)
 	public void repostNonExistingComment() throws IOException {
 		userFacade.login("lucien@test.com", "123");
@@ -407,6 +419,18 @@ public class PictureFacadeTest extends DataServiceTest {
 		assertEquals(ActivityType.REPOST_PICTURE, info.getActivityType());
 		assertEquals("sg33g5", info.getCreator());
 		assertNull(info.getMessage());
+	}
+	
+	@Test
+	public void repostExistingPictureTwice() throws IOException {
+		userFacade.login("lucien@test.com", "123");
+		ActivityInfo info = facade.repostPicture(URI.create("20130716/f317f3c7918c83ff6ec24aabb6c017fd.jpg"));
+		assertNotNull(info);
+		assertEquals(ActivityType.REPOST_PICTURE, info.getActivityType());
+		assertEquals("sg33g5", info.getCreator());
+		assertNull(info.getMessage());
+		ActivityInfo info2 = facade.repostPicture(URI.create("20130716/f317f3c7918c83ff6ec24aabb6c017fd.jpg"));
+		assertNull(info2);
 	}
 	
 	@Test(expected=DataMissingException.class)

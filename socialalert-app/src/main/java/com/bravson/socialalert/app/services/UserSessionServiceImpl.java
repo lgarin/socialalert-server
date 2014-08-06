@@ -7,6 +7,7 @@ import java.io.ObjectOutput;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -17,10 +18,22 @@ import org.springframework.stereotype.Service;
 public class UserSessionServiceImpl implements UserSessionService, Externalizable {
 
 	private Set<URI> viewedUriSet = new HashSet<>();
+	private Set<URI> repostedUriSet = new HashSet<>();
+	private Set<UUID> repostedCommentSet = new HashSet<>();
 	
 	@Override
 	public boolean addViewedUri(URI uri) {
 		return viewedUriSet.add(uri);
+	}
+	
+	@Override
+	public boolean addRepostedUri(URI uri) {
+		return repostedUriSet.add(uri);
+	}
+	
+	@Override
+	public boolean addRepostedComment(UUID commentId) {
+		return repostedCommentSet.add(commentId);
 	}
 	
 	@Override

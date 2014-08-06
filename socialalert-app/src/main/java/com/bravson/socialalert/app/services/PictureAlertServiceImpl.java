@@ -18,8 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.solr.core.geo.Distance;
-import org.springframework.data.solr.core.geo.GeoLocation;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Point;
 import org.springframework.data.solr.core.query.Criteria;
 import org.springframework.data.solr.core.query.FacetOptions;
 import org.springframework.data.solr.core.query.SimpleStringCriteria;
@@ -34,6 +34,7 @@ import com.bravson.socialalert.app.domain.TagStatisticUpdate;
 import com.bravson.socialalert.app.entities.PictureAlert;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.repositories.PictureAlertRepository;
+import com.bravson.socialalert.app.utilities.SolrUtils;
 import com.bravson.socialalert.common.domain.ApprovalModifier;
 import com.bravson.socialalert.common.domain.GeoAddress;
 import com.bravson.socialalert.common.domain.GeoArea;
@@ -133,13 +134,14 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 	
 	@Override
 	public QueryResult<PictureInfo> searchPictures(GeoArea area, String keywords, long maxAge, int pageNumber, int pageSize) {
+		keywords = SolrUtils.escapeSolrCharacters(keywords);
 		PageRequest pageRequest = createPageRequest(pageNumber, pageSize, null);
 		if (area != null && keywords != null) {
-			GeoLocation location = new GeoLocation(area.getLatitude(), area.getLongitude());
+			Point location = new Point(area.getLatitude(), area.getLongitude());
 			Distance maxDistance = new Distance(area.getRadius());
 			return toQueryResult(pictureRepository.findWithinAreaWithKeywords(location, maxDistance, keywords, maxAge / DateUtils.MILLIS_PER_MINUTE,  pageRequest));
 		} else if (area != null) {
-			GeoLocation location = new GeoLocation(area.getLatitude(), area.getLongitude());
+			Point location = new Point(area.getLatitude(), area.getLongitude());
 			Distance maxDistance = new Distance(area.getRadius());
 			return toQueryResult(pictureRepository.findWithinArea(location, maxDistance, maxAge / DateUtils.MILLIS_PER_MINUTE, pageRequest));
 		} else if (keywords != null) {
@@ -151,14 +153,15 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 	
 	@Override
 	public QueryResult<PictureInfo> searchPicturesInCategory(GeoArea area, String keywords, long maxAge, String category, int pageNumber, int pageSize) {
+		keywords = SolrUtils.escapeSolrCharacters(keywords);
 		PageRequest pageRequest = createPageRequest(pageNumber, pageSize, null);
 		if (area != null && keywords != null) {
-			GeoLocation location = new GeoLocation(area.getLatitude(), area.getLongitude());
+			Point location = new Point(area.getLatitude(), area.getLongitude());
 			Distance maxDistance = new Distance(area.getRadius());
 			// TODO by category
 			return toQueryResult(pictureRepository.findWithinAreaWithKeywordsByCategory(location, maxDistance, keywords, maxAge / DateUtils.MILLIS_PER_MINUTE, category,  pageRequest));
 		} else if (area != null) {
-			GeoLocation location = new GeoLocation(area.getLatitude(), area.getLongitude());
+			Point location = new Point(area.getLatitude(), area.getLongitude());
 			Distance maxDistance = new Distance(area.getRadius());
 			// TODO by category
 			return toQueryResult(pictureRepository.findWithinAreaByCategory(location, maxDistance, maxAge / DateUtils.MILLIS_PER_MINUTE, category, pageRequest));
@@ -170,7 +173,7 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 	}
 
 	private FacetPage<PictureAlert> queryWithGeohashFacet(GeoArea area, String keywords, long maxAge, List<UUID> profileIds) {
-		
+		keywords = SolrUtils.escapeSolrCharacters(keywords);
 		int precision = Math.min(geocoderService.computeGeoHashLength(area) + 1, 7);
 		FacetOptions facetOptions = new FacetOptions("geohash" + precision);
 		facetOptions.setFacetLimit(MAX_FACET_RESULTS);
@@ -178,7 +181,7 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 		PageRequest pageRequest = createPageRequest(0, maxPageSize, null);
 		
 		ArrayList<Criteria> filters = new ArrayList<>(4);
-		GeoLocation location = new GeoLocation(area.getLatitude(), area.getLongitude());
+		Point location = new Point(area.getLatitude(), area.getLongitude());
 		Distance distance = new Distance(area.getRadius());
 		filters.add(new Criteria("pictureLocation").near(location, distance));
 		if (!StringUtils.isEmpty(keywords)) {
