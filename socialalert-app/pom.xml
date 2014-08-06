@@ -7,7 +7,7 @@
 		<spring-release-version>3.2.10.RELEASE</spring-release-version>
 		<spring-security-version>3.2.4.RELEASE</spring-security-version>
 		<solr-release-version>4.9.0</solr-release-version>
-		<spring-solr-version>1.2.1.RELEASE</spring-solr-version>
+		<spring-solr-version>1.2.2.RELEASE</spring-solr-version>
 	</properties>
 
 	<dependencies>
@@ -142,7 +142,7 @@
  		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.10.0</version>
+			<version>2.11.0</version>
 		</dependency>
         <dependency>
         	<artifactId>socialalert-common</artifactId>
