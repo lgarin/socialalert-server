@@ -83,12 +83,18 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	}
 	
 	@Override
+	@Deprecated
 	public List<ActivityInfo> getRecentProfileActivity(UUID profileId, int maxActivityCount) {
-		QueryResult<ActivityInfo> items = activityService.searchActivityBySourceProfileId(profileId, 0, maxActivityCount);
+		return getProfileActivity(profileId, 0, maxActivityCount).getContent();
+	}
+	
+	@Override
+	public QueryResult<ActivityInfo> getProfileActivity(UUID profileId, int pageNumber, int pageSize) {
+		QueryResult<ActivityInfo> items = activityService.searchActivityBySourceProfileId(profileId, pageNumber, pageSize);
 		userService.populateCreators(items.getContent());
 		commentService.populateComments(items.getContent());
 		userService.updateOnlineStatus(items.getContent());
-		return items.getContent();
+		return items;
 	}
 	
 	@Override
