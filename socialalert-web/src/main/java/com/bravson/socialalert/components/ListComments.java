@@ -10,9 +10,11 @@ import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SetupRender;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
+import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.CommentInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.ProfileFacade;
 
 public class ListComments {
 
@@ -27,6 +29,9 @@ public class ListComments {
 	
 	@Property
 	private CommentInfo currentComment;
+	
+	@Inject
+    private ProfileFacade profileService;
 	
 	@Persist
 	private int pageNumber;
@@ -63,8 +68,13 @@ public class ListComments {
 		return this;
 	}
 
-	Object onRepost(UUID commetnId) throws IOException {
-		pictureService.repostComment(commetnId);
+	Object onRepost(UUID commentId) throws IOException {
+		pictureService.repostComment(commentId);
+		return this;
+	}
+	
+	Object onReportAbuse(UUID commentId) throws IOException {
+		profileService.reportAbusiveComment(commentId, "Switzerland", AbuseReason.BAD_LANGUAGE);
 		return this;
 	}
 }

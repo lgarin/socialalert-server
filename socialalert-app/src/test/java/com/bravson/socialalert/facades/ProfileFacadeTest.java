@@ -1,6 +1,7 @@
 package com.bravson.socialalert.facades;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -16,10 +17,15 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.bravson.socialalert.app.entities.AlertActivity;
+import com.bravson.socialalert.app.entities.AlertComment;
 import com.bravson.socialalert.app.entities.ApplicationUser;
 import com.bravson.socialalert.app.entities.ProfileLink;
 import com.bravson.socialalert.app.entities.ProfileStatistic;
 import com.bravson.socialalert.app.entities.UserProfile;
+import com.bravson.socialalert.app.exceptions.DataMissingException;
+import com.bravson.socialalert.common.domain.AbuseInfo;
+import com.bravson.socialalert.common.domain.AbuseReason;
+import com.bravson.socialalert.common.domain.AbuseStatus;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
 import com.bravson.socialalert.common.domain.ActivityType;
@@ -27,6 +33,7 @@ import com.bravson.socialalert.common.domain.ProfileInfo;
 import com.bravson.socialalert.common.domain.ProfileStatisticInfo;
 import com.bravson.socialalert.common.domain.PublicProfileInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
+import com.bravson.socialalert.common.domain.UserInfo;
 import com.bravson.socialalert.common.facade.ProfileFacade;
 import com.bravson.socialalert.common.facade.UserFacade;
 import com.bravson.socialalert.infrastructure.DataServiceTest;
@@ -46,6 +53,7 @@ public class ProfileFacadeTest extends DataServiceTest {
 		fullImport(ProfileStatistic.class);
 		fullImport(AlertActivity.class);
 		fullImport(ProfileLink.class);
+		fullImport(AlertComment.class);
 		SecurityContextHolder.clearContext();
 	}
 
@@ -215,5 +223,57 @@ public class ProfileFacadeTest extends DataServiceTest {
 		ActivityCount activity = statistic.get(0);
 		assertEquals(1, activity.getCount());
 		assertEquals(ActivityType.LIKE_MEDIA, activity.getType());
+	}
+	
+	@Test
+	public void createMediaReport() throws IOException {
+		UserInfo user = userFacade.login("lucien@test.com", "123");
+		URI mediaUri = URI.create("20130716/f317f3c7918c83ff6ec24aabb6c017fd.jpg");
+		String country = "Switzerland";
+		AbuseInfo abuse = profileFacade.reportAbusiveMedia(mediaUri, country, AbuseReason.VIOLENCE);
+		assertNotNull(abuse);
+		assertEquals(user.getProfileId(), abuse.getProfileId());
+		assertEquals(mediaUri, abuse.getMediaUri());
+		assertNull(abuse.getCommentId());
+		assertEquals(AbuseReason.VIOLENCE, abuse.getReason());
+		assertEquals(AbuseStatus.NEW, abuse.getStatus());
+		assertEquals(country, abuse.getCountry());
+		assertNull(abuse.getMessage());
+		assertEquals(user.getNickname(), abuse.getCreator());
+		assertNotNull(abuse.getTimestamp());
+	}
+	
+	@Test(expected=DataMissingException.class)
+	public void createReportForInvalidMedia() throws IOException {
+		userFacade.login("lucien@test.com", "123");
+		URI mediaUri = URI.create("xyz.jpg");
+		String country = "Switzerland";
+		profileFacade.reportAbusiveMedia(mediaUri, country, AbuseReason.VIOLENCE);
+	}
+	
+	@Test
+	public void createCommentReport() throws IOException {
+		UserInfo user = userFacade.login("lucien@test.com", "123");
+		UUID commentId = UUID.fromString("c95472c0-e0e6-11e2-a28f-0800200c9a33");
+		String country = "Switzerland";
+		AbuseInfo abuse = profileFacade.reportAbusiveComment(commentId, country, AbuseReason.VIOLENCE);
+		assertNotNull(abuse);
+		assertEquals(user.getProfileId(), abuse.getProfileId());
+		assertNull(abuse.getMediaUri());
+		assertEquals(commentId, abuse.getCommentId());
+		assertEquals(AbuseReason.VIOLENCE, abuse.getReason());
+		assertEquals(AbuseStatus.NEW, abuse.getStatus());
+		assertEquals(country, abuse.getCountry());
+		assertEquals("Hello 2", abuse.getMessage());
+		assertEquals(user.getNickname(), abuse.getCreator());
+		assertNotNull(abuse.getTimestamp());
+	}
+	
+	@Test(expected=DataMissingException.class)
+	public void createReportForInvalidComment() throws IOException {
+		userFacade.login("lucien@test.com", "123");
+		UUID commentId = UUID.fromString("c95472c0-e0e6-11e2-a28f-999999999999");
+		String country = "Switzerland";
+		profileFacade.reportAbusiveComment(commentId, country, AbuseReason.VIOLENCE);
 	}
 }

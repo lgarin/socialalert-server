@@ -23,5 +23,5 @@ public interface AlertCommentService {
 
 	public void populateComments(@NotNull List<ActivityInfo> items);
 
-	public CommentInfo getComment(@NotNull UUID commentId);
+	public CommentInfo getCommentInfo(@NotNull UUID commentId);
 }

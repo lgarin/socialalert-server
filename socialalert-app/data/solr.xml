@@ -13,5 +13,6 @@
     	<core loadOnStartup="false" name="ProfileLink" instanceDir="ProfileLink" config="../../solrconfig.xml"/>
     	<core loadOnStartup="false" name="AlertAlbum" instanceDir="AlertAlbum" config="../../solrconfig.xml"/>
     	<core loadOnStartup="false" name="TagStatistic" instanceDir="TagStatistic" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="AbuseReport" instanceDir="AbuseReport" config="../../solrconfig.xml"/>
 	</cores>
 </solr>

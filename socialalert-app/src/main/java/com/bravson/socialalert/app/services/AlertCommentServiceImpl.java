@@ -92,7 +92,7 @@ public class AlertCommentServiceImpl implements AlertCommentService {
 	}
 	
 	@Override
-	public CommentInfo getComment(UUID commentId) {
+	public CommentInfo getCommentInfo(UUID commentId) {
 		AlertComment entity = commentRepository.findById(commentId);
 		if (entity == null) {
 			throw new DataMissingException("Cannot find comment "  + commentId);

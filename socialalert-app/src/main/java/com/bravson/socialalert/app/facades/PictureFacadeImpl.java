@@ -294,7 +294,7 @@ public class PictureFacadeImpl implements PictureFacade {
 			return null;
 		}
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
-		CommentInfo comment = commentService.getComment(commentId);
+		CommentInfo comment = commentService.getCommentInfo(commentId);
 		ActivityInfo activity = activityService.addActivity(comment.getMediaUri(), user.getProfileId(), ActivityType.REPOST_COMMENT, comment.getCommentId());
 		linkService.increaseActivityWeight(user.getProfileId(), comment.getProfileId(), 1);
 		activity.setCreator(user.getNickname());
