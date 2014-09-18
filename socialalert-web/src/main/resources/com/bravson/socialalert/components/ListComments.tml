@@ -11,6 +11,7 @@
                    <p class="text-left">${currentComment.creator}</p>
                    <p class="text-right">${currentComment.creation}</p>
                    <t:eventlink t:id="repost" t:context="${currentComment.commentId}"><i class="icon-eye-open"></i></t:eventlink>
+                   <t:eventlink t:id="reportAbuse" t:context="${currentComment.commentId}"><i class="icon-tag"></i></t:eventlink>
                </div>
            </div>
        </li>

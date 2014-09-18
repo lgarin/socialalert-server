@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 
+import com.bravson.socialalert.common.domain.AbuseInfo;
+import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
 import com.bravson.socialalert.common.domain.ProfileInfo;
@@ -54,4 +56,8 @@ public interface ProfileFacade {
 	QueryResult<ProfileStatisticInfo> getTopCreators(@JsonRpcParam("pageNumber") @Min(0) int pageNumber, @JsonRpcParam("pageSize") @Min(1) int pageSize) throws IOException;
 
 	List<ActivityCount> getRecentActivityStatistic(@JsonRpcParam("lastCheck") @NotNull DateTime lastCheck) throws IOException;
+	
+	AbuseInfo reportAbusiveComment(@JsonRpcParam("commentId") @NotNull UUID commentId, @JsonRpcParam("country") String country, @JsonRpcParam("reason") @NotNull AbuseReason reason) throws IOException;
+	
+	AbuseInfo reportAbusiveMedia(@JsonRpcParam("mediaId") @NotNull URI mediaId, @JsonRpcParam("country") String country, @JsonRpcParam("reason") @NotNull AbuseReason reason) throws IOException;
 }

@@ -19,11 +19,13 @@ import org.apache.tapestry5.ioc.services.TypeCoercer;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.GeoAddress;
 import com.bravson.socialalert.common.domain.MediaCategory;
 import com.bravson.socialalert.common.domain.PictureInfo;
 import com.bravson.socialalert.common.domain.UserRole;
 import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.ProfileFacade;
 import com.bravson.socialalert.components.CreateComment;
 import com.bravson.socialalert.components.ListComments;
 import com.bravson.socialalert.services.DisplayState;
@@ -65,6 +67,9 @@ public class PictureDetail {
 	@Inject
     private PictureFacade pictureService;
 	
+	@Inject
+    private ProfileFacade profileService;
+	
 	private String newDescription;
 	
 	public void init(URI pictureUri) {
@@ -81,6 +86,11 @@ public class PictureDetail {
 	
 	Object onRepost(URI pictureUri) throws IOException {
 		pictureService.repostPicture(pictureUri);
+		return this;
+	}
+	
+	Object onReportAbuse(URI pictureUri) throws IOException {
+		profileService.reportAbusiveMedia(pictureUri, "Switzerland", AbuseReason.DISCRIMINATION);
 		return this;
 	}
 	

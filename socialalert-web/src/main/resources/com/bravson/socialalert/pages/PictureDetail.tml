@@ -76,6 +76,7 @@
 					<i class="icon-tag"></i>
 						 -->
 					<t:eventlink t:id="comment" t:context="${pictureUri}"><i class="icon-comment"></i></t:eventlink>
+					<t:eventlink t:id="reportAbuse" t:context="${pictureUri}"><i class="icon-tag"></i></t:eventlink>
 				</p>
 				<a onclick="window.open('${pictureUrl}');">
 					<img src="${previewUrl}" />

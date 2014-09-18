@@ -83,13 +83,13 @@ public class AlertCommentServiceTest extends DataServiceTest {
 	
 	@Test
 	public void getExistingComment() {
-		CommentInfo comment = service.getComment(UUID.fromString("b95472c0-e0e6-11e2-a28f-0800200c9a22"));
+		CommentInfo comment = service.getCommentInfo(UUID.fromString("b95472c0-e0e6-11e2-a28f-0800200c9a22"));
 		assertNotNull(comment);
 		assertEquals("Hello 1", comment.getComment());
 	}
 	
 	@Test(expected=DataMissingException.class)
 	public void getNonExistingComment() {
-		service.getComment(UUID.fromString("095472c0-e0e6-11e2-a28f-0800200c9a22"));
+		service.getCommentInfo(UUID.fromString("095472c0-e0e6-11e2-a28f-0800200c9a22"));
 	}
 }

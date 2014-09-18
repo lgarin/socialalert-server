@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import com.bravson.socialalert.app.domain.ProfileStatisticUpdate;
 import com.bravson.socialalert.app.entities.ApplicationUser;
 import com.bravson.socialalert.app.entities.UserProfile;
+import com.bravson.socialalert.app.services.AbuseReportService;
 import com.bravson.socialalert.app.services.AlertActivityService;
 import com.bravson.socialalert.app.services.AlertCommentService;
 import com.bravson.socialalert.app.services.ApplicationUserService;
@@ -26,6 +27,8 @@ import com.bravson.socialalert.app.services.ProfileLinkService;
 import com.bravson.socialalert.app.services.ProfileStatisticService;
 import com.bravson.socialalert.app.services.UserProfileService;
 import com.bravson.socialalert.app.utilities.SecurityUtils;
+import com.bravson.socialalert.common.domain.AbuseInfo;
+import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
 import com.bravson.socialalert.common.domain.ProfileInfo;
@@ -55,6 +58,9 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	
 	@Resource
 	private ProfileLinkService linkService;
+	
+	@Resource
+	private AbuseReportService abuseService;
 	
 	@Value("${query.max.result}")
 	private int maxPageSize;
@@ -192,5 +198,25 @@ public class ProfileFacadeImpl implements ProfileFacade {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		QueryResult<UUID> profileIds = linkService.getObservedProfiles(user.getProfileId(), 0, maxPageSize);
 		return activityService.getRecentActivityStatistic(profileIds.getContent(), lastCheck);
+	}
+	
+	@Override
+	@PreAuthorize("hasRole('USER')")
+	public AbuseInfo reportAbusiveComment(UUID commentId, String country, AbuseReason reason) {
+		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
+		AbuseInfo result = abuseService.reportAbusiveComment(commentId, user.getProfileId(), country, reason);
+		userService.populateCreators(Collections.singletonList(result));
+		userService.updateOnlineStatus(Collections.singletonList(result));
+		return result;
+	}
+	
+	@Override
+	@PreAuthorize("hasRole('USER')")
+	public AbuseInfo reportAbusiveMedia(URI mediaId, String country, AbuseReason reason) {
+		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
+		AbuseInfo result = abuseService.reportAbusiveMedia(mediaId, user.getProfileId(), country, reason);
+		userService.populateCreators(Collections.singletonList(result));
+		userService.updateOnlineStatus(Collections.singletonList(result));
+		return result;
 	}
 }
