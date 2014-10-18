@@ -40,6 +40,10 @@ public class AbuseReport extends VersionedEntity {
 	@Field
 	private String country;
 	
+	public AbuseReport() {
+		
+	}
+	
 	public AbuseReport(URI mediaUri, UUID profileId, UUID sourceId, String country, AbuseReason reason) {
 		this.abuseId = UUID.randomUUID();
 		this.mediaUri = mediaUri;

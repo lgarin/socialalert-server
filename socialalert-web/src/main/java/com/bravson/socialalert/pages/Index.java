@@ -1,5 +1,6 @@
 package com.bravson.socialalert.pages;
 
+import java.io.IOException;
 import java.util.Date;
 
 import org.apache.tapestry5.SymbolConstants;
@@ -7,11 +8,13 @@ import org.apache.tapestry5.alerts.AlertManager;
 import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.annotations.SetupRender;
 import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.services.Request;
 
+import com.bravson.socialalert.common.facade.ControlFacade;
 import com.bravson.socialalert.common.facade.UserFacade;
 
 /**
@@ -49,6 +52,14 @@ public class Index
     
     @Inject
     private UserFacade userService;
+    
+    @Inject
+    private ControlFacade controlData;
+	
+	@SetupRender
+	void setupRender() throws IOException {
+		controlData.listValidValues("MediaCategory");
+	}
 
     public Date getCurrentTime()
     {
