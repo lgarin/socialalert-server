@@ -56,7 +56,7 @@ public class AlertActivityServiceTest extends DataServiceTest {
 	@Test
 	public void searchActivity() {
 		UUID profileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
-		QueryResult<ActivityInfo> result = service.searchActivityBySourceProfileId(profileId, 0, 10);
+		QueryResult<ActivityInfo> result = service.searchActivityBySourceProfileId(Collections.singletonList(profileId), 0, 10);
 		assertNotNull(result);
 		assertEquals(3, result.getContent().size());
 		assertTrue(result.getContent().get(0).getTimestamp().isAfter(result.getContent().get(1).getTimestamp()));

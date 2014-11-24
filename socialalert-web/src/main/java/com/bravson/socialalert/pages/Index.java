@@ -53,12 +53,9 @@ public class Index
     @Inject
     private UserFacade userService;
     
-    @Inject
-    private ControlFacade controlData;
-	
 	@SetupRender
 	void setupRender() throws IOException {
-		controlData.listValidValues("MediaCategory");
+		userService.getCurrentUser();
 	}
 
     public Date getCurrentTime()

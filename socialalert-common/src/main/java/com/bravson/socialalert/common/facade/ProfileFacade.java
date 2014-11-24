@@ -37,6 +37,8 @@ public interface ProfileFacade {
 	
 	QueryResult<ActivityInfo> getProfileActivity(@JsonRpcParam("profileId") @NotNull UUID profileId, @JsonRpcParam("pageNumber") @Min(0) int pageNumber, @JsonRpcParam("pageSize") @Min(1) int pageSize) throws IOException;
 	
+	QueryResult<ActivityInfo> getNetworkedProfileActivity(@JsonRpcParam("profileId") @NotNull UUID profileId, @JsonRpcParam("pageNumber") @Min(0) int pageNumber, @JsonRpcParam("pageSize") @Min(1) int pageSize) throws IOException;
+	
 	ProfileStatisticInfo getUserProfile(@JsonRpcParam("profileId") @NotNull UUID profileId) throws IOException;
 	
 	QueryResult<PublicProfileInfo> getFollowedProfiles(@JsonRpcParam("pageNumber") @Min(0) int pageNumber, @JsonRpcParam("pageSize") @Min(1) int pageSize) throws IOException;

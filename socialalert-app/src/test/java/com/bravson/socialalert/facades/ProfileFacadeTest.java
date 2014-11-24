@@ -149,6 +149,19 @@ public class ProfileFacadeTest extends DataServiceTest {
 		assertEquals(3, list.size());
 	}
 	
+	@Test
+	public void getNetworkedProfileActivity() throws IOException {
+		userFacade.login("unverified@test.com", "123");
+		UUID profileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
+		QueryResult<ActivityInfo> result = profileFacade.getNetworkedProfileActivity(profileId, 0, 10);
+		assertNotNull(result);
+		assertEquals(0, result.getPageNumber());
+		assertEquals(1, result.getPageCount());
+		List<ActivityInfo> list = result.getContent();
+		assertNotNull(list);
+		assertEquals(3, list.size());
+	}
+	
 	 // TODO add tests for claimProfilePicture
 	
 	@Test
@@ -179,6 +192,12 @@ public class ProfileFacadeTest extends DataServiceTest {
 	 public void follow() throws IOException {
 		 userFacade.login("lucien@test.com", "123");
 		 assertFalse(profileFacade.follow(UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593")));
+	 }
+	 
+	 @Test(expected=DataMissingException.class)
+	 public void followNonExistingProfile() throws IOException {
+		 userFacade.login("lucien@test.com", "123");
+		 profileFacade.follow(UUID.fromString("99d166ae-9b3f-4405-be0d-fa1567728593"));
 	 }
 	 
 	 @Test

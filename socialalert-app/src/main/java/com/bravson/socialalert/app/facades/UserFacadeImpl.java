@@ -120,6 +120,12 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 	}
 	
 	@Override
+	public UserInfo getCurrentUser() {
+		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
+		return user != null ? user.toUserInfo() : null;
+	}
+	
+	@Override
 	public URL beginOpenIdLogin(URL providerUrl, URL redirectUrl) {
 		return openIdService.beginOpenIdConsumption(providerUrl, redirectUrl);
 	}

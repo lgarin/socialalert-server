@@ -22,6 +22,8 @@ public interface UserFacade {
 	
 	UserInfo login(@JsonRpcParam("email") @NotBlank String username, @JsonRpcParam("password") @NotBlank String password) throws IOException;
 
+	UserInfo getCurrentUser() throws IOException;
+	
 	URL beginOpenIdLogin(@JsonRpcParam("providerUrl") @NotNull URL providerUrl, @JsonRpcParam("redirectUrl") @NotNull URL redirectUrl) throws IOException;
 	
 	UserInfo completeOpenIdLogin(@JsonRpcParam("receivingUrl") @NotNull URL receivingUrl) throws IOException;

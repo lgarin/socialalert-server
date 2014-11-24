@@ -59,8 +59,8 @@ public class AlertActivityServiceImpl implements AlertActivityService {
 	}
 	
 	@Override
-	public QueryResult<ActivityInfo> searchActivityBySourceProfileId(UUID profileId, int pageNumber, int pageSize) {
-		return toQueryResult(activityRepository.findBySourceId(profileId, createPageRequest(pageNumber, pageSize)));
+	public QueryResult<ActivityInfo> searchActivityBySourceProfileId(List<UUID> profileIdList, int pageNumber, int pageSize) {
+		return toQueryResult(activityRepository.findBySourceIdList(profileIdList, createPageRequest(pageNumber, pageSize)));
 	}
 	
 	@Override

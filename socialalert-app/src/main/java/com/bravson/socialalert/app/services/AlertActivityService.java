@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.springframework.validation.annotation.Validated;
 
@@ -20,7 +21,7 @@ public interface AlertActivityService {
 
 	public ActivityInfo addActivity(@NotNull URI mediaUri, @NotNull UUID profileId, @NotNull ActivityType activityType, UUID commentId);
 
-	public QueryResult<ActivityInfo> searchActivityBySourceProfileId(@NotNull UUID profileId, @Min(0) int pageNumber, @Min(1) int pageSize);
+	public QueryResult<ActivityInfo> searchActivityBySourceProfileId(@NotEmpty List<UUID> profileIdList, @Min(0) int pageNumber, @Min(1) int pageSize);
 	
 	public List<ActivityCount> getRecentActivityStatistic(@NotNull List<UUID> profileIdList, @NotNull DateTime lastCheck); 
 }

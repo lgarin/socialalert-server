@@ -75,7 +75,7 @@ public class UserHome {
 			statisticInfo = profileService.getUserProfile(userInfo.getProfileId());
 			followedProfiles = profileService.getFollowedProfiles(0, 10).getContent();
 			followerProfiles = profileService.getFollowerProfiles(0, 10).getContent();
-			pictureService.searchPicturesInCategory(null, null, null, null, 360 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
+			profileService.getNetworkedProfileActivity(userInfo.getProfileId(), 0, 10);
 		} else {
 			userPictures = null;
 			statisticInfo = new ProfileStatisticInfo();

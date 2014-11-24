@@ -17,8 +17,8 @@ public interface AlertActivityRepository extends CustomBaseRepository<AlertActiv
 
 	public static final int MAX_FACET_RESULTS = 1000;
 	
-	@Query(value="*:*", filters={"sourceId: ?0"})
-	Page<AlertActivity> findBySourceId(UUID sourceId, Pageable pageable);
+	@Query(value="*:*", filters={"sourceId:(?0)"})
+	Page<AlertActivity> findBySourceIdList(List<UUID> sourceIdList, Pageable pageable);
 	
 	@Facet(fields={"activityType"}, limit=MAX_FACET_RESULTS, minCount=1)
 	@Query(value="*:*", filters={"creation:[?0 TO *]", "sourceId:(?1)"})

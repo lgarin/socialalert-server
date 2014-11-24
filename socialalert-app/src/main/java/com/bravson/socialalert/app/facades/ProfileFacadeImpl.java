@@ -64,6 +64,9 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	
 	@Value("${query.max.result}")
 	private int maxPageSize;
+	
+	@Value("${profile.max.follow}")
+	private int maxFollowCount;
 
 	@Override
 	@PreAuthorize("hasRole('USER')")
@@ -96,7 +99,18 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	
 	@Override
 	public QueryResult<ActivityInfo> getProfileActivity(UUID profileId, int pageNumber, int pageSize) {
-		QueryResult<ActivityInfo> items = activityService.searchActivityBySourceProfileId(profileId, pageNumber, pageSize);
+		QueryResult<ActivityInfo> items = activityService.searchActivityBySourceProfileId(Collections.singletonList(profileId), pageNumber, pageSize);
+		userService.populateCreators(items.getContent());
+		commentService.populateComments(items.getContent());
+		userService.updateOnlineStatus(items.getContent());
+		return items;
+	}
+	
+	public QueryResult<ActivityInfo> getNetworkedProfileActivity(UUID profileId, int pageNumber, int pageSize) {
+		List<UUID> profileIds = new ArrayList<>(maxFollowCount + 1);
+		profileIds.add(profileId);
+		profileIds.addAll(linkService.getObservedProfiles(profileId, 0, maxFollowCount).getContent());
+		QueryResult<ActivityInfo> items = activityService.searchActivityBySourceProfileId(profileIds, pageNumber, pageSize);
 		userService.populateCreators(items.getContent());
 		commentService.populateComments(items.getContent());
 		userService.updateOnlineStatus(items.getContent());
@@ -147,6 +161,11 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	@PreAuthorize("hasRole('USER')")
 	public boolean follow(UUID profileId) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
+		profileService.getProfileById(profileId);
+		ProfileStatisticInfo statistic = statisticService.getProfileStatistic(user.getProfileId());
+		if (statistic.getFollowerCount() >= maxFollowCount) {
+			return false;
+		}
 		boolean result = linkService.addObservedProfile(user.getProfileId(), profileId);
 		if (result) {
 			statisticService.updateProfileStatistic(profileId, ProfileStatisticUpdate.INCREMENT_FOLLOWER_COUNT);
