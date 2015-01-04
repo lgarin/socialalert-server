@@ -159,7 +159,7 @@ public class ProfileFacadeTest extends DataServiceTest {
 		assertEquals(1, result.getPageCount());
 		List<ActivityInfo> list = result.getContent();
 		assertNotNull(list);
-		assertEquals(3, list.size());
+		assertEquals(4, list.size());
 	}
 	
 	 // TODO add tests for claimProfilePicture

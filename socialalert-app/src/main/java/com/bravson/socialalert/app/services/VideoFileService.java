@@ -8,16 +8,13 @@ import javax.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import com.bravson.socialalert.app.domain.VideoMetadata;
-import com.drew.imaging.jpeg.JpegProcessingException;
 
 @Validated
 public interface VideoFileService {
 
-	public File createJpegThumbnail(@NotNull File sourceFile) throws IOException;
+	public File createThumbnail(@NotNull File sourceFile) throws IOException;
 	
-	public File createJpegPreview(@NotNull File sourceFile) throws IOException;
+	public File createPreview(@NotNull File sourceFile) throws IOException;
 	
-	public File createJpegImage(@NotNull File sourceFile) throws IOException;
-
-	public VideoMetadata parseMp4Metadata(@NotNull File sourceFile) throws IOException;
+	public VideoMetadata parseMetadata(@NotNull File sourceFile) throws IOException;
 }

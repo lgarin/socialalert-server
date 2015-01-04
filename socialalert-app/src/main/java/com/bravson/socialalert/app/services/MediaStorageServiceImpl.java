@@ -11,10 +11,9 @@ import java.net.URLConnection;
 
 import javax.annotation.Resource;
 
-import net.coobird.thumbnailator.tasks.UnsupportedFormatException;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.exceptions.SystemExeption;
-import com.drew.imaging.jpeg.JpegProcessingException;
 
 @Service
 public class MediaStorageServiceImpl implements MediaStorageService {
@@ -47,33 +45,56 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 	@Resource
 	private PictureFileService pictureFileService;
 	
+	@Resource
+	private VideoFileService videoFileService;
+	
 	// TODO authorization should be done at the servlet level
 	@PreAuthorize("hasRole('USER')")
 	@Override
 	public URI storePicture(InputStream inputStream, int contentLength) throws IOException {
 		
+		File outputFile = storeMedia(inputStream, contentLength, "jpg");
+		
+		try {
+			pictureFileService.parseJpegMetadata(outputFile);
+		} catch (Exception e) {
+			throw new HttpClientErrorException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
+		}
+		
+		return URI.create(outputFile.getName());
+	}
+	
+	@PreAuthorize("hasRole('USER')")
+	@Override
+	public URI storeVideo(InputStream inputStream, int contentLength) throws IOException {
+		
+		File outputFile = storeMedia(inputStream, contentLength, "avi");
+		
+		try {
+			videoFileService.parseMetadata(outputFile);
+		} catch (Exception e) {
+			throw new HttpClientErrorException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
+		}
+		
+		return URI.create(outputFile.getName());
+	}
+
+	private File storeMedia(InputStream inputStream, int contentLength, String extension) throws IOException, FileNotFoundException {
 		if (contentLength < 0) {
 			throw new HttpClientErrorException(HttpStatus.LENGTH_REQUIRED, "Content-Length must be specified");
 		} else if (contentLength > maxSize) {
 			throw new HttpClientErrorException(HttpStatus.REQUEST_ENTITY_TOO_LARGE, "Maximum upload size exceeded");
 		}
 		
-		File tempFile = createTemporaryFile(inputStream, ".jpg");
+		File tempFile = createTemporaryFile(inputStream, FilenameUtils.EXTENSION_SEPARATOR_STR + extension);
 		String hash = computeHash(tempFile);
 		
-		File outputFile = new File(tempDir, hash + ".jpg");
+		File outputFile = new File(tempDir, hash + FilenameUtils.EXTENSION_SEPARATOR_STR + extension);
 		if (outputFile.isFile()) {
 			outputFile.delete();
 		}
 		tempFile.renameTo(outputFile);
-		
-		try {
-			pictureFileService.parseJpegMetadata(outputFile);
-		} catch (JpegProcessingException|UnsupportedFormatException e) {
-			throw new HttpClientErrorException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
-		}
-		
-		return URI.create(outputFile.getName());
+		return outputFile;
 	}
 	
 	@Override
@@ -99,11 +120,15 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 	
 	@Override
 	public File resolveMediaUri(URI uri) {
-		File finalFile = new File(baseDir, uri.getPath());
+		return resolveMediaPath(uri.getPath());
+	}
+	
+	private File resolveMediaPath(String path) {
+		File finalFile = new File(baseDir, path);
 		if (finalFile.canRead()) {
 			return finalFile;
 		}
-		File tempFile = new File(tempDir, uri.getPath());
+		File tempFile = new File(tempDir, path);
 		if (tempFile.canRead()) {
 			return tempFile;
 		}
@@ -114,34 +139,51 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 		return null;
 	}
 	
+	
 	@Override
 	public File resolveThumbnailUri(URI uri) throws IOException {
-		File mediaFile = resolveMediaUri(uri);
+		File mediaFile = resolveMediaPath(uri.getPath());
 		if (mediaFile == null) {
 			return null;
 		}
-		File thumbnail = new File(mediaFile.getParentFile(), thumbnailPrefix + mediaFile.getName());
+		File thumbnail = new File(mediaFile.getParentFile(), thumbnailPrefix + changeExtension(mediaFile.getName(), "jpg"));
 		if (thumbnail.canRead()) {
 			return thumbnail;
 		}
-		return pictureFileService.createJpegThumbnail(mediaFile);
+		if (mediaFile.getName().endsWith("jpg")) {
+			return pictureFileService.createJpegThumbnail(mediaFile);
+		} else if (mediaFile.getName().endsWith("avi")) {
+			return videoFileService.createThumbnail(mediaFile);
+		} else {
+			return null;
+		}
 	}
 	
 	@Override
 	public File resolvePreviewUri(URI uri) throws IOException {
-		File mediaFile = resolveMediaUri(uri);
+		File mediaFile = resolveMediaPath(uri.getPath());
 		if (mediaFile == null) {
 			return null;
 		}
-		File thumbnail = new File(mediaFile.getParentFile(), previewPrefix + mediaFile.getName());
+		File thumbnail = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), "jpg"));
 		if (thumbnail.canRead()) {
 			return thumbnail;
 		}
-		return pictureFileService.createJpegPreview(mediaFile);
+		if (mediaFile.getName().endsWith("jpg")) {
+			return pictureFileService.createJpegPreview(mediaFile);
+		} else if (mediaFile.getName().endsWith("avi")) {
+			return videoFileService.createPreview(mediaFile);
+		} else {
+			return null;
+		}
 	}
 	
 	public URI buildFinalMediaUri(URI tempUri, DateTime claimDate) {
 		return URI.create(claimDate.toString("yyyyMMdd") + "/" + tempUri.getPath());
+	}
+	
+	private String changeExtension(String filename, String newExtension) {
+		return FilenameUtils.removeExtension(filename) + FilenameUtils.EXTENSION_SEPARATOR_STR + newExtension;
 	}
 	
 	public URI archiveMedia(URI tempUri, URI finalUri) {
@@ -149,8 +191,8 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 		if (!tempFile.isFile()) {
 			throw new DataMissingException("The media " + tempUri + " does not exists");
 		}
-		File thumbFile = new File(tempDir, thumbnailPrefix + tempUri.getPath());
-		File previewFile = new File(tempDir, previewPrefix + tempUri.getPath());
+		File thumbFile = new File(tempDir, thumbnailPrefix + changeExtension(tempUri.getPath(), "jpg"));
+		File previewFile = new File(tempDir, previewPrefix + changeExtension(tempUri.getPath(), "jpg"));
 	
 		File destFile = new File(baseDir, finalUri.getPath());
 		File destDir = destFile.getParentFile();
@@ -161,10 +203,10 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 			}
 			FileUtils.moveFile(tempFile, destFile);
 			if (thumbFile.isFile()) {
-				FileUtils.moveFile(thumbFile, new File(destDir, thumbnailPrefix + destFile.getName()));
+				FileUtils.moveToDirectory(thumbFile, destDir, false);
 			}
 			if (previewFile.isFile()) {
-				FileUtils.moveFile(previewFile, new File(destDir, previewPrefix + destFile.getName()));
+				FileUtils.moveToDirectory(previewFile, destDir, false);
 			}
 		} catch (IOException e) {
 			throw new SystemExeption("Cannot move temp file " + tempUri + " to " + destDir, e);
@@ -187,12 +229,12 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 			throw new SystemExeption("Cannot delete media file " + mediaFile);
 		}
 		
-		File thumbFile = new File(mediaFile.getParentFile(), thumbnailPrefix + mediaFile.getName());
+		File thumbFile = new File(mediaFile.getParentFile(), thumbnailPrefix + changeExtension(mediaFile.getName(), "jpg"));
 		if (thumbFile != null && thumbFile.canWrite() && !FileUtils.deleteQuietly(thumbFile)) {
 			throw new SystemExeption("Cannot delete thumbnail file " + thumbFile);
 		}
 		
-		File previewFile = new File(mediaFile.getParentFile(), previewPrefix + mediaFile.getName());
+		File previewFile = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), "jpg"));
 		if (previewFile != null && previewFile.canWrite() && !FileUtils.deleteQuietly(previewFile)) {
 			throw new SystemExeption("Cannot delete preview file " + previewFile);
 		}
