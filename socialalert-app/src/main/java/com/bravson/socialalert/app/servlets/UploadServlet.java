@@ -23,7 +23,7 @@ import com.bravson.socialalert.app.services.MediaStorageService;
 @Component
 public class UploadServlet implements HttpRequestHandler {
 	
-	//private static final String MP4_MEDIA_TYPE = "video/mp4";
+	private static final String MP4_MEDIA_TYPE = "video/mp4";
 	private static final String JPG_MEDIA_TYPE = MediaType.IMAGE_JPEG_VALUE;
 	
 	@Resource
@@ -38,6 +38,12 @@ public class UploadServlet implements HttpRequestHandler {
 		try {
 			if (JPG_MEDIA_TYPE.equals(request.getContentType())) {
 				URI uri = storageService.storePicture(request.getInputStream(), request.getContentLength());
+				request.getInputStream().close();
+				// TODO absolute path?
+				response.setHeader("Location", uri.getPath());
+				response.setStatus(HttpStatus.CREATED.value());
+			} else if (MP4_MEDIA_TYPE.equals(request.getContentType())) {
+				URI uri = storageService.storeVideo(request.getInputStream(), request.getContentLength());
 				request.getInputStream().close();
 				// TODO absolute path?
 				response.setHeader("Location", uri.getPath());

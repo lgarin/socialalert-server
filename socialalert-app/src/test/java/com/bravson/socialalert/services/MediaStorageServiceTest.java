@@ -362,4 +362,43 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 		URI tempUri = service.storePicture(FileUtils.openInputStream(file), (int) file.length());
 		service.deleteMedia(tempUri);
 	}
+	
+	@Test
+	public void storeValidVideo() throws IOException {
+		File file = new File("src/test/resources/media/msmpeg4.avi");
+		URI uri = service.storeVideo(FileUtils.openInputStream(file), (int) file.length());
+		assertNotNull(uri);
+		assertEquals("431d9a264140516a042d7019726ab3c8.avi", uri.getPath());
+		File outputFile = new File(tempDir, uri.getPath());
+		assertTrue(outputFile.exists());
+		assertTrue(FileUtils.contentEquals(file, outputFile));
+	}
+	
+	@Test
+	public void archiveVideoFile() throws IOException {
+		File file = new File("src/test/resources/media/msmpeg4.avi");
+		URI tempUri = service.storeVideo(FileUtils.openInputStream(file), (int) file.length());
+		DateTime claimDate = new DateTime(2015, 1, 7, 0, 0, 0);
+		URI finalUri = service.buildFinalMediaUri(tempUri, claimDate);
+		URI finalUri2 = service.archiveMedia(tempUri, finalUri);
+		assertEquals(finalUri, finalUri2);
+		File finalFile = service.resolveMediaUri(finalUri);
+		assertNotNull(finalFile);
+		assertTrue(FileUtils.contentEquals(file, finalFile));
+	}
+	
+	@Test
+	public void resolveArchivedVideoThumbnail() throws IOException {
+		File file = new File("src/test/resources/media/msmpeg4.avi");
+		URI tempUri = service.storeVideo(FileUtils.openInputStream(file), (int) file.length());
+		DateTime claimDate = new DateTime(2015, 1, 7, 0, 0, 0);
+		URI finalUri = service.buildFinalMediaUri(tempUri, claimDate);
+		URI finalUri2 = service.archiveMedia(tempUri, finalUri);
+		assertEquals(finalUri, finalUri2);
+		File resolvedFile = service.resolveThumbnailUri(finalUri2);
+		assertNotNull(resolvedFile);
+		assertTrue(resolvedFile.getName().endsWith(".jpg"));
+		assertTrue(resolvedFile.getName().startsWith("thumb-"));
+		assertTrue(FileUtils.contentEquals(new File("src/test/resources/media/msmpeg4.jpg"), resolvedFile));
+	}
 }

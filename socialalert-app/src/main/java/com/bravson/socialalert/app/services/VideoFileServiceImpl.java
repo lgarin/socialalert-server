@@ -20,6 +20,7 @@ import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.mediatool.event.IVideoPictureEvent;
 import com.xuggle.xuggler.ICodec.Type;
 import com.xuggle.xuggler.IContainer;
+import com.xuggle.xuggler.IError;
 import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
 
@@ -48,6 +49,9 @@ public class VideoFileServiceImpl implements VideoFileService {
 	private long snapshotDelay;
 
 	private File createSnapshot(File sourceFile, String prefix, final int height, final int width) throws IOException {
+		if (!sourceFile.canRead()) {
+			throw new IOException("Cannot read file " + sourceFile);
+		}
 		 final File outputFile = new File(sourceFile.getParent(), prefix + FilenameUtils.getBaseName(sourceFile.getName()) + ".jpg");
          
 		 IMediaReader reader = ToolFactory.makeReader(sourceFile.getPath());
@@ -55,21 +59,25 @@ public class VideoFileServiceImpl implements VideoFileService {
 			 final AtomicBoolean pictureTaken = new AtomicBoolean();
 			 final AtomicReference<IOException> exceptionReceived = new AtomicReference<>();
 			 reader.open();
+			 /*
 			 IStream stream = findVideoStream(reader.getContainer());
 			 reader.getContainer().seekKeyFrame(stream.getIndex(), snapshotDelay, snapshotDelay, snapshotDelay * 2L, 0);
+			 */
 		     reader.setBufferedImageTypeToGenerate(BufferedImage.TYPE_3BYTE_BGR);
 		     reader.addListener(new MediaListenerAdapter() {
 		    	 @Override
 		    	public void onVideoPicture(IVideoPictureEvent event) {
-		    		pictureTaken.set(true);
+		    		 
 		    		try {
 		    			Thumbnails.of(event.getImage()).size(width, height).outputFormat("jpg").toFile(outputFile);
+		    			pictureTaken.set(true);
 					} catch (IOException e) {
 						exceptionReceived.set(e);
 					}
 		    	}
 		     });
-		     while (reader.readPacket() == null) {
+		     IError error = null;
+		     while ((error = reader.readPacket()) == null) {
 		    	if (exceptionReceived.get() != null) {
 		    		throw exceptionReceived.get();
 		    	}
@@ -77,7 +85,10 @@ public class VideoFileServiceImpl implements VideoFileService {
 	            	return outputFile;
 	            }
 	         }
-		     return outputFile;
+		     if (error != null) {
+		    	 throw new IOException(error.getDescription() + ":" + error.getErrorNumber());
+		     }
+		     return null;
 		 } finally {
 			 reader.close();
 		 }

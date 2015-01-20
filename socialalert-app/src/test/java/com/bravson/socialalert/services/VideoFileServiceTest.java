@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.joda.time.Duration;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,17 +30,21 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 	
 	@Before
 	public void cleanTempDir() throws IOException {
-		//FileUtils.cleanDirectory(tempDir);
+		FileUtils.cleanDirectory(tempDir);
 	}
 	
 	@Test
 	public void testSnapshot() throws IOException {
-		service.createPreview(new File("src/test/resources/media/msmpeg4.avi"));
+		File file = service.createPreview(new File("src/test/resources/media/msmpeg4.avi"));
+		assertNotNull(file);
+		assertEquals(new File("src/test/resources/media/preview-msmpeg4.jpg"), file);
 	}
 	
 	@Test
 	public void testThumbnail() throws IOException {
-		service.createThumbnail(new File("src/test/resources/media/msmpeg4.avi"));
+		File file = service.createThumbnail(new File("src/test/resources/media/msmpeg4.avi"));
+		assertNotNull(file);
+		assertEquals(new File("src/test/resources/media/thumb-msmpeg4.jpg"), file);
 	}
 	
 	@Test(expected=RuntimeException.class)
