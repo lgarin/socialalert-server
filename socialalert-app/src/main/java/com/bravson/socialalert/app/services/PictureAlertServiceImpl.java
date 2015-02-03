@@ -136,7 +136,7 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 	public QueryResult<PictureInfo> searchPictures(GeoArea area, String keywords, long maxAge, int pageNumber, int pageSize) {
 		keywords = SolrUtils.escapeSolrCharacters(keywords);
 		PageRequest pageRequest = createPageRequest(pageNumber, pageSize, null);
-		if (area != null && keywords != null) {
+		if (area != null && StringUtils.isNotBlank(keywords)) {
 			Point location = new Point(area.getLatitude(), area.getLongitude());
 			Distance maxDistance = new Distance(area.getRadius());
 			return toQueryResult(pictureRepository.findWithinAreaWithKeywords(location, maxDistance, keywords, maxAge / DateUtils.MILLIS_PER_MINUTE,  pageRequest));
@@ -144,7 +144,7 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 			Point location = new Point(area.getLatitude(), area.getLongitude());
 			Distance maxDistance = new Distance(area.getRadius());
 			return toQueryResult(pictureRepository.findWithinArea(location, maxDistance, maxAge / DateUtils.MILLIS_PER_MINUTE, pageRequest));
-		} else if (keywords != null) {
+		} else if (StringUtils.isNotBlank(keywords)) {
 			return toQueryResult(pictureRepository.findWithKeywords(keywords, maxAge / DateUtils.MILLIS_PER_MINUTE, pageRequest));
 		} else {
 			return toQueryResult(pictureRepository.findRecent(maxAge / DateUtils.MILLIS_PER_MINUTE, pageRequest));
@@ -155,7 +155,7 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 	public QueryResult<PictureInfo> searchPicturesInCategory(GeoArea area, String keywords, long maxAge, String category, int pageNumber, int pageSize) {
 		keywords = SolrUtils.escapeSolrCharacters(keywords);
 		PageRequest pageRequest = createPageRequest(pageNumber, pageSize, null);
-		if (area != null && keywords != null) {
+		if (area != null && StringUtils.isNotBlank(keywords)) {
 			Point location = new Point(area.getLatitude(), area.getLongitude());
 			Distance maxDistance = new Distance(area.getRadius());
 			// TODO by category
@@ -165,7 +165,7 @@ public class PictureAlertServiceImpl implements PictureAlertService {
 			Distance maxDistance = new Distance(area.getRadius());
 			// TODO by category
 			return toQueryResult(pictureRepository.findWithinAreaByCategory(location, maxDistance, maxAge / DateUtils.MILLIS_PER_MINUTE, category, pageRequest));
-		} else if (keywords != null) {
+		} else if (StringUtils.isNotBlank(keywords)) {
 			return toQueryResult(pictureRepository.findWithKeywordsByCategory(keywords, maxAge / DateUtils.MILLIS_PER_MINUTE, category, pageRequest));
 		} else {
 			return toQueryResult(pictureRepository.findRecentByCategory(maxAge / DateUtils.MILLIS_PER_MINUTE, category, pageRequest));
