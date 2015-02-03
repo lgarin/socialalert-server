@@ -28,6 +28,7 @@
 
 		<plugins>
 			<!-- Run the application using "mvn jetty:run" -->
+			<!-- 
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
@@ -42,8 +43,6 @@
 							<value>true</value>
 						</systemProperty>
 					</systemProperties>
-
-					<!-- Log to the console. -->
 					<requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
 						<append>true</append>
 					</requestLog>
@@ -54,6 +53,7 @@
 					</connectors>
 				</configuration>
 			</plugin>
+			 -->
 		</plugins>
 	</build>
 	<profiles>

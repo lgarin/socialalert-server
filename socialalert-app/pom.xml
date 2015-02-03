@@ -128,12 +128,14 @@
 		   <groupId>xuggle</groupId>
 		   <artifactId>xuggle-xuggler</artifactId>
 		   <version>5.4</version>
-		  </dependency>
+		</dependency>
+		<!-- 
 		<dependency>
 	      <groupId>io.humble</groupId>
 	      <artifactId>humble-video-all</artifactId>
 	      <version>0.2.1</version>
 	    </dependency>
+	     -->
 		<dependency>
     		<groupId>com.google.code.geocoder-java</groupId>
     		<artifactId>geocoder-java</artifactId>
@@ -160,11 +162,11 @@
 		<finalName>socialalert-app</finalName>
 		<plugins>
 			<!-- Run the application using "mvn jetty:run" -->
+			<!-- 
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<configuration>
-					<!-- Log to the console. -->
 					<requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
 						<append>true</append>
 					</requestLog>
@@ -175,6 +177,7 @@
 					</connectors>
 				</configuration>
 			</plugin>
+			-->
 		</plugins>
 	</build>
 	<profiles>
