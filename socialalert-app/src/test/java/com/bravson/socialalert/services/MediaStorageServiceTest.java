@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -388,6 +389,7 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 	}
 	
 	@Test
+	@Ignore
 	public void resolveArchivedVideoThumbnail() throws IOException {
 		File file = new File("src/test/resources/media/msmpeg4.avi");
 		URI tempUri = service.storeVideo(FileUtils.openInputStream(file), (int) file.length());

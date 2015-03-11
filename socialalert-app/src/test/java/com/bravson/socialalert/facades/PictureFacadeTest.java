@@ -367,7 +367,7 @@ public class PictureFacadeTest extends DataServiceTest {
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.2);
 		assertEquals(7.8, stat.getLongitude(), 0.2);
-		assertEquals(4.9, stat.getRadius(), 0.1);
+		assertEquals(2.4, stat.getRadius(), 0.1);
 	}
 	
 	@Test
@@ -380,7 +380,7 @@ public class PictureFacadeTest extends DataServiceTest {
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.2);
 		assertEquals(7.8, stat.getLongitude(), 0.2);
-		assertEquals(4.9, stat.getRadius(), 0.1);
+		assertEquals(2.4, stat.getRadius(), 0.1);
 	}
 	
 	@Test

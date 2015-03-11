@@ -530,7 +530,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.1);
 		assertEquals(7.9, stat.getLongitude(), 0.1);
-		assertEquals(4.9, stat.getRadius(), 0.1);
+		assertEquals(2.4, stat.getRadius(), 0.1);
 	}
 	
 	@Test
@@ -543,7 +543,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.1);
 		assertEquals(7.9, stat.getLongitude(), 0.1);
-		assertEquals(4.9, stat.getRadius(), 0.1);
+		assertEquals(2.4, stat.getRadius(), 0.1);
 	}
 	
 	@Test
@@ -556,7 +556,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 		assertEquals(1, stat.getCount());
 		assertEquals(46.7, stat.getLatitude(), 0.1);
 		assertEquals(7.9, stat.getLongitude(), 0.1);
-		assertEquals(4.9, stat.getRadius(), 0.1);
+		assertEquals(2.4, stat.getRadius(), 0.1);
 	}
 	
 	@Test
@@ -569,7 +569,7 @@ public class PictureAlertServiceTest extends DataServiceTest {
 		assertEquals(1, stat.getCount());
 		assertEquals(47.8, stat.getLatitude(), 0.1);
 		assertEquals(5.6, stat.getLongitude(), 0.1);
-		assertEquals(1250.9, stat.getRadius(), 0.1);
+		assertEquals(469.1, stat.getRadius(), 0.1);
 	}
 	
 	@Test
