@@ -20,7 +20,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<!-- Marshaller -->
-	<oxm:jaxb2-marshaller id="marshaller" contextPath="com.bravson.socialalert.app.domain"/>
+	<oxm:jaxb2-marshaller id="marshaller" context-path="com.bravson.socialalert.app.domain"/>
 
 	<!-- Transaction -->
     <bean id="transactionManager" class="com.bravson.socialalert.app.infrastructure.LocalTransactionManager" >
