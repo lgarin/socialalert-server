@@ -4,8 +4,8 @@
 	<artifactId>socialalert-app</artifactId>
 	<name>Social Alert App</name>
 	<properties>
-		<spring-release-version>3.2.10.RELEASE</spring-release-version>
-		<spring-security-version>3.2.4.RELEASE</spring-security-version>
+		<spring-release-version>4.1.4.RELEASE</spring-release-version>
+		<spring-security-version>4.0.0.RELEASE</spring-security-version>
 		<solr-release-version>4.9.0</solr-release-version>
 		<spring-solr-version>1.2.2.RELEASE</spring-solr-version>
 	</properties>
@@ -124,18 +124,11 @@
 		  	</exclusion>
 		  </exclusions>
 		</dependency>
-		  <dependency>
-		   <groupId>xuggle</groupId>
-		   <artifactId>xuggle-xuggler</artifactId>
-		   <version>5.4</version>
-		</dependency>
-		<!-- 
 		<dependency>
 	      <groupId>io.humble</groupId>
 	      <artifactId>humble-video-all</artifactId>
 	      <version>0.2.1</version>
 	    </dependency>
-	     -->
 		<dependency>
     		<groupId>com.google.code.geocoder-java</groupId>
     		<artifactId>geocoder-java</artifactId>
