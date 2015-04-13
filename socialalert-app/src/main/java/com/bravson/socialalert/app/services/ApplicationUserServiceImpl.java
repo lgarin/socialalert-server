@@ -3,8 +3,8 @@ package com.bravson.socialalert.app.services;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -14,9 +14,8 @@ import javax.validation.ValidationException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.solr.core.query.Criteria;
+import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.session.SessionRegistry;
@@ -54,6 +53,9 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
 	@Resource
 	private SessionRegistry sessionRegistry;
 	
+	@Resource
+	private SolrTemplate solrTemplate;
+	
 	@Value("${user.unlock.delay}")
 	private long unlockDelay;
 	
@@ -64,7 +66,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
 	@Transactional(rollbackFor={Throwable.class})
 	public int unlockPageOfUsers(int pageSize) {
 		int count = 0;
-		List<ApplicationUser> users = userRepository.findByState(UserState.LOCKED, unlockDelay, new PageRequest(0, pageSize));
+		Collection<ApplicationUser> users = userRepository.findByState(UserState.LOCKED, unlockDelay, new PageRequest(0, pageSize));
 		users = userRepository.lockAll(users);
 		for (ApplicationUser user : users) {
 			count++;
@@ -246,19 +248,15 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
 		if (!NICKNAME_PATTERN.matcher(baseNickname).matches()) {
 			throw new ValidationException("The nickname must be alphanumeric");
 		}
-		Criteria query = new Criteria("nickname").startsWith(baseNickname);
-		PageRequest request = new PageRequest(0, pageSize);
-		Page<String> page = userRepository.querySingleField(query, "nickname", String.class, request);
-		if (page.getNumberOfElements() == 0) {
+		
+		Set<String> existingNicknames = userRepository.queryForTerms("nickname", baseNickname, pageSize);
+		if (existingNicknames.isEmpty()) {
 			return baseNickname;
 		}
-		if (page.getTotalPages() > 1) {
-			throw new NonUniqueException("The nickname " + baseNickname + " is used too frequently");
-		}
-		HashSet<String> nicknameSet = new HashSet<>(page.getContent());
+		
 		for (int i = 1; i <= pageSize; i++) {
 			String nickname = baseNickname + String.valueOf(i);
-			if (!nicknameSet.contains(nickname)) {
+			if (!existingNicknames.contains(nickname)) {
 				return nickname;
 			}
 		}

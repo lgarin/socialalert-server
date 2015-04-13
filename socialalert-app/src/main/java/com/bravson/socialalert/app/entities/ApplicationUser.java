@@ -116,7 +116,7 @@ public class ApplicationUser extends VersionedEntity implements UserDetails {
 	}
 
 	private static GrantedAuthority toAuthority(UserRole role) {
-		return new SimpleGrantedAuthority(role.name());
+		return new SimpleGrantedAuthority("ROLE_" + role.name());
 	}
 	
 	@Override

@@ -23,6 +23,7 @@ import com.bravson.socialalert.app.services.MediaStorageService;
 @Component
 public class UploadServlet implements HttpRequestHandler {
 	
+	private static final String MOV_MEDIA_TYPE = "video/quicktime";
 	private static final String MP4_MEDIA_TYPE = "video/mp4";
 	private static final String JPG_MEDIA_TYPE = MediaType.IMAGE_JPEG_VALUE;
 	
@@ -48,6 +49,9 @@ public class UploadServlet implements HttpRequestHandler {
 				// TODO absolute path?
 				response.setHeader("Location", uri.getPath());
 				response.setStatus(HttpStatus.CREATED.value());
+			} else if (MOV_MEDIA_TYPE.equals(request.getContentType())) {
+				// TODO convert video to MP4
+				
 			} else {
 				throw new HttpClientErrorException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, request.getContentType() + " is not supported");
 			}

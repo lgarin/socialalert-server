@@ -49,7 +49,7 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 	private VideoFileService videoFileService;
 	
 	// TODO authorization should be done at the servlet level
-	@PreAuthorize("hasRole('USER')")
+	//@PreAuthorize("hasRole('USER')")
 	@Override
 	public URI storePicture(InputStream inputStream, int contentLength) throws IOException {
 		
@@ -64,7 +64,8 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 		return URI.create(outputFile.getName());
 	}
 	
-	@PreAuthorize("hasRole('USER')")
+	// TODO authorization should be done at the servlet level
+	//@PreAuthorize("hasRole('USER')")
 	@Override
 	public URI storeVideo(InputStream inputStream, int contentLength) throws IOException {
 		

@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.solr.client.solrj.SolrRequest;
@@ -20,7 +22,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mapping.context.MappingContext;
-import org.springframework.data.mapping.model.BeanWrapper;
 import org.springframework.data.solr.core.SolrCallback;
 import org.springframework.data.solr.core.SolrOperations;
 import org.springframework.data.solr.core.mapping.SolrPersistentEntity;
@@ -28,13 +29,15 @@ import org.springframework.data.solr.core.mapping.SolrPersistentProperty;
 import org.springframework.data.solr.core.query.Criteria;
 import org.springframework.data.solr.core.query.FacetOptions;
 import org.springframework.data.solr.core.query.PartialUpdate;
-import org.springframework.data.solr.core.query.Query;
 import org.springframework.data.solr.core.query.SimpleFacetQuery;
-import org.springframework.data.solr.core.query.SimpleField;
 import org.springframework.data.solr.core.query.SimpleFilterQuery;
 import org.springframework.data.solr.core.query.SimpleQuery;
+import org.springframework.data.solr.core.query.SimpleStringCriteria;
+import org.springframework.data.solr.core.query.SimpleTermsQuery;
 import org.springframework.data.solr.core.query.UpdateField;
 import org.springframework.data.solr.core.query.result.FacetPage;
+import org.springframework.data.solr.core.query.result.TermsFieldEntry;
+import org.springframework.data.solr.core.query.result.TermsPage;
 import org.springframework.data.solr.repository.query.SolrEntityInformation;
 import org.springframework.data.solr.repository.support.SimpleSolrRepository;
 import org.springframework.transaction.TransactionSystemException;
@@ -67,12 +70,7 @@ public class CustomBaseRepositoryImpl<T, ID extends Serializable> extends Simple
 			return null;
 		}
 		
-		return getSolrOperations().execute(new SolrCallback<T>() {
-			@Override
-			public T doInSolr(SolrServer solrServer) throws SolrServerException, IOException {
-				return realtimeGet(solrServer, id);
-			}
-		});
+		return getSolrOperations().getById(id, getEntityClass());
 	}
 	
 	public T lockById(ID id) {
@@ -95,7 +93,7 @@ public class CustomBaseRepositoryImpl<T, ID extends Serializable> extends Simple
 		return findById(id);
 	}
 
-	public List<T> lockAll(List<T> entities) {
+	public Collection<T> lockAll(Collection<T> entities) {
 		if (entities.isEmpty()) {
 			return entities;
 		}
@@ -115,23 +113,14 @@ public class CustomBaseRepositoryImpl<T, ID extends Serializable> extends Simple
 		return findAll(ids);
 	}
 	
-	public List<T> findAll(Collection<ID> ids) {
-		Query query = new SimpleQuery(new Criteria(getIdFieldName()).in(ids));
-		query.setPageRequest(new PageRequest(0, ids.size()));
-		return getSolrOperations().queryForPage(query, getEntityClass()).getContent();
+	public Collection<T> findAll(Collection<ID> ids) {
+		return getSolrOperations().getById(ids, getEntityClass());
 	}
 	
 	@Override
 	public Page<T> query(Criteria criteria, PageRequest pageRequest) {
 		SimpleQuery query = new SimpleQuery(criteria, pageRequest);
 		return getSolrOperations().queryForPage(query, getEntityClass());
-	}
-	
-	@Override
-	public <P> Page<P> querySingleField(Criteria criteria, String propertyName, Class<P> propertyType, PageRequest pageRequest) {
-		SimpleQuery query = new SimpleQuery(criteria, pageRequest);
-		query.addProjectionOnField(new SimpleField(propertyName));
-		return getSolrOperations().queryForPage(query, propertyType);
 	}
 	
 	private void lockIds(final Iterable<ID> ids) {
@@ -270,12 +259,11 @@ public class CustomBaseRepositoryImpl<T, ID extends Serializable> extends Simple
 		
 		List<PartialUpdate> updates = new ArrayList<>(entities.size());
 		for (T entity : entities) {
-			BeanWrapper<T> wrapper = BeanWrapper.create(entity, conversionService);
 			SolrPersistentProperty idProperty = persistentEntity.getIdProperty();
-			PartialUpdate update = new PartialUpdate(idProperty.getName(), wrapper.getProperty(idProperty));
+			PartialUpdate update = new PartialUpdate(idProperty.getName(), persistentEntity.getPropertyAccessor(entity).getProperty(idProperty));
 			for (String property : properties) {
 				SolrPersistentProperty persistentProperty = persistentEntity.getPersistentProperty(property);
-				update.add(persistentProperty.getName(), wrapper.getProperty(persistentProperty));
+				update.add(persistentProperty.getName(), persistentEntity.getPropertyAccessor(entity).getProperty(persistentProperty));
 			}
 			updates.add(update);
 		}
@@ -313,5 +301,24 @@ public class CustomBaseRepositoryImpl<T, ID extends Serializable> extends Simple
 			query.addFilterQuery(new SimpleFilterQuery(filter));
 		}
 		return getSolrOperations().queryForFacetPage(query, getEntityClass());
+	}
+	
+	@Override
+	public Set<String> queryForTerms(String field, String baseValue, int pageSize) {
+		SimpleTermsQuery query = new SimpleTermsQuery();
+		//query.addCriteria(new SimpleStringCriteria("*:*"));
+		query.addField(field);
+		query.getTermsOptions().setLimit(pageSize);
+		query.getTermsOptions().setPrefix(baseValue);
+		query.setRequestHandler("/terms");
+		TermsPage terms = getSolrOperations().queryForTermsPage(query);
+		if (!terms.hasContent()) {
+			return Collections.emptySet();
+		}
+		HashSet<String> result = new HashSet<>();
+		for (TermsFieldEntry entry : terms) {
+			result.add(entry.getValue());
+		}
+		return result;
 	}
 }

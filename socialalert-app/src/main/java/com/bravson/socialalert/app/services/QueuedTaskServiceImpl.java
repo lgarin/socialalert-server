@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class QueuedTaskServiceImpl implements QueuedTaskService {
 	
 	@Transactional(rollbackFor={Throwable.class})
 	public List<BaseTaskPayload<?>> resetStalledTasks(int pageSize) {
-		List<QueuedTask> tasks = taskRepository.listStalledTasks(stalledDelay, new PageRequest(0, pageSize));
+		Collection<QueuedTask> tasks = taskRepository.listStalledTasks(stalledDelay, new PageRequest(0, pageSize));
 		if (tasks.isEmpty()) {
 			return Collections.emptyList();
 		}

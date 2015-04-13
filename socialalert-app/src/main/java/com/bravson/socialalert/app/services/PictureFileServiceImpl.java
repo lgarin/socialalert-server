@@ -64,7 +64,7 @@ public class PictureFileServiceImpl implements PictureFileService {
 		
 		PictureMetadata result = new PictureMetadata();
 		
-		ExifIFD0Directory exifTags = metadata.getDirectory(ExifIFD0Directory.class);
+		ExifIFD0Directory exifTags = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
 		if (exifTags != null) {
 			Date dateTime = exifTags.getDate(ExifIFD0Directory.TAG_DATETIME);
 			if (dateTime != null) {
@@ -76,7 +76,7 @@ public class PictureFileServiceImpl implements PictureFileService {
 			result.setWidth(exifTags.getInteger(ExifIFD0Directory.TAG_X_RESOLUTION));
 		}
 		
-		ExifSubIFDDirectory exifSubTags = metadata.getDirectory(ExifSubIFDDirectory.class);
+		ExifSubIFDDirectory exifSubTags = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 		if (exifSubTags != null) {
 			Date dateTime = exifSubTags.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
 			if (dateTime != null) {
@@ -84,13 +84,13 @@ public class PictureFileServiceImpl implements PictureFileService {
 			}
 		}
 		
-		JpegDirectory jpegTags = metadata.getDirectory(JpegDirectory.class);
+		JpegDirectory jpegTags = metadata.getFirstDirectoryOfType(JpegDirectory.class);
 		if (jpegTags != null) {
-			result.setHeight(jpegTags.getInteger(JpegDirectory.TAG_JPEG_IMAGE_HEIGHT));
-			result.setWidth(jpegTags.getInteger(JpegDirectory.TAG_JPEG_IMAGE_WIDTH));
+			result.setHeight(jpegTags.getInteger(JpegDirectory.TAG_IMAGE_HEIGHT));
+			result.setWidth(jpegTags.getInteger(JpegDirectory.TAG_IMAGE_WIDTH));
 		}
 		
-		GpsDirectory gpsTags = metadata.getDirectory(GpsDirectory.class);
+		GpsDirectory gpsTags = metadata.getFirstDirectoryOfType(GpsDirectory.class);
 		if (gpsTags != null) {
 			GeoLocation location = gpsTags.getGeoLocation();
 			if (location != null) {

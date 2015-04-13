@@ -64,30 +64,41 @@
 
 	<searchComponent class="solr.SpellCheckComponent" name="suggest">
 		<lst name="spellchecker">
-			<str name="name">suggest</str>
+			<str name="name">suggestDictionary</str>
 			<str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
 			<str name="lookupImpl">org.apache.solr.spelling.suggest.fst.FuzzyLookupFactory</str>
+			<str name="field">suggest</str>
 			<str name="suggestAnalyzerFieldType">text</str>
-			<str name="field">suggest</str> <!--  the indexed field to derive suggestions from -->
 			<float name="threshold">0.005</float>
 			<str name="buildOnCommit">true</str>
 			<str name="buildOnOptimize">true</str>
-			<!-- <str name="storeDir">${solr.core.name:solr}</str> -->
+			<str name="buildOnStartup">true</str>
 		</lst>
 	</searchComponent>
 	<requestHandler class="org.apache.solr.handler.component.SearchHandler"
 		name="/suggest">
 		<lst name="defaults">
 			<str name="spellcheck">true</str>
-			<str name="spellcheck.dictionary">suggest</str>
+			<str name="spellcheck.dictionary">suggestDictionary</str>
 			<str name="spellcheck.onlyMorePopular">true</str>
-			<str name="spellcheck.count">5</str>
+			<str name="spellcheck.count">10</str>
 			<str name="spellcheck.collate">true</str>
-			<str name="spellcheck.maxCollations">5</str>
+			<str name="spellcheck.maxCollations">10</str>
 			<str name="spellcheck.maxCollationTries">1000</str>
 		</lst>
 		<arr name="components">
 			<str>suggest</str>
+		</arr>
+	</requestHandler>
+	
+	<searchComponent name="terms" class="solr.TermsComponent"/>
+	<requestHandler name="/terms" class="solr.SearchHandler">
+		<lst name="defaults">
+			<bool name="terms">true</bool>
+			<bool name="distrib">false</bool>
+		</lst>
+		<arr name="components">
+			<str>terms</str>
 		</arr>
 	</requestHandler>
 </config>

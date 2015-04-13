@@ -2,11 +2,11 @@ package com.bravson.socialalert.app.infrastructure;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.annotation.Resource;
 
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -17,8 +17,6 @@ import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.data.solr.core.SolrOperations;
 import org.springframework.data.solr.core.SolrTemplate;
-import org.springframework.data.solr.core.convert.CustomConversions;
-import org.springframework.data.solr.core.convert.MappingSolrConverter;
 import org.springframework.data.solr.core.mapping.SimpleSolrMappingContext;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.data.solr.repository.query.PartTreeSolrQuery;
@@ -35,9 +33,11 @@ public class CustomSolrRepositoryFactoryBean<T, ID extends Serializable> extends
 	@Resource
 	private SolrServerFactory solrServerFactory;
 	
+	private SimpleSolrMappingContext solrMappingContext;
+	
     @Override
     protected RepositoryFactorySupport doCreateRepositoryFactory() {
-        return new CustomSolrRepositoryFactory<T, ID>(solrServerFactory);
+        return new CustomSolrRepositoryFactory<T, ID>(solrServerFactory, solrMappingContext);
     }
     
     /**
@@ -47,37 +47,45 @@ public class CustomSolrRepositoryFactoryBean<T, ID extends Serializable> extends
 	 */
 	public void setSolrOperations(SolrOperations operations) {
 	}
-
-	private enum SolrDocumentToStringConvertor implements Converter<org.apache.solr.common.SolrDocument, String> {
-		INSTANCE;
-		
-		@Override
-		public String convert(org.apache.solr.common.SolrDocument source) {
-			return source.values().iterator().next().toString();
-		}
+	
+	public void setSchemaCreationSupport(boolean schemaCreationSupport) {
 	}
 	
+	public void setSolrMappingContext(SimpleSolrMappingContext solrMappingContext) {
+		super.setMappingContext(solrMappingContext);
+		this.solrMappingContext = solrMappingContext;
+	}
+
     private static class CustomSolrRepositoryFactory<T, ID extends Serializable> extends RepositoryFactorySupport {
 
+    	private final Map<Class<?>, SolrTemplate> operationsMap = new WeakHashMap<Class<?>, SolrTemplate>();
     	private final SolrServerFactory solrServerFactory;
     	private final SolrEntityInformationCreator entityInformationCreator;
-    	private final MappingSolrConverter solrConverter;
+    	private final SimpleSolrMappingContext solrMappingContext;
 
-        public CustomSolrRepositoryFactory(SolrServerFactory solrServerFactory) {
-        	this.solrConverter = new MappingSolrConverter(new SimpleSolrMappingContext());
-        	this.solrConverter.setCustomConversions(new CustomConversions(Arrays.asList(SolrDocumentToStringConvertor.INSTANCE)));
-        	this.solrConverter.afterPropertiesSet();
+        public CustomSolrRepositoryFactory(SolrServerFactory solrServerFactory, SimpleSolrMappingContext solrMappingContext) {
+        	
+        	if (solrMappingContext == null) {
+        		solrMappingContext = new SimpleSolrMappingContext();
+        	}
+        	
             this.solrServerFactory = solrServerFactory;
-            this.entityInformationCreator = new SolrEntityInformationCreatorImpl(solrConverter.getMappingContext());
+            this.solrMappingContext = solrMappingContext;
+            this.entityInformationCreator = new SolrEntityInformationCreatorImpl(solrMappingContext);
         }
         
         private SolrOperations determineSolrOperation(RepositoryMetadata metadata) {
-        	// TODO use cache
         	Class<?> entityClass = metadata.getDomainType();
-        	SolrDocument doc = entityClass.getAnnotation(SolrDocument.class);
-        	String coreName = doc != null ? doc.solrCoreName() : entityClass.getSimpleName();
-        	SolrTemplate template = new SolrTemplate(solrServerFactory, solrConverter);
-        	template.setSolrCore(coreName);
+        	SolrTemplate template = operationsMap.get(entityClass);
+        	if (template == null) {
+	        	SolrDocument doc = entityClass.getAnnotation(SolrDocument.class);
+	        	String coreName = doc != null ? doc.solrCoreName() : entityClass.getSimpleName();
+	        	template = new SolrTemplate(solrServerFactory);
+	        	template.setMappingContext(solrMappingContext);
+	        	template.setSolrCore(coreName);
+	        	template.afterPropertiesSet();
+	        	operationsMap.put(entityClass, template);
+        	}
         	return template;
         }
         
