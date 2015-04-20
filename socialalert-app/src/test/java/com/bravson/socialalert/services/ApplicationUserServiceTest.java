@@ -191,7 +191,7 @@ public class ApplicationUserServiceTest extends DataServiceTest {
 		UserInfo after = user.toUserInfo();
 		assertNull(after.getLastLoginFailure());
 		assertEquals(0, after.getLoginFailureCount());
-		assertTrue(before.getLastUpdate().isBefore(after.getLastUpdate()));
+		assertTrue(!before.getLastUpdate().isAfter(after.getLastUpdate()));
 	}
 	
 	@Test

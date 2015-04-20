@@ -302,7 +302,7 @@ public class PictureFacadeTest extends DataServiceTest {
 		assertNotNull(info);
 		assertEquals("Test", info.getTitle());
 		assertEquals("My description", info.getDescription());
-		assertTrue(now.isBefore(info.getCreation()));
+		assertTrue(!now.isAfter(info.getCreation()));
 		assertFalse(info.getCreation().isAfter(info.getLastUpdate()));
 		assertNotNull(info.getMediaList());
 		assertTrue(info.getMediaList().isEmpty());
