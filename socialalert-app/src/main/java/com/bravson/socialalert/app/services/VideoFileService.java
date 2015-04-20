@@ -16,5 +16,5 @@ public interface VideoFileService {
 	
 	public File createPreview(@NotNull File sourceFile) throws IOException;
 	
-	public VideoMetadata parseMetadata(@NotNull File sourceFile) throws IOException, InterruptedException;
+	public VideoMetadata parseMetadata(@NotNull File sourceFile) throws IOException;
 }

@@ -17,7 +17,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -84,7 +83,7 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 		if (contentLength < 0) {
 			throw new HttpClientErrorException(HttpStatus.LENGTH_REQUIRED, "Content-Length must be specified");
 		} else if (contentLength > maxSize) {
-			throw new HttpClientErrorException(HttpStatus.REQUEST_ENTITY_TOO_LARGE, "Maximum upload size exceeded");
+			throw new HttpClientErrorException(HttpStatus.PAYLOAD_TOO_LARGE, "Maximum upload size exceeded");
 		}
 		
 		File tempFile = createTemporaryFile(inputStream, FilenameUtils.EXTENSION_SEPARATOR_STR + extension);
