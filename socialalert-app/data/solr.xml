@@ -14,5 +14,6 @@
     	<core loadOnStartup="false" name="AlertAlbum" instanceDir="AlertAlbum" config="../../solrconfig.xml"/>
     	<core loadOnStartup="false" name="TagStatistic" instanceDir="TagStatistic" config="../../solrconfig.xml"/>
     	<core loadOnStartup="false" name="AbuseReport" instanceDir="AbuseReport" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="AlertMedia" instanceDir="AlertMedia" config="../../solrconfig.xml"/>
 	</cores>
 </solr>

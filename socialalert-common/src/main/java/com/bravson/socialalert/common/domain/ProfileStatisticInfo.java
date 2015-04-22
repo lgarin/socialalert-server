@@ -5,6 +5,8 @@ public class ProfileStatisticInfo extends PublicProfileInfo {
 	
 	private int pictureCount;
 	
+	private int videoCount;
+	
 	private int commentCount;
 	
 	private int hitCount;
@@ -21,6 +23,14 @@ public class ProfileStatisticInfo extends PublicProfileInfo {
 
 	public void setPictureCount(int pictureCount) {
 		this.pictureCount = pictureCount;
+	}
+	
+	public int getVideoCount() {
+		return videoCount;
+	}
+
+	public void setVideoCount(int videoCount) {
+		this.videoCount = videoCount;
 	}
 
 	public int getCommentCount() {

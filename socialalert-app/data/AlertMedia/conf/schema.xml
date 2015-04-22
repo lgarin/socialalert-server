@@ -1,18 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<schema name="profileStatistic" version="1.5">
+<schema name="alertMedia" version="1.5">
 	<fields>
-		<field name="profileId" type="uuid" indexed="true" stored="true" required="true" multiValued="false" />
-		<field name="pictureCount" type="integer" indexed="true" stored="true" required="false" multiValued="false"/>
-		<field name="videoCount" type="integer" indexed="true" stored="true" required="false" multiValued="false"/>
-		<field name="commentCount" type="integer" indexed="true" stored="true" required="false" multiValued="false"/>
-		<field name="hitCount" type="integer" indexed="true" stored="true" required="false" multiValued="false"/>
-		<field name="likeCount" type="integer" indexed="true" stored="true" required="false" multiValued="false"/>
-		<field name="dislikeCount" type="integer" indexed="true" stored="true" required="false" multiValued="false"/>
-		<field name="followerCount" type="integer" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="mediaUri" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="type" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="title" type="text" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="profileId" type="uuid" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="creation" type="date" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="lastUpdate" type="date" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="timestamp" type="date" indexed="false" stored="true" required="false" multiValued="false"/>
+		<field name="width" type="integer" indexed="false" stored="true" required="false" multiValued="false"/>
+		<field name="height" type="integer" indexed="false" stored="true" required="false" multiValued="false"/>
+		<field name="duration" type="long" indexed="false" stored="true" required="false" multiValued="false"/>
+		<field name="location" type="location" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="locality" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="country" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="cameraMaker" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+		<field name="cameraModel" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+		<field name="hitCount" type="integer" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="likeCount" type="integer" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="dislikeCount" type="integer" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="commentCount" type="integer" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="categories" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+		<field name="tags" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+		<field name="description" type="text" indexed="true" stored="true" required="false" multiValued="false"/>
 		<field name="_version_" type="long" indexed="true" stored="true"/>
+		
+		<field name="geohash1" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="geohash2" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="geohash3" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="geohash4" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="geohash5" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="geohash6" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="geohash7" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		
+		<copyField source="tags" dest="suggest"/>
+		<copyField source="title" dest="suggest"/>
+		<field name="suggest" type="text" indexed="true" stored="true" required="false" multiValued="true"/>
 	</fields>
 
-	<uniqueKey>profileId</uniqueKey>
+	<uniqueKey>pictureUri</uniqueKey>
 	<!-- Configure copy fields here -->
 
 	<types>

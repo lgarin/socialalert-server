@@ -24,6 +24,9 @@ public class ProfileStatistic {
 	private int pictureCount;
 	
 	@Field
+	private int videoCount;
+	
+	@Field
 	private int commentCount;
 	
 	@Field
@@ -42,6 +45,7 @@ public class ProfileStatistic {
 		ProfileStatisticInfo info = new ProfileStatisticInfo();
 		info.setProfileId(profileId);
 		info.setPictureCount(pictureCount);
+		info.setVideoCount(videoCount);
 		info.setCommentCount(commentCount);
 		info.setLikeCount(likeCount);
 		info.setDislikeCount(dislikeCount);

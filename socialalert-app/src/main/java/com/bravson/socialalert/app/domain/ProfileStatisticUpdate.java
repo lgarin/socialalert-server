@@ -8,6 +8,7 @@ public enum ProfileStatisticUpdate {
 
 	INCREMENT_HIT_COUNT("hitCount", 1),
 	INCREMENT_PICTURE_COUNT("pictureCount", 1),
+	INCREMENT_VIDEO_COUNT("videoCount", 1),
 	INCREMENT_COMMENT_COUNT("commentCount", 1),
 	INCREMENT_LIKE_COUNT("likeCount", 1),
 	INCREMENT_DISLIKE_COUNT("dislikeCount", 1),
