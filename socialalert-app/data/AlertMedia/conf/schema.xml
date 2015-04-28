@@ -38,7 +38,7 @@
 		<field name="suggest" type="text" indexed="true" stored="true" required="false" multiValued="true"/>
 	</fields>
 
-	<uniqueKey>pictureUri</uniqueKey>
+	<uniqueKey>mediaUri</uniqueKey>
 	<!-- Configure copy fields here -->
 
 	<types>
