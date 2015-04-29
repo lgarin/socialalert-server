@@ -11,11 +11,13 @@ import javax.validation.ValidationException;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DuplicateKeyException;
 
 import com.bravson.socialalert.app.domain.PictureMetadata;
+import com.bravson.socialalert.app.domain.VideoMetadata;
 import com.bravson.socialalert.app.entities.AlertMedia;
 import com.bravson.socialalert.app.entities.ProfileStatistic;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
@@ -66,6 +68,39 @@ public class AlertMediaServiceTest extends DataServiceTest {
 		assertEquals(metadata.getTimestamp(), info.getTimestamp());
 		assertEquals(metadata.getCameraMaker(), info.getCameraMaker());
 		assertEquals(metadata.getCameraModel(), info.getCameraModel());
+		assertNull(info.getDuration());
+		assertEquals(0, info.getHitCount());
+		assertEquals(0, info.getLikeCount());
+		assertEquals(0, info.getDislikeCount());
+	}
+	
+	@Test
+	public void createVideoWithAllMetadata() {
+		VideoMetadata metadata = new VideoMetadata();
+		metadata.setCameraMaker("abc");
+		metadata.setCameraModel("123");
+		metadata.setHeight(345);
+		metadata.setWidth(567);
+		metadata.setTimestamp(new DateTime(2013, 7, 14, 12, 23, 43));
+		metadata.setDuration(Duration.standardSeconds(145));
+		UUID profileId = UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593");
+		URI pictureUri = URI.create("abc.mov");
+		GeoAddress address = new GeoAddress(null, null, "Terrassenrain 6, 3072 Ostermundigen, Suisse", "Ostermundigen", "Switzerland");
+		MediaInfo info = service.createVideoAlert(pictureUri, profileId, "Test", address, metadata, Collections.singletonList(MediaCategory.ART), Collections.<String>emptyList());
+		assertNotNull(info);
+		assertEquals(profileId, info.getProfileId());
+		assertEquals(pictureUri, info.getMediaUri());
+		assertEquals("Test", info.getTitle());
+		assertEquals(Arrays.asList("Ostermundigen", "Switzerland"), info.getTags());
+		assertEquals(Collections.singletonList("ART"), info.getCategories());
+		assertEquals(metadata.getHeight(), info.getHeight());
+		assertEquals(metadata.getWidth(), info.getWidth());
+		assertNull(info.getLongitude());
+		assertNull(info.getLatitude());
+		assertEquals(metadata.getTimestamp(), info.getTimestamp());
+		assertEquals(metadata.getCameraMaker(), info.getCameraMaker());
+		assertEquals(metadata.getCameraModel(), info.getCameraModel());
+		assertEquals(metadata.getDuration(), info.getDuration());
 		assertEquals(0, info.getHitCount());
 		assertEquals(0, info.getLikeCount());
 		assertEquals(0, info.getDislikeCount());
@@ -176,6 +211,26 @@ public class AlertMediaServiceTest extends DataServiceTest {
 	}
 	
 	@Test
+	public void listAllRecentVideos() {
+		QueryResult<MediaInfo> result = service.searchMedia(MediaType.VIDEO, null, null, 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		assertNotNull(result);
+		assertEquals(0, result.getPageNumber());
+		assertEquals(1, result.getPageCount());
+		assertNotNull(result.getContent());
+		assertEquals(1, result.getContent().size());
+	}
+	
+	@Test
+	public void listAllRecentMedia() {
+		QueryResult<MediaInfo> result = service.searchMedia(null, null, null, 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		assertNotNull(result);
+		assertEquals(0, result.getPageNumber());
+		assertEquals(1, result.getPageCount());
+		assertNotNull(result.getContent());
+		assertEquals(3, result.getContent().size());
+	}
+	
+	@Test
 	public void listAllRecentPicturesByCategory() {
 		QueryResult<MediaInfo> result = service.searchMediaInCategory(MediaType.PICTURE, null, null, 3650 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
 		assertNotNull(result);
@@ -183,6 +238,26 @@ public class AlertMediaServiceTest extends DataServiceTest {
 		assertEquals(1, result.getPageCount());
 		assertNotNull(result.getContent());
 		assertEquals(2, result.getContent().size());
+	}
+	
+	@Test
+	public void listAllRecentVideosByCategory() {
+		QueryResult<MediaInfo> result = service.searchMediaInCategory(MediaType.VIDEO, null, null, 3650 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
+		assertNotNull(result);
+		assertEquals(0, result.getPageNumber());
+		assertEquals(1, result.getPageCount());
+		assertNotNull(result.getContent());
+		assertEquals(1, result.getContent().size());
+	}
+	
+	@Test
+	public void listAllRecentMediaByCategory() {
+		QueryResult<MediaInfo> result = service.searchMediaInCategory(null, null, null, 3650 * DateUtils.MILLIS_PER_DAY, "PLACES", 0, 10);
+		assertNotNull(result);
+		assertEquals(0, result.getPageNumber());
+		assertEquals(1, result.getPageCount());
+		assertNotNull(result.getContent());
+		assertEquals(3, result.getContent().size());
 	}
 	
 	@Test
@@ -195,6 +270,25 @@ public class AlertMediaServiceTest extends DataServiceTest {
 		assertEquals(1, result1.getContent().size());
 		MediaInfo first = result1.getContent().get(0);
 		QueryResult<MediaInfo> result2 = service.searchMedia(MediaType.PICTURE, null, null, 3650 * DateUtils.MILLIS_PER_DAY, 1, 1);
+		assertNotNull(result2);
+		assertEquals(1, result2.getPageNumber());
+		assertEquals(2, result2.getPageCount());
+		assertNotNull(result2.getContent());
+		assertEquals(1, result2.getContent().size());
+		MediaInfo second = result2.getContent().get(0);
+		assertTrue(second.getCreation().isBefore(first.getCreation()));
+	}
+	
+	@Test
+	public void pageThroughRecentMedia() {
+		QueryResult<MediaInfo> result1 = service.searchMedia(null, null, null, 3650 * DateUtils.MILLIS_PER_DAY, 0, 2);
+		assertNotNull(result1);
+		assertEquals(0, result1.getPageNumber());
+		assertEquals(2, result1.getPageCount());
+		assertNotNull(result1.getContent());
+		assertEquals(2, result1.getContent().size());
+		MediaInfo first = result1.getContent().get(0);
+		QueryResult<MediaInfo> result2 = service.searchMedia(null, null, null, 3650 * DateUtils.MILLIS_PER_DAY, 1, 2);
 		assertNotNull(result2);
 		assertEquals(1, result2.getPageNumber());
 		assertEquals(2, result2.getPageCount());
@@ -348,6 +442,16 @@ public class AlertMediaServiceTest extends DataServiceTest {
 	}
 	
 	@Test
+	public void listVideoInArea() {
+		QueryResult<MediaInfo> result = service.searchMedia(MediaType.VIDEO, new GeoArea(43.32, -1.99, 5.0), null, 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
+		assertNotNull(result);
+		assertEquals(0, result.getPageNumber());
+		assertEquals(1, result.getPageCount());
+		assertNotNull(result.getContent());
+		assertEquals(1, result.getContent().size());
+	}
+	
+	@Test
 	public void searchPicturesInAreaWithKeyword() {
 		QueryResult<MediaInfo> result = service.searchMedia(MediaType.PICTURE, new GeoArea(46.7, 7.8, 5.0), "sport", 3650 * DateUtils.MILLIS_PER_DAY, 0, 10);
 		assertNotNull(result);
@@ -486,6 +590,12 @@ public class AlertMediaServiceTest extends DataServiceTest {
 	public void findPictureKeywordSuggestion() {
 		List<String> suggestions = service.findKeywordSuggestions(MediaType.PICTURE, "para");
 		assertEquals(Collections.singletonList("paragliding"), suggestions);
+	}
+	
+	@Test
+	public void findVideoKeywordSuggestion() {
+		List<String> suggestions = service.findKeywordSuggestions(MediaType.VIDEO, "aqua");
+		assertEquals(Collections.singletonList("aquarium"), suggestions);
 	}
 
 	@Test

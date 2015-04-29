@@ -46,5 +46,31 @@
         "profileId": "e7d166ae-9b3f-4405-be0d-fa1567728593",
         "cameraMaker": "Canon",
         "cameraModel": "Canon EOS DIGITAL REBEL XT"
-      }
+      },
+      {"mediaUri": "20150429/7e9a5a5bd5e64171c176ac6c7b32d685.MOV",
+		 "type": "VIDEO",
+		 "title": "Aquarium San Sebastián",
+		 "profileId": "e7d166ae-9b3f-4405-be0d-fa1567728593",
+		 "creation": "2015-04-29T12:04:01Z", 
+	     "lastUpdate": "2015-04-29T12:04:01Z",
+		 "width": "568",
+		 "height": "320",
+	     "timestamp": "2015-01-07T21:13:32Z",
+	     "cameraMaker": "Apple",
+	     "cameraModel": "iPhone 6",
+	     "location": "43.3222, -1.9949",
+	     "geohash7":"ezww6we",
+	     "geohash6":"ezww6w",
+	     "geohash5":"ezww6",
+	     "geohash4":"ezww",
+	     "geohash3":"ezw",
+	     "geohash2":"ez",
+	     "geohash1":"e",
+	     "hitCount": "10",
+	     "likeCount": "5",
+	     "dislikeCount": "1",
+	     "commentCount": "2",
+	     "categories": ["PLACES"],
+	     "tags": ["fish", "aquarium"]
+     }
 ]
