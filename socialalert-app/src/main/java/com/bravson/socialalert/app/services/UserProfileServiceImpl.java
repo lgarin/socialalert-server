@@ -38,7 +38,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 	@Resource
 	private MediaStorageService storageService;
 	
-	@Value("${picture.delete.delay}")
+	@Value("${media.delete.delay}")
 	private long pictureDeleteDelay;
 	
 	@Value("${query.max.result}")

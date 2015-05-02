@@ -90,7 +90,7 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 			service.storePicture(new ByteArrayInputStream(new byte[0]), 1000 * 1000 * 100);
 			fail();
 		} catch (HttpClientErrorException e) {
-			Assert.assertEquals(HttpStatus.REQUEST_ENTITY_TOO_LARGE, e.getStatusCode());
+			Assert.assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, e.getStatusCode());
 		}
 	}
 	

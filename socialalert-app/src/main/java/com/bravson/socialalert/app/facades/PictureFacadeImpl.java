@@ -105,7 +105,7 @@ public class PictureFacadeImpl implements PictureFacade {
 	@Resource
 	private UserSessionService sessionService;
 	
-	@Value("${picture.delete.delay}")
+	@Value("${media.delete.delay}")
 	private long pictureDeleteDelay;
 	
 	@Override
