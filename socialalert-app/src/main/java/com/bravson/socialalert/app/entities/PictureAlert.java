@@ -272,4 +272,36 @@ public class PictureAlert extends VersionedEntity {
 		geohash7 = StringUtils.substring(geohash, 0, 7);
 		touch();
 	}
+
+	public AlertMedia toMedia() {
+		PictureMetadata metadata = new PictureMetadata();
+		metadata.setCameraMaker(cameraMaker);
+		metadata.setCameraModel(cameraModel);
+		metadata.setHeight(pictureHeight);
+		metadata.setWidth(pictureWidth);
+		metadata.setDefaultTimestamp(pictureTimestamp);
+		ArrayList<MediaCategory> mediaCategories = new ArrayList<MediaCategory>();
+		if (categories != null) {
+			for (String category : categories) {
+				mediaCategories.add(MediaCategory.valueOf(category));
+			}
+		}
+		AlertMedia media = new AlertMedia(pictureUri, profileId, title, metadata, mediaCategories, tags == null ? Collections.<String>emptyList() : tags);
+		for (int i = 0; i < likeCount; i++) {
+			media.updateLikeDislikeCount(1, 0);
+		}
+		for (int i = 0; i < dislikeCount; i++) {
+			media.updateLikeDislikeCount(0, 1);
+		}
+		for (int i = 0; i < hitCount; i++) {
+			media.increaseHitCount();
+		}
+		for (int i = 0; i < commentCount; i++) {
+			media.increaseCommentCount();
+		}
+		if (pictureLocation != null) {
+			media.updateLocation(pictureLocation.getX(), pictureLocation.getY(), geohash7, locality, country);
+		}
+		return media;
+	}
 }
