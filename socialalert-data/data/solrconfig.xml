@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+
+<config>
+
+	<!-- Controls what version of Lucene various components of Solr adhere to. 
+		Generally, you want to use the latest version to get all bug fixes and improvements. 
+		It is highly recommended that you fully re-index after changing this setting 
+		as it can affect both how text is indexed and queried. -->
+	<luceneMatchVersion>LUCENE_43</luceneMatchVersion>
+
+	<schemaFactory class="ClassicIndexSchemaFactory" />
+
+	<updateHandler class="solr.DirectUpdateHandler2">
+		<updateLog>
+			<str name="dir">${solr.solr.home:data}/${solr.core.name:solr}</str>
+		</updateLog>
+		<autoCommit> 
+       		<maxTime>15000</maxTime> 
+       		<openSearcher>false</openSearcher> 
+     	</autoCommit>
+	</updateHandler>
+
+	<!-- Update request handler. Note: Since solr1.1 requestHandlers requires 
+		a valid content type header if posted in the body. For example, curl now 
+		requires: -H 'Content-type:text/xml; charset=utf-8' The response format differs 
+		from solr1.1 formatting and returns a standard error code. To enable solr1.1 
+		behavior, remove the /update handler or change its path "update.processor.class" 
+		is the class name for the UpdateRequestProcessor. It is initalized only once. 
+		This can not be changed for each request. -->
+	<requestHandler name="/update" class="solr.UpdateRequestHandler" />
+
+	<requestHandler name="/select" class="solr.SearchHandler" />
+
+	<requestHandler name="/query" class="solr.SearchHandler" />
+
+
+	<!-- realtime get handler, guaranteed to return the latest stored fields 
+		of any document, without the need to commit or open a new searcher. The current 
+		implementation relies on the updateLog feature being enabled. -->
+	<requestHandler name="/get" class="solr.RealTimeGetHandler">
+		<lst name="defaults">
+			<str name="omitHeader">true</str>
+		</lst>
+	</requestHandler>
+	
+	 <requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler">
+        <lst name="defaults">
+         <str name="stream.contentType">application/json</str>
+       </lst>
+ 	 </requestHandler>
+ 	 
+ 	<!-- Admin Handlers - This will register all the standard admin RequestHandlers. -->
+	<requestHandler name="/admin/" class="solr.admin.AdminHandlers" />
+
+	<searchComponent class="solr.SpellCheckComponent" name="suggest">
+		<lst name="spellchecker">
+			<str name="name">suggestDictionary</str>
+			<str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
+			<str name="lookupImpl">org.apache.solr.spelling.suggest.fst.FuzzyLookupFactory</str>
+			<str name="field">suggest</str>
+			<str name="suggestAnalyzerFieldType">text</str>
+			<float name="threshold">0.005</float>
+			<str name="buildOnCommit">true</str>
+			<str name="buildOnOptimize">true</str>
+			<str name="buildOnStartup">true</str>
+		</lst>
+	</searchComponent>
+	<requestHandler class="org.apache.solr.handler.component.SearchHandler"
+		name="/suggest">
+		<lst name="defaults">
+			<str name="spellcheck">true</str>
+			<str name="spellcheck.dictionary">suggestDictionary</str>
+			<str name="spellcheck.onlyMorePopular">true</str>
+			<str name="spellcheck.count">10</str>
+			<str name="spellcheck.collate">true</str>
+			<str name="spellcheck.maxCollations">10</str>
+			<str name="spellcheck.maxCollationTries">1000</str>
+		</lst>
+		<arr name="components">
+			<str>suggest</str>
+		</arr>
+	</requestHandler>
+	
+	<searchComponent name="terms" class="solr.TermsComponent"/>
+	<requestHandler name="/terms" class="solr.SearchHandler">
+		<lst name="defaults">
+			<bool name="terms">true</bool>
+			<bool name="distrib">false</bool>
+		</lst>
+		<arr name="components">
+			<str>terms</str>
+		</arr>
+	</requestHandler>
+</config>
+

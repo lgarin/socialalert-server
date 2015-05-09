@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<solr >
+	<cores>
+    	<core loadOnStartup="false" name="ApplicationUser" instanceDir="ApplicationUser" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="QueuedTask" instanceDir="QueuedTask" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="UserProfile" instanceDir="UserProfile" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="PictureAlert" instanceDir="PictureAlert" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="AlertInteraction" instanceDir="AlertInteraction" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="AlertComment" instanceDir="AlertComment" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="SearchHistory" instanceDir="SearchHistory" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="ProfileStatistic" instanceDir="ProfileStatistic" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="AlertActivity" instanceDir="AlertActivity" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="ProfileLink" instanceDir="ProfileLink" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="AlertAlbum" instanceDir="AlertAlbum" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="TagStatistic" instanceDir="TagStatistic" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="AbuseReport" instanceDir="AbuseReport" config="../../solrconfig.xml"/>
+    	<core loadOnStartup="false" name="AlertMedia" instanceDir="AlertMedia" config="../../solrconfig.xml"/>
+	</cores>
+</solr>
