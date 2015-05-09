@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.bravson.socialalert.app.entities.AlertActivity;
-import com.bravson.socialalert.app.entities.PictureAlert;
+import com.bravson.socialalert.app.entities.AlertMedia;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.services.AlertActivityService;
 import com.bravson.socialalert.common.domain.ActivityCount;
@@ -28,7 +28,7 @@ public class AlertActivityServiceTest extends DataServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		fullImport(PictureAlert.class);
+		fullImport(AlertMedia.class);
 		fullImport(AlertActivity.class);
 	}
 	

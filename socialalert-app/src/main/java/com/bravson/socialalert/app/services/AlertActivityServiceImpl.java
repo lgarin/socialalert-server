@@ -21,7 +21,7 @@ import com.bravson.socialalert.app.repositories.AlertActivityRepository;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
 import com.bravson.socialalert.common.domain.ActivityType;
-import com.bravson.socialalert.common.domain.PictureInfo;
+import com.bravson.socialalert.common.domain.MediaInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 
 @Service
@@ -31,7 +31,7 @@ public class AlertActivityServiceImpl implements AlertActivityService {
 	private AlertActivityRepository activityRepository;
 	
 	@Resource
-	private PictureAlertService pictureService;
+	private AlertMediaService mediaService;
 	
 	@Value("${query.max.result}")
 	private int maxPageSize;
@@ -46,7 +46,7 @@ public class AlertActivityServiceImpl implements AlertActivityService {
 	
 	@Override
 	public ActivityInfo addActivity(URI mediaUri, UUID profileId, ActivityType activityType, UUID commentId) {
-		PictureInfo picture = pictureService.getPictureInfo(mediaUri);
+		MediaInfo picture = mediaService.getMediaInfo(mediaUri);
 		return activityRepository.save(new AlertActivity(mediaUri, picture.getProfileId(), profileId, activityType, commentId)).toActivityInfo();
 	}
 	

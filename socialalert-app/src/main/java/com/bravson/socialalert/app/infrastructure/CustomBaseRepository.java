@@ -2,8 +2,6 @@ package com.bravson.socialalert.app.infrastructure;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,11 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.solr.core.query.Criteria;
 import org.springframework.data.solr.core.query.FacetOptions;
-import org.springframework.data.solr.core.query.SimpleTermsQuery;
 import org.springframework.data.solr.core.query.UpdateField;
 import org.springframework.data.solr.core.query.result.FacetPage;
-import org.springframework.data.solr.core.query.result.TermsFieldEntry;
-import org.springframework.data.solr.core.query.result.TermsPage;
 import org.springframework.data.solr.repository.SolrCrudRepository;
 
 @NoRepositoryBean

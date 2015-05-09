@@ -16,6 +16,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -48,6 +49,8 @@ import com.bravson.socialalert.common.facade.PictureFacade;
 import com.bravson.socialalert.common.facade.UserFacade;
 import com.bravson.socialalert.infrastructure.DataServiceTest;
 
+@Deprecated
+@Ignore
 public class PictureFacadeTest extends DataServiceTest {
 	
 	@Resource

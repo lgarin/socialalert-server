@@ -128,15 +128,6 @@ public class ProfileFacadeTest extends DataServiceTest {
 	}
 	
 	@Test
-	public void getRecentProfileActivity() throws IOException {
-		userFacade.login("unverified@test.com", "123");
-		UUID profileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
-		List<ActivityInfo> result = profileFacade.getRecentProfileActivity(profileId, 10);
-		assertNotNull(result);
-		assertEquals(3, result.size());
-	}
-	
-	@Test
 	public void getProfileActivity() throws IOException {
 		userFacade.login("unverified@test.com", "123");
 		UUID profileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");

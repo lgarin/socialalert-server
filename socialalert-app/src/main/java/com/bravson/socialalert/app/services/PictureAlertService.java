@@ -21,6 +21,7 @@ import com.bravson.socialalert.common.domain.MediaCategory;
 import com.bravson.socialalert.common.domain.PictureInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 
+@Deprecated
 @Validated
 public interface PictureAlertService {
 

@@ -61,6 +61,7 @@ import com.drew.imaging.jpeg.JpegProcessingException;
 
 @Service
 @Validated
+@Deprecated
 public class PictureFacadeImpl implements PictureFacade {
 
 	@Resource

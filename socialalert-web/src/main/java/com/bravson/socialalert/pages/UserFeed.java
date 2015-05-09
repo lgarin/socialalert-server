@@ -48,7 +48,7 @@ public class UserFeed {
 	
 	@SetupRender
 	void setupRender() throws IOException {
-		activityList = profileFacade.getRecentProfileActivity(userInfo.getProfileId(), 20);
+		activityList = profileFacade.getProfileActivity(userInfo.getProfileId(), 0, 20).getContent();
 	}
 	
 	String generateMessage(ActivityType activityType, DateTime timestamp) {

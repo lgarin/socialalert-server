@@ -1,30 +1,21 @@
 package com.bravson.socialalert.services;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.bravson.socialalert.app.entities.AbuseReport;
-import com.bravson.socialalert.app.entities.AlertActivity;
 import com.bravson.socialalert.app.entities.AlertComment;
-import com.bravson.socialalert.app.entities.PictureAlert;
+import com.bravson.socialalert.app.entities.AlertMedia;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.services.AbuseReportService;
-import com.bravson.socialalert.app.services.AlertActivityService;
 import com.bravson.socialalert.common.domain.AbuseInfo;
 import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.AbuseStatus;
-import com.bravson.socialalert.common.domain.ActivityCount;
-import com.bravson.socialalert.common.domain.ActivityInfo;
-import com.bravson.socialalert.common.domain.ActivityType;
-import com.bravson.socialalert.common.domain.QueryResult;
 import com.bravson.socialalert.infrastructure.DataServiceTest;
 
 public class AbuseReportServiceTest extends DataServiceTest {
@@ -34,7 +25,7 @@ public class AbuseReportServiceTest extends DataServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		fullImport(PictureAlert.class);
+		fullImport(AlertMedia.class);
 		fullImport(AlertComment.class);
 		fullImport(AbuseReport.class);
 	}

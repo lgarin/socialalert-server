@@ -90,13 +90,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 		UserProfile profile = profileService.claimProfilePicture(user.getProfileId(), pictureUri);
 		return profile.toProfileInfo();
 	}
-	
-	@Override
-	@Deprecated
-	public List<ActivityInfo> getRecentProfileActivity(UUID profileId, int maxActivityCount) {
-		return getProfileActivity(profileId, 0, maxActivityCount).getContent();
-	}
-	
+
 	@Override
 	public QueryResult<ActivityInfo> getProfileActivity(UUID profileId, int pageNumber, int pageSize) {
 		QueryResult<ActivityInfo> items = activityService.searchActivityBySourceProfileId(Collections.singletonList(profileId), pageNumber, pageSize);

@@ -12,7 +12,7 @@ import com.bravson.socialalert.app.repositories.AbuseReportRepository;
 import com.bravson.socialalert.common.domain.AbuseInfo;
 import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.CommentInfo;
-import com.bravson.socialalert.common.domain.PictureInfo;
+import com.bravson.socialalert.common.domain.MediaInfo;
 
 @Service
 public class AbuseReportServiceImpl implements AbuseReportService {
@@ -21,7 +21,7 @@ public class AbuseReportServiceImpl implements AbuseReportService {
 	private AbuseReportRepository abuseRepository;
 	
 	@Resource
-	private PictureAlertService pictureService;
+	private AlertMediaService mediaService;
 	
 	@Resource
 	private AlertCommentService commentService;
@@ -36,7 +36,7 @@ public class AbuseReportServiceImpl implements AbuseReportService {
 	
 	@Override
 	public AbuseInfo reportAbusiveMedia(URI mediaUri, UUID profileId, String country, AbuseReason reason) {
-		PictureInfo picture = pictureService.getPictureInfo(mediaUri);
+		MediaInfo picture = mediaService.getMediaInfo(mediaUri);
 		return abuseRepository.save(new AbuseReport(mediaUri, picture.getProfileId(), profileId, country, reason)).toAbuseInfo();
 	}
 }

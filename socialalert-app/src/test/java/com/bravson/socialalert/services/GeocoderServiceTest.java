@@ -6,7 +6,7 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 
-import com.bravson.socialalert.app.entities.PictureAlert;
+import com.bravson.socialalert.app.entities.AlertMedia;
 import com.bravson.socialalert.app.services.GeocoderService;
 import com.bravson.socialalert.common.domain.GeoAddress;
 import com.bravson.socialalert.common.domain.GeoArea;
@@ -71,7 +71,7 @@ public class GeocoderServiceTest extends SimpleServiceTest {
 	
 	@Test
 	public void computeFullGeohash() {
-		String geohash = service.encodeLatLon(46.68666666666667, 7.858833333333333, PictureAlert.GEOHASH_PRECISION);
+		String geohash = service.encodeLatLon(46.68666666666667, 7.858833333333333, AlertMedia.GEOHASH_PRECISION);
 		assertEquals("u0m9dg4", geohash);
 	}
 	

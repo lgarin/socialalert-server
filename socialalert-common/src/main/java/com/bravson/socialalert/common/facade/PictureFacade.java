@@ -30,6 +30,7 @@ import com.googlecode.jsonrpc4j.JsonRpcParam;
 import com.googlecode.jsonrpc4j.JsonRpcService;
 
 @JsonRpcService(value="pictureFacade", useNamedParams=true)
+@Deprecated
 public interface PictureFacade {
 
 	PictureInfo claimPicture(@JsonRpcParam("pictureUri") @NotNull URI pictureUri, @JsonRpcParam("title") @NotEmpty @Size(max=MediaConstants.MAX_TITLE_LENGTH) String title, @JsonRpcParam("location") GeoAddress location, @JsonRpcParam("categories") @NotNull Collection<MediaCategory> categories, @JsonRpcParam("tags") @NotNull @Size(max=MediaConstants.MAX_TAG_COUNT) Collection<String> tags) throws IOException;

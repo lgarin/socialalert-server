@@ -11,11 +11,7 @@ import org.joda.time.Duration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.TaskScheduler;
 
-import com.bravson.socialalert.app.entities.AlertMedia;
-import com.bravson.socialalert.app.entities.PictureAlert;
 import com.bravson.socialalert.app.infrastructure.CustomBaseRepository;
-import com.bravson.socialalert.app.repositories.AlertMediaRepository;
-import com.bravson.socialalert.app.repositories.PictureAlertRepository;
 
 public class ReindexDocumentsTaskImpl implements ReindexDocumentsTask, Runnable {
 
@@ -36,7 +32,6 @@ public class ReindexDocumentsTaskImpl implements ReindexDocumentsTask, Runnable 
 	@Override
 	public void run() {
 		reindexAll();
-		migratePictures();
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -50,23 +45,6 @@ public class ReindexDocumentsTaskImpl implements ReindexDocumentsTask, Runnable 
 			long end = System.currentTimeMillis();
 			Duration duration = new Duration(start, end);
 			logger.info("Reindexed " + count + " entites in " + entry.getKey() + " in " + duration);
-		}
-	}
-	
-	@Resource
-	private PictureAlertRepository pictureRepository;
-	
-	@Resource
-	private AlertMediaRepository mediaRepository;
-	
-	@Override
-	public void migratePictures() {
-		for (PictureAlert picture : pictureRepository.findAll()) {
-			if (!mediaRepository.exists(picture.getPictureUri())) {
-				logger.info("Migrating " + picture.getPictureUri());
-				AlertMedia media = picture.toMedia();
-				mediaRepository.save(media);
-			}
 		}
 	}
 }

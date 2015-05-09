@@ -32,9 +32,6 @@ public interface ProfileFacade {
 	
 	ProfileInfo claimProfilePicture(@JsonRpcParam("pictureUri") @NotNull URI pictureUri) throws IOException;
 
-	@Deprecated
-	List<ActivityInfo> getRecentProfileActivity(@JsonRpcParam("profileId") @NotNull UUID profileId, @JsonRpcParam("maxActivityCount") @Min(1) int maxActivityCount) throws IOException;
-	
 	QueryResult<ActivityInfo> getProfileActivity(@JsonRpcParam("profileId") @NotNull UUID profileId, @JsonRpcParam("pageNumber") @Min(0) int pageNumber, @JsonRpcParam("pageSize") @Min(1) int pageSize) throws IOException;
 	
 	QueryResult<ActivityInfo> getNetworkedProfileActivity(@JsonRpcParam("profileId") @NotNull UUID profileId, @JsonRpcParam("pageNumber") @Min(0) int pageNumber, @JsonRpcParam("pageSize") @Min(1) int pageSize) throws IOException;

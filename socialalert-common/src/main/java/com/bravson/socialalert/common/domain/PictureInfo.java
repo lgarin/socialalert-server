@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.joda.time.DateTime;
 
+@Deprecated
 public class PictureInfo implements UserContent {
 
     private URI pictureUri;

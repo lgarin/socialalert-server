@@ -22,6 +22,7 @@ import com.bravson.socialalert.common.domain.MediaCategory;
 import com.bravson.socialalert.common.domain.PictureInfo;
 
 @SolrDocument(solrCoreName="PictureAlert")
+@Deprecated
 public class PictureAlert extends VersionedEntity {
 	
 	public static final int GEOHASH_PRECISION = 7;

@@ -28,7 +28,6 @@ import com.bravson.socialalert.app.entities.AlertComment;
 import com.bravson.socialalert.app.entities.AlertInteraction;
 import com.bravson.socialalert.app.entities.AlertMedia;
 import com.bravson.socialalert.app.entities.ApplicationUser;
-import com.bravson.socialalert.app.entities.PictureAlert;
 import com.bravson.socialalert.app.entities.TagStatistic;
 import com.bravson.socialalert.app.entities.UserProfile;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
@@ -77,7 +76,6 @@ public class MediaFacadeTest extends DataServiceTest {
 		fullImport(ApplicationUser.class);
 		fullImport(UserProfile.class);
 		fullImport(AlertMedia.class);
-		fullImport(PictureAlert.class); // TODO remove later
 		fullImport(AlertInteraction.class);
 		fullImport(AlertComment.class);
 		fullImport(AlertAlbum.class);

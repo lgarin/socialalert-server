@@ -44,6 +44,7 @@ import com.bravson.socialalert.common.domain.PictureInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 
 @Service
+@Deprecated
 public class PictureAlertServiceImpl implements PictureAlertService {
 
 	public static final int MAX_FACET_RESULTS = 1000;

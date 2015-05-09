@@ -12,6 +12,7 @@ import org.springframework.data.solr.repository.Query;
 import com.bravson.socialalert.app.entities.PictureAlert;
 import com.bravson.socialalert.app.infrastructure.CustomBaseRepository;
 
+@Deprecated
 public interface PictureAlertRepository extends CustomBaseRepository<PictureAlert, URI> {
 
 	public static final int MAX_FACET_RESULTS = 1000;
