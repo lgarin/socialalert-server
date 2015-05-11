@@ -80,6 +80,7 @@
 	<bean id="securityEntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
 	
 	<sec:http auto-config="false" entry-point-ref="securityEntryPoint" authentication-manager-ref="authenticationManager">
+		<sec:csrf disabled="true"/>
 		<sec:session-management>
 	        <sec:concurrency-control max-sessions="1" error-if-maximum-exceeded="true" session-registry-ref="sessionRegistry" />
 	    </sec:session-management>
