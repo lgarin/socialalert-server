@@ -1,10 +1,14 @@
 package com.bravson.socialalert.app.services;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+
+import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
 
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
@@ -13,6 +17,7 @@ import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bravson.socialalert.app.domain.PictureMetadata;
@@ -46,6 +51,16 @@ public class PictureFileServiceImpl implements PictureFileService {
 	
 	@Value("${picture.preview.width}")
 	private int previewWidth;
+	
+	@Value("classpath:/resource/logo.jpg")
+	private Resource watermarkFile;
+	
+	private BufferedImage watermarkImage;
+	
+	@PostConstruct
+	protected void init() throws IOException {
+		watermarkImage = ImageIO.read(watermarkFile.getInputStream());
+	}
 	
 	@Override
 	public PictureMetadata parseJpegMetadata(File sourceFile) throws JpegProcessingException, IOException {
@@ -105,14 +120,14 @@ public class PictureFileServiceImpl implements PictureFileService {
 	@Override
 	public File createJpegThumbnail(File sourceFile) throws IOException {
 		File thumbnailFile = new File(sourceFile.getParent(), thumbnailPrefix + sourceFile.getName());
-		Thumbnails.of(sourceFile).size(thumbnailWidth, thumbnailHeight).crop(Positions.CENTER).outputFormat("jpg").toFile(thumbnailFile);
+		Thumbnails.of(sourceFile).watermark(Positions.CENTER, watermarkImage, 0.25f).size(thumbnailWidth, thumbnailHeight).crop(Positions.CENTER).outputFormat("jpg").toFile(thumbnailFile);
 		return thumbnailFile;
 	}
 	
 	@Override
 	public File createJpegPreview(File sourceFile) throws IOException {
 		File thumbnailFile = new File(sourceFile.getParent(), previewPrefix + sourceFile.getName());
-		Thumbnails.of(sourceFile).size(previewWidth, previewHeight).outputFormat("jpg").toFile(thumbnailFile);
+		Thumbnails.of(sourceFile).watermark(Positions.CENTER, watermarkImage, 0.25f).size(previewWidth, previewHeight).outputFormat("jpg").toFile(thumbnailFile);
 		return thumbnailFile;
 	}
 }
