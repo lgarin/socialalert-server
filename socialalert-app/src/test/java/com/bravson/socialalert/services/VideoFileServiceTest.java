@@ -61,5 +61,10 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 		assertEquals(43.3222, metadata.getLatitude(), 0.0001);
 		assertEquals(new DateTime(2015, 1, 7, 21, 13, 32), metadata.getTimestamp());
 	}
+	
+	@Test
+	public void testWatermark() throws IOException {
+		File file = service.watermark(new File("src/test/resources/media/IMG_0236.MOV"));
+	}
 }
 
