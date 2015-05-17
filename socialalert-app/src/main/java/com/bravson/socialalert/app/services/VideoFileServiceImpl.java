@@ -1,10 +1,14 @@
 package com.bravson.socialalert.app.services;
 
+import io.humble.video.AudioChannel;
+import io.humble.video.AudioFormat;
 import io.humble.video.Codec;
 import io.humble.video.Decoder;
 import io.humble.video.Demuxer;
 import io.humble.video.DemuxerStream;
 import io.humble.video.Encoder;
+import io.humble.video.FilterAudioSink;
+import io.humble.video.FilterAudioSource;
 import io.humble.video.FilterGraph;
 import io.humble.video.FilterPictureSink;
 import io.humble.video.FilterPictureSource;
@@ -17,6 +21,7 @@ import io.humble.video.MediaPicture;
 import io.humble.video.Muxer;
 import io.humble.video.MuxerFormat;
 import io.humble.video.PixelFormat;
+import io.humble.video.Rational;
 import io.humble.video.awt.MediaPictureConverter;
 import io.humble.video.awt.MediaPictureConverterFactory;
 
@@ -50,6 +55,12 @@ public class VideoFileServiceImpl implements VideoFileService {
 	
 	@Value("${video.snapshot.delay}")
 	private long snapshotDelay;
+	
+	@Value("${picture.preview.height}")
+	private int previewHeight;
+	
+	@Value("${picture.preview.width}")
+	private int previewWidth;
 	
 	@Value("classpath:/resource/logo.jpg")
 	private Resource watermarkFile;
@@ -101,7 +112,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 				throw new IOException("Cannot open file " + sourceFile, e);
 			}
 
-			DemuxerStream stream = findVideoStream(demuxer);
+			DemuxerStream stream = findStream(demuxer, MediaDescriptor.Type.MEDIA_VIDEO);
 			MediaPicture picture = buildPicture(demuxer, stream);
 			MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(
 					MediaPictureConverterFactory.HUMBLE_BGR_24, picture);
@@ -131,10 +142,6 @@ public class VideoFileServiceImpl implements VideoFileService {
 		return pictureService.createJpegThumbnail(snapshot);
 	}
 	
-	private DemuxerStream findVideoStream(Demuxer demuxer) throws IOException {
-		return findStream(demuxer, MediaDescriptor.Type.MEDIA_VIDEO);
-	}
-	
 	private DemuxerStream findStream(Demuxer demuxer, MediaDescriptor.Type type) throws IOException {
 		try {
 			int ns = demuxer.getNumStreams();
@@ -150,7 +157,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 			throw new IOException("Cannot find " + type + " stream in " + demuxer.getURL(), e);
 		}
 	}
-	
+
 	@Override
 	public VideoMetadata parseMetadata(File sourceFile) throws IOException {
 		VideoMetadata result = new VideoMetadata();
@@ -178,7 +185,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 		    
 		    result.setDuration(Duration.standardSeconds(demuxer.getDuration() / Global.DEFAULT_PTS_PER_SECOND));;
 		    
-		    DemuxerStream stream = findVideoStream(demuxer);
+		    DemuxerStream stream = findStream(demuxer, MediaDescriptor.Type.MEDIA_VIDEO);
 		    if (stream != null) {
 		    	Decoder decoder = stream.getDecoder();
 		    	result.setHeight(decoder.getHeight());
@@ -204,9 +211,10 @@ public class VideoFileServiceImpl implements VideoFileService {
 		MuxerFormat format = MuxerFormat.guessFormat(null, outputFile.getName(), null);
 		Muxer muxer = Muxer.make(outputFile.toString(), format, null);
 		
-		FilterGraph graph = FilterGraph.make();
+		FilterGraph videoGraph = FilterGraph.make();
+		FilterGraph audioGraph = FilterGraph.make();
 		MediaPacket inputPacket = MediaPacket.make();
-		//MediaPacket audioPacket = MediaPacket.make();
+		MediaPacket audioPacket = MediaPacket.make();
 		MediaPacket videoPacket = MediaPacket.make();
 		
 		try {
@@ -225,60 +233,69 @@ public class VideoFileServiceImpl implements VideoFileService {
 			audioDecoder.open(null, null);
 			
 			Encoder videoEncoder = Encoder.make(Codec.findEncodingCodecByName("libx264"));
-			videoEncoder.setWidth(videoDecoder.getWidth());
-			videoEncoder.setHeight(videoDecoder.getHeight());
+			videoEncoder.setWidth(previewWidth);
+			videoEncoder.setHeight(previewHeight);
 			videoEncoder.setPixelFormat(videoDecoder.getPixelFormat());
-			videoEncoder.setTimeBase(videoDecoder.getTimeBase());
+			videoEncoder.setTimeBase(Rational.make(1, 600));
 			if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
 				videoEncoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
 			}
 			videoEncoder.setProperty("crf", 20L);
 			videoEncoder.setProperty("preset", "slow");
 			videoEncoder.open(null, null);
-			/*
-			Encoder audioEncoder = Encoder.make(Codec.findEncodingCodecByName("aac"));
-			audioEncoder.setSampleRate(audioDecoder.getSampleRate());
-			audioEncoder.setChannels(audioDecoder.getChannels());
-			audioEncoder.setChannelLayout(audioDecoder.getChannelLayout());
-			audioEncoder.setSampleFormat(audioDecoder.getSampleFormat());
+			
+			Encoder audioEncoder = Encoder.make(Codec.findEncodingCodecByName("libmp3lame")); // TODO aac
+			audioEncoder.setSampleRate(44100);
+			audioEncoder.setChannels(2);
+			audioEncoder.setChannelLayout(AudioChannel.Layout.CH_LAYOUT_STEREO);
+			audioEncoder.setSampleFormat(AudioFormat.Type.SAMPLE_FMT_FLTP);
+			audioEncoder.setTimeBase(Rational.make(1, 600));
+			if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
+				audioEncoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
+			}
+			audioEncoder.setProperty("ab", 192L);
 			audioEncoder.open(null, null);
-			*/
+			
 			muxer.addNewStream(videoEncoder);
-			//muxer.addNewStream(audioEncoder);
+			muxer.addNewStream(audioEncoder);
 			muxer.open(null, null);
 			
 			MediaPicture watermarkPicture = createWatermarkPicture();
 			
-			FilterPictureSource source = graph.addPictureSource("input", videoDecoder.getWidth(), videoDecoder.getHeight(), videoDecoder.getPixelFormat(), videoDecoder.getTimeBase(), null);
-			FilterPictureSource watermark = graph.addPictureSource("watermark", watermarkPicture.getWidth(), watermarkPicture.getHeight(), watermarkPicture.getFormat(), videoDecoder.getTimeBase(), null);
-			FilterPictureSink sink = graph.addPictureSink("output", videoDecoder.getPixelFormat());
-			graph.open("[watermark] lutrgb='a=128' [over];[input][over] overlay='x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2' [output]");
+			FilterPictureSource videoSource = videoGraph.addPictureSource("input", videoDecoder.getWidth(), videoDecoder.getHeight(), videoDecoder.getPixelFormat(), videoDecoder.getTimeBase(), null);
+			FilterPictureSource watermark = videoGraph.addPictureSource("watermark", watermarkPicture.getWidth(), watermarkPicture.getHeight(), watermarkPicture.getFormat(), videoDecoder.getTimeBase(), null);
+			FilterPictureSink videoSink = videoGraph.addPictureSink("output", videoDecoder.getPixelFormat());
+			videoGraph.open("[watermark] lutrgb='a=128' [over];[input][over] overlay='x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2', scale='h=-1:w=" + previewWidth + ":force_original_aspect_ratio=decrease', pad='h=" + previewHeight + ":w=" + previewWidth + ":x=(ow-iw)/2:y=(oh-ih)/2' [output]");
 			
-			//MediaAudio sourceAudio = MediaAudio.make(audioDecoder.getFrameSize(), audioDecoder.getSampleRate(), audioDecoder.getChannels(), audioDecoder.getChannelLayout(), audioDecoder.getSampleFormat());
-			MediaPicture targetPicture = MediaPicture.make(videoEncoder.getWidth(), videoEncoder.getHeight(), videoEncoder.getPixelFormat());
+			FilterAudioSource audioSource = audioGraph.addAudioSource("input", audioDecoder.getSampleRate(), audioDecoder.getChannelLayout(), audioDecoder.getSampleFormat(), audioDecoder.getTimeBase());
+			FilterAudioSink audioSink = audioGraph.addAudioSink("output", audioEncoder.getSampleRate(), audioEncoder.getChannelLayout(), audioEncoder.getSampleFormat());
+			audioGraph.open("[input] aformat='sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo' [output]");
+			
+			MediaAudio sourceAudio = MediaAudio.make(audioDecoder.getFrameSize(), audioDecoder.getSampleRate(), audioDecoder.getChannels(), audioDecoder.getChannelLayout(), audioDecoder.getSampleFormat());
+			MediaAudio targetAudio = MediaAudio.make(audioEncoder.getFrameSize(), audioEncoder.getSampleRate(), audioEncoder.getChannels(), audioEncoder.getChannelLayout(), audioEncoder.getSampleFormat());
+			MediaPicture targetPicture = MediaPicture.make(videoEncoder.getWidth(), videoEncoder.getHeight(), videoDecoder.getPixelFormat());
       		MediaPicture sourcePicture = MediaPicture.make(videoDecoder.getWidth(), videoDecoder.getHeight(), videoDecoder.getPixelFormat());
-      		
+
 			 while(demuxer.read(inputPacket) >= 0) {
 			      if (inputPacket.isComplete()) {
-			    	Decoder d = demuxer.getStream(inputPacket.getStreamIndex()).getDecoder();
-			        if (d.getCodecType() == MediaDescriptor.Type.MEDIA_AUDIO) {
-			        	/*
+			        if (audioStream.getIndex() == inputPacket.getStreamIndex()) {
 			        	if (decodeAudio(inputPacket, audioDecoder, sourceAudio)) {
-			        		do {
-			      				audioEncoder.encode(audioPacket, sourceAudio);
-		      			        if (audioPacket.isComplete()) {
-		      			          muxer.write(videoPacket, false);
-		      			        }
-	      			        } while (audioPacket.isComplete());
+			        		audioSource.addAudio(sourceAudio);
+			        		if (audioSink.getAudio(targetAudio) >= 0) {
+				        		do {
+				      				audioEncoder.encode(audioPacket, targetAudio);
+			      			        if (audioPacket.isComplete()) {
+			      			          muxer.write(audioPacket, false);
+			      			        }
+		      			        } while (audioPacket.isComplete());
+			        		}
 			        	}
-			        	*/
-			      	} else if (d.getCodecType() == MediaDescriptor.Type.MEDIA_VIDEO) {
+			      	} else if (videoStream.getIndex() == inputPacket.getStreamIndex()) {
 			      		if (decodePicture(inputPacket, videoDecoder, sourcePicture)) {
 			      			watermarkPicture.setTimeStamp(sourcePicture.getTimeStamp());
 			      			watermark.addPicture(watermarkPicture);
-			      			source.addPicture(sourcePicture);
-			      			
-			      			if (sink.getPicture(targetPicture) >= 0) {
+			      			videoSource.addPicture(sourcePicture);
+			      			if (videoSink.getPicture(targetPicture) >= 0) {
 			      				do {
 				      				videoEncoder.encode(videoPacket, targetPicture);
 			      			        if (videoPacket.isComplete()) {
