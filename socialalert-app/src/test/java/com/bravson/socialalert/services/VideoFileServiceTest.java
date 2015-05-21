@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -16,6 +17,7 @@ import com.bravson.socialalert.app.domain.VideoMetadata;
 import com.bravson.socialalert.app.services.VideoFileService;
 import com.bravson.socialalert.infrastructure.SimpleServiceTest;
 
+@Ignore
 public class VideoFileServiceTest extends SimpleServiceTest {
 
 	@Resource
@@ -27,13 +29,6 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 	@Before
 	public void cleanTempDir() throws IOException {
 		FileUtils.cleanDirectory(tempDir);
-	}
-	
-	@Test
-	public void testSnapshot() throws IOException {
-		File file = service.createPreview(new File("src/test/resources/media/IMG_0236.MOV"));
-		assertNotNull(file);
-		assertEquals(new File("src/test/resources/media/preview-IMG_0236.jpg"), file);
 	}
 	
 	@Test
@@ -63,8 +58,9 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 	}
 	
 	@Test
-	public void testWatermark() throws IOException {
-		File file = service.watermark(new File("src/test/resources/media/IMG_0236.MOV"));
+	public void testPreview() throws IOException {
+		File file = service.createPreview(new File("src/test/resources/media/IMG_0236.MOV"));
+		assertEquals(new File("src/test/resources/media/preview-IMG_0236.avi"), file);
 	}
 }
 

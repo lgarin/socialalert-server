@@ -66,9 +66,9 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 	// TODO authorization should be done at the servlet level
 	//@PreAuthorize("hasRole('USER')")
 	@Override
-	public URI storeVideo(InputStream inputStream, int contentLength) throws IOException {
+	public URI storeVideo(InputStream inputStream, int contentLength, String format) throws IOException {
 		
-		File outputFile = storeMedia(inputStream, contentLength, "avi");
+		File outputFile = storeMedia(inputStream, contentLength, format);
 		
 		try {
 			videoFileService.parseMetadata(outputFile);
@@ -152,10 +152,8 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 		}
 		if (mediaFile.getName().endsWith("jpg")) {
 			return pictureFileService.createJpegThumbnail(mediaFile);
-		} else if (mediaFile.getName().endsWith("avi")) {
-			return videoFileService.createThumbnail(mediaFile);
 		} else {
-			return null;
+			return videoFileService.createThumbnail(mediaFile);
 		}
 	}
 	
@@ -171,10 +169,8 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 		}
 		if (mediaFile.getName().endsWith("jpg")) {
 			return pictureFileService.createJpegPreview(mediaFile);
-		} else if (mediaFile.getName().endsWith("avi")) {
-			return videoFileService.createPreview(mediaFile);
 		} else {
-			return null;
+			return videoFileService.createPreview(mediaFile);
 		}
 	}
 	

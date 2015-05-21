@@ -44,14 +44,17 @@ public class UploadServlet implements HttpRequestHandler {
 				response.setHeader("Location", uri.getPath());
 				response.setStatus(HttpStatus.CREATED.value());
 			} else if (MP4_MEDIA_TYPE.equals(request.getContentType())) {
-				URI uri = storageService.storeVideo(request.getInputStream(), request.getContentLength());
+				URI uri = storageService.storeVideo(request.getInputStream(), request.getContentLength(), "mp4");
 				request.getInputStream().close();
 				// TODO absolute path?
 				response.setHeader("Location", uri.getPath());
 				response.setStatus(HttpStatus.CREATED.value());
 			} else if (MOV_MEDIA_TYPE.equals(request.getContentType())) {
-				// TODO convert video to MP4
-				
+				URI uri = storageService.storeVideo(request.getInputStream(), request.getContentLength(), "mov");
+				request.getInputStream().close();
+				// TODO absolute path?
+				response.setHeader("Location", uri.getPath());
+				response.setStatus(HttpStatus.CREATED.value());
 			} else {
 				throw new HttpClientErrorException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, request.getContentType() + " is not supported");
 			}

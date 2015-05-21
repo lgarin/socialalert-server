@@ -16,7 +16,7 @@ public interface MediaStorageService {
 
 	public URI storePicture(@NotNull InputStream inputStream, int contentLength) throws IOException;
 	
-	public URI storeVideo(@NotNull InputStream inputStream, int contentLength) throws IOException;
+	public URI storeVideo(@NotNull InputStream inputStream, int contentLength, @NotNull String format) throws IOException;
 	
 	public URI storeRemotePicture(@NotNull URL sourceUrl) throws IOException;
 	
