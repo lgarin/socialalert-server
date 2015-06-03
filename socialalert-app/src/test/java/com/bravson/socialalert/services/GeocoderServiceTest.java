@@ -52,7 +52,7 @@ public class GeocoderServiceTest extends SimpleServiceTest {
 	public void lookupInexactAddress() {
 		List<GeoAddress> result = service.findLocation("Monbijoux, Bern", null, "FR");
 		assertNotNull(result);
-		assertEquals(6, result.size());
+		assertEquals(3, result.size());
 	}
 	
 	@Test

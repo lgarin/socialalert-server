@@ -1,11 +1,14 @@
 package com.bravson.socialalert.app.services;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -16,9 +19,12 @@ import org.springframework.data.solr.core.query.UpdateAction;
 import org.springframework.data.solr.core.query.UpdateField;
 import org.springframework.stereotype.Service;
 
+import com.bravson.socialalert.app.entities.ApplicationUser;
 import com.bravson.socialalert.app.entities.ProfileLink;
 import com.bravson.socialalert.app.repositories.ProfileLinkRepository;
+import com.bravson.socialalert.common.domain.PublicProfileInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
+import com.bravson.socialalert.common.domain.UserContent;
 
 @Service
 public class ProfileLinkServiceImpl implements ProfileLinkService {
@@ -95,4 +101,17 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
 		return true;
 	}
 
+	@Override
+	public void updateObservedStatus(UUID sourceProfileId, Collection<? extends PublicProfileInfo> profiles) {
+		HashMap<String, Boolean> observedMap = new HashMap<>(profiles.size());
+		for (PublicProfileInfo profile : profiles) {
+			observedMap.put(ProfileLink.buildLinkId(sourceProfileId, profile.getProfileId()), Boolean.FALSE);
+		}
+		for (ProfileLink link : linkRepository.findAll(observedMap.keySet())) {
+			observedMap.put(link.getId(), Boolean.TRUE);
+		}
+		for (PublicProfileInfo profile : profiles) {
+			profile.setFollowed(observedMap.get(ProfileLink.buildLinkId(sourceProfileId, profile.getProfileId())));
+		}
+	}
 }

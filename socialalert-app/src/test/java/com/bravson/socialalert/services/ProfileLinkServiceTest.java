@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bravson.socialalert.app.entities.ProfileLink;
 import com.bravson.socialalert.app.services.ProfileLinkService;
+import com.bravson.socialalert.common.domain.PublicProfileInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 import com.bravson.socialalert.infrastructure.DataServiceTest;
 
@@ -113,5 +114,25 @@ public class ProfileLinkServiceTest extends DataServiceTest {
 		UUID sourceProfileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
 		UUID targetProfileId = UUID.fromString("a7d166ae-9b3f-4405-be0d-fa156772859a");
 		assertFalse(service.increaseActivityWeight(sourceProfileId, targetProfileId, 1));
+	}
+	
+	@Test
+	public void updateObservedStatus() {
+		UUID sourceProfileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
+		UUID targetProfileId = UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593");
+		PublicProfileInfo info = new PublicProfileInfo();
+		info.setProfileId(targetProfileId);
+		service.updateObservedStatus(sourceProfileId, Collections.singleton(info));
+		assertTrue(info.isFollowed());
+	}
+	
+	@Test
+	public void updateNotObservedStatus() {
+		UUID sourceProfileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
+		UUID targetProfileId = UUID.fromString("a7d166ae-9b3f-4405-be0d-fa156772859a");
+		PublicProfileInfo info = new PublicProfileInfo();
+		info.setProfileId(targetProfileId);
+		service.updateObservedStatus(sourceProfileId, Collections.singleton(info));
+		assertFalse(info.isFollowed());
 	}
 }

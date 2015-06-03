@@ -116,15 +116,22 @@ public class ProfileFacadeImpl implements ProfileFacade {
 		ProfileStatisticInfo info = statisticService.getProfileStatistic(profileId);
 		info.enrich(profileService.getProfileById(profileId).toPublicInfo());
 		userService.updateOnlineStatus(Collections.singleton(info));
+		ApplicationUser currentUser = SecurityUtils.findAuthenticatedPrincipal();
+		if (currentUser != null && currentUser.getProfileId() != null) {
+			info.setFollowed(linkService.isObserverOf(currentUser.getProfileId(), profileId));
+		}
 		return info;
 	}
 	
-	private QueryResult<PublicProfileInfo> getPublicProfiles(QueryResult<UUID> profileIds) {
+	private QueryResult<PublicProfileInfo> getPublicProfiles(ApplicationUser currentUser, QueryResult<UUID> profileIds) {
 		ArrayList<PublicProfileInfo> result = new ArrayList<>(profileIds.getContent().size());
 		for (UserProfile profile : profileService.getProfileMap(profileIds.getContent()).values()) {
 			result.add(profile.toPublicInfo());
 		}
 		userService.updateOnlineStatus(result);
+		if (currentUser != null && currentUser.getProfileId() != null) {
+			linkService.updateObservedStatus(currentUser.getProfileId(), result);
+		}
 		return new QueryResult<>(result, profileIds.getPageNumber(), profileIds.getPageNumber());
 	}
 	
@@ -133,7 +140,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	public QueryResult<PublicProfileInfo> getFollowedProfiles(int pageNumber, int pageSize) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		QueryResult<UUID> profileIds = linkService.getObservedProfiles(user.getProfileId(), pageNumber, pageSize);
-		return getPublicProfiles(profileIds);
+		return getPublicProfiles(user, profileIds);
 	}
 
 	@Override
@@ -141,7 +148,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	public QueryResult<PublicProfileInfo> getFollowerProfiles(int pageNumber, int pageSize) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		QueryResult<UUID> profileIds = linkService.getObserverProfiles(user.getProfileId(), pageNumber, pageSize);
-		return getPublicProfiles(profileIds);
+		return getPublicProfiles(user, profileIds);
 	}
 	
 	@Override
@@ -182,6 +189,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	public QueryResult<PublicProfileInfo> searchProfiles(String keyword, int pageNumber, int pageSize) {
 		QueryResult<PublicProfileInfo> result = profileService.searchProfiles(keyword, pageNumber, pageSize);
 		userService.updateOnlineStatus(result.getContent());
+		linkService.updateObservedStatus(SecurityUtils.findAuthenticatedPrincipal().getProfileId(), result.getContent());
 		return result;
 	}
 	
@@ -202,6 +210,11 @@ public class ProfileFacadeImpl implements ProfileFacade {
 			current.enrich(profileMap.get(current.getProfileId()).toPublicInfo());
 		}
 		userService.updateOnlineStatus(result.getContent());
+		
+		ApplicationUser currentUser = SecurityUtils.findAuthenticatedPrincipal();
+		if (currentUser != null && currentUser.getProfileId() != null) {
+			linkService.updateObservedStatus(currentUser.getProfileId(), result.getContent());
+		}
 		return result;
 	}
 	

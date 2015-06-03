@@ -10,6 +10,7 @@ public class PublicProfileInfo implements UserContent {
 	private String nickname;
 	private String biography;
 	private boolean online;
+	private boolean followed;
 	
 	public UUID getProfileId() {
 		return profileId;
@@ -48,5 +49,11 @@ public class PublicProfileInfo implements UserContent {
 	@Override
 	public void setCreator(String creator) {
 		this.nickname = creator;
+	}
+	public boolean isFollowed() {
+		return followed;
+	}
+	public void setFollowed(boolean followed) {
+		this.followed = followed;
 	}
 }

@@ -1,5 +1,6 @@
 package com.bravson.socialalert.app.services;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import javax.validation.constraints.Min;
@@ -7,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.validation.annotation.Validated;
 
+import com.bravson.socialalert.common.domain.PublicProfileInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 
 @Validated
@@ -23,4 +25,6 @@ public interface ProfileLinkService {
 	public boolean removeObservedProfile(@NotNull UUID sourceProfileId, @NotNull UUID observedProfileId);
 	
 	public boolean increaseActivityWeight(@NotNull UUID sourceProfileId, @NotNull UUID targetProfileId, int delta);
+	
+	public void updateObservedStatus(@NotNull UUID sourceProfileId, @NotNull Collection<? extends PublicProfileInfo> profiles);
 }
