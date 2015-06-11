@@ -57,6 +57,8 @@ public interface MediaFacade {
 
 	CommentInfo addComment(@JsonRpcParam("mediaUri") @NotNull URI mediaUri, @JsonRpcParam("comment") @NotEmpty String comment) throws IOException;
 	
+	CommentInfo setCommentApproval(@JsonRpcParam("commentId") @NotNull UUID commentId, @JsonRpcParam("modifier") ApprovalModifier modifier) throws IOException;
+	
 	ActivityInfo repostComment(@JsonRpcParam("commentId") @NotNull UUID commentId) throws IOException;
 	
 	ActivityInfo repostMedia(@JsonRpcParam("mediaUri") @NotNull URI mediaUri) throws IOException;

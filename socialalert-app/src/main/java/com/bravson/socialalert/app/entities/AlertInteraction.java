@@ -19,6 +19,9 @@ public class AlertInteraction extends VersionedEntity {
 	
 	@Field
     private URI mediaUri;
+	
+	@Field
+	private UUID commentId;
 	 
 	@Field
     private UUID profileId;
@@ -30,9 +33,23 @@ public class AlertInteraction extends VersionedEntity {
 		return mediaUri.toString() + " @ " + profileId.toString();
 	}
 	
+	public static String buildInteractionId(UUID commentId, UUID profileId) {
+		return commentId.toString() + " @ " + profileId.toString();
+	}
+	
+	protected AlertInteraction() {
+		
+	}
+	
 	public AlertInteraction(URI mediaUri, UUID profileId) {
 		this.interactionId = buildInteractionId(mediaUri, profileId);
 		this.mediaUri = mediaUri;
+		this.profileId = profileId;
+	}
+	
+	public AlertInteraction(UUID commentId, UUID profileId) {
+		this.interactionId = buildInteractionId(commentId, profileId);
+		this.commentId = commentId;
 		this.profileId = profileId;
 	}
 
@@ -42,6 +59,10 @@ public class AlertInteraction extends VersionedEntity {
 
 	public URI getMediaUri() {
 		return mediaUri;
+	}
+	
+	public UUID getCommentId() {
+		return commentId;
 	}
 
 	public UUID getProfileId() {

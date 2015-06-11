@@ -266,7 +266,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		ApprovalModifier modifier = null;
 		if (user != null && user.getProfileId() != null) {
-			modifier = interactionService.getApprovalModifier(mediaUri, user.getProfileId());
+			modifier = interactionService.getMediaApprovalModifier(mediaUri, user.getProfileId());
 		}
 		MediaInfo result = alertService.viewMediaDetail(mediaUri).enrich(modifier);
 		userService.populateCreators(Collections.singletonList(result));
@@ -288,17 +288,17 @@ public class MediaFacadeImpl implements MediaFacade {
 	@Transactional(rollbackFor={Throwable.class})
 	public MediaInfo setMediaApproval(URI mediaUri, ApprovalModifier modifier) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
-		MediaInfo media = alertService.getMediaInfo(mediaUri);
-		ApprovalModifier oldModifier = interactionService.setApprovalModifier(mediaUri, user.getProfileId(), modifier);
+		ApprovalModifier oldModifier = interactionService.setMediaApprovalModifier(mediaUri, user.getProfileId(), modifier);
+		MediaInfo result = alertService.updateLikeDislike(mediaUri, oldModifier, modifier).enrich(modifier);
 		if (modifier != null) {
-			activityService.addActivity(mediaUri, user.getProfileId(), modifier.toActivtiyType(), null);
+			activityService.addActivity(mediaUri, user.getProfileId(), modifier.toMediaActivtiyType(), null);
 		}
 		if (modifier == ApprovalModifier.LIKE) {
-			linkService.increaseActivityWeight(user.getProfileId(), media.getProfileId(), MediaConstants.LIKE_WEIGHT);
+			linkService.increaseActivityWeight(user.getProfileId(), result.getProfileId(), MediaConstants.LIKE_WEIGHT);
 		} else if (modifier == ApprovalModifier.DISLIKE) {
-			linkService.increaseActivityWeight(user.getProfileId(), media.getProfileId(), MediaConstants.DISLIKE_WEIGHT);
+			linkService.increaseActivityWeight(user.getProfileId(), result.getProfileId(), MediaConstants.DISLIKE_WEIGHT);
 		}
-		MediaInfo result = alertService.updateLikeDislike(mediaUri, oldModifier, modifier).enrich(modifier);
+		
 		userService.populateCreators(Collections.singletonList(result));
 		userService.updateOnlineStatus(Collections.singletonList(result));
 		return result;
@@ -323,6 +323,22 @@ public class MediaFacadeImpl implements MediaFacade {
 		info.setCreator(user.getNickname());
 		info.setOnline(true);
 		return info;
+	}
+	
+	@Override
+	@PreAuthorize("hasRole('USER')")
+	@Transactional(rollbackFor={Throwable.class})
+	public CommentInfo setCommentApproval(UUID commentId, ApprovalModifier modifier) {
+		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
+		ApprovalModifier oldModifier = interactionService.setCommentApprovalModifier(commentId, user.getProfileId(), modifier);
+		CommentInfo result = commentService.updateApproval(commentId, oldModifier, modifier).enrich(modifier);
+		if (modifier != null) {
+			activityService.addActivity(result.getMediaUri(), user.getProfileId(), modifier.toCommentActivtiyType(), commentId);
+		}
+		
+		userService.populateCreators(Collections.singletonList(result));
+		userService.updateOnlineStatus(Collections.singletonList(result));
+		return result;
 	}
 	
 	@Override

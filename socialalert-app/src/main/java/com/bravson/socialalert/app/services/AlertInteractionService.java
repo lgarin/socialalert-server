@@ -12,7 +12,11 @@ import com.bravson.socialalert.common.domain.ApprovalModifier;
 @Validated
 public interface AlertInteractionService {
 
-	public ApprovalModifier getApprovalModifier(@NotNull URI mediaUri, @NotNull UUID profileId);
+	public ApprovalModifier getMediaApprovalModifier(@NotNull URI mediaUri, @NotNull UUID profileId);
 
-	public ApprovalModifier setApprovalModifier(@NotNull URI mediaUri, @NotNull UUID profileId, ApprovalModifier modifier);
+	public ApprovalModifier setMediaApprovalModifier(@NotNull URI mediaUri, @NotNull UUID profileId, ApprovalModifier modifier);
+	
+	public ApprovalModifier getCommentApprovalModifier(@NotNull UUID commentId, @NotNull UUID profileId);
+
+	public ApprovalModifier setCommentApprovalModifier(@NotNull UUID commentId, @NotNull UUID profileId, ApprovalModifier modifier);
 }

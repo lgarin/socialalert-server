@@ -26,6 +26,9 @@ public class AlertComment extends VersionedEntity {
 	@Field
 	private String comment;
 	
+	@Field
+	private int approvalCount;
+	
 	public AlertComment(URI mediaUri, UUID profileId, String comment) {
 		this.commentId = UUID.randomUUID();
 		this.mediaUri = mediaUri;
@@ -48,7 +51,15 @@ public class AlertComment extends VersionedEntity {
 	public String getComment() {
 		return comment;
 	}
-
+	
+	public void updateApprovalCount(int approvalDelta) {
+		if (Math.abs(approvalDelta) > 2) {
+			throw new IllegalArgumentException("Approval delta must me either -2, -1, 0, 1 or 2 but was " + approvalDelta); 
+		}
+		approvalCount += approvalDelta;
+		touch();
+	}
+	
 	public CommentInfo toCommentInfo() {
 		CommentInfo info = new CommentInfo();
 		info.setCommentId(commentId);
@@ -56,6 +67,7 @@ public class AlertComment extends VersionedEntity {
 		info.setCreation(creation);
 		info.setMediaUri(mediaUri);
 		info.setProfileId(profileId);
+		info.setApprovalCount(approvalCount);
 		return info;
 	}
 }

@@ -12,5 +12,13 @@
 	  "creation": "2013-07-16T16:50:40.492Z",
 	  "lastUpdate": "2013-07-16T16:50:40.492Z",
 	  "approval": "LIKE"
+      },
+      
+      {"interactionId" : "b95472c0-e0e6-11e2-a28f-0800200c9a22 @ e7d166ae-9b3f-4405-be0d-fa1567728593",
+	  "commentId": "b95472c0-e0e6-11e2-a28f-0800200c9a22",
+	  "profileId": "e7d166ae-9b3f-4405-be0d-fa1567728593",
+	  "creation": "2013-07-16T16:50:40.492Z",
+	  "lastUpdate": "2013-07-16T16:50:40.492Z",
+	  "approval": "LIKE"
       }
 ]

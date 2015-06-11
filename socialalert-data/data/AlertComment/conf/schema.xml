@@ -7,6 +7,7 @@
 		<field name="lastUpdate" type="date" indexed="false" stored="true" required="true" multiValued="false"/>
 		<field name="creation" type="date" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="comment" type="text" indexed="false" stored="true" required="true" multiValued="false"/>
+		<field name="approvalCount" type="integer" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="_version_" type="long" indexed="true" stored="true"/>
 	</fields>
 

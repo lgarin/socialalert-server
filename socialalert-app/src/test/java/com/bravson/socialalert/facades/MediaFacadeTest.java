@@ -446,6 +446,26 @@ public class MediaFacadeTest extends DataServiceTest {
 	}
 	
 	@Test
+	public void approveComment() throws IOException {
+		userFacade.login("lucien@test.com", "123");
+		UUID commentId = UUID.fromString("b95472c0-e0e6-11e2-a28f-0800200c9a22");
+		CommentInfo info = facade.setCommentApproval(commentId, ApprovalModifier.LIKE);
+		assertNotNull(info);
+		assertEquals(commentId, info.getCommentId());
+		assertEquals(1, info.getApprovalCount());
+	}
+	
+	@Test
+	public void confirmCommentApproval() throws IOException {
+		userFacade.login("lucien@test.com", "123");
+		UUID commentId = UUID.fromString("b95472c0-e0e6-11e2-a28f-0800200c9a22");
+		CommentInfo info = facade.setCommentApproval(commentId, ApprovalModifier.LIKE);
+		assertNotNull(info);
+		assertEquals(commentId, info.getCommentId());
+		assertEquals(1, info.getApprovalCount());
+	}
+	
+	@Test
 	public void repostExistingPicture() throws IOException {
 		userFacade.login("lucien@test.com", "123");
 		ActivityInfo info = facade.repostMedia(URI.create("20130712/7e9a5a5bd5e64171c176ac6c7b32d685.jpg"));

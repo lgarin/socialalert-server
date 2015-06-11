@@ -4,7 +4,8 @@
 	 "profileId": "a95472c0-e0e6-11e2-a28f-0800200c9a77",
 	 "creation": "2013-07-13T13:04:01Z", 
      "lastUpdate": "2013-07-13T13:04:01Z",
-     "comment": "Hello 1"
+     "comment": "Hello 1",
+     "approvalCount": "1"
      },
      
 	 {"commentId" : "c95472c0-e0e6-11e2-a28f-0800200c9a33",
@@ -12,6 +13,7 @@
 	 "profileId": "a95472c0-e0e6-11e2-a28f-0800200c9a77",
 	 "creation": "2013-08-13T13:04:01Z", 
      "lastUpdate": "2013-08-13T13:04:01Z",
-     "comment": "Hello 2"
+     "comment": "Hello 2",
+     "approvalCount": "0"
      }
 ]

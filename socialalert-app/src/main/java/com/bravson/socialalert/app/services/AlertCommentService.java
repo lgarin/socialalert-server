@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.validation.annotation.Validated;
 
 import com.bravson.socialalert.common.domain.ActivityInfo;
+import com.bravson.socialalert.common.domain.ApprovalModifier;
 import com.bravson.socialalert.common.domain.CommentInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 
@@ -24,4 +25,6 @@ public interface AlertCommentService {
 	public void populateComments(@NotNull List<ActivityInfo> items);
 
 	public CommentInfo getCommentInfo(@NotNull UUID commentId);
+	
+	public CommentInfo updateApproval(@NotNull UUID commentId, ApprovalModifier oldModifier, ApprovalModifier newModifier);
 }

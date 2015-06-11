@@ -228,7 +228,7 @@ public class PictureFacadeImpl implements PictureFacade {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		ApprovalModifier modifier = null;
 		if (user != null && user.getProfileId() != null) {
-			modifier = interactionService.getApprovalModifier(pictureUri, user.getProfileId());
+			modifier = interactionService.getMediaApprovalModifier(pictureUri, user.getProfileId());
 		}
 		PictureInfo result = alertService.viewPictureDetail(pictureUri).enrich(modifier);
 		userService.populateCreators(Collections.singletonList(result));
@@ -251,9 +251,9 @@ public class PictureFacadeImpl implements PictureFacade {
 	public PictureInfo setPictureApproval(URI pictureUri, ApprovalModifier modifier) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		PictureInfo picture = alertService.getPictureInfo(pictureUri);
-		ApprovalModifier oldModifier = interactionService.setApprovalModifier(pictureUri, user.getProfileId(), modifier);
+		ApprovalModifier oldModifier = interactionService.setMediaApprovalModifier(pictureUri, user.getProfileId(), modifier);
 		if (modifier != null) {
-			activityService.addActivity(pictureUri, user.getProfileId(), modifier.toActivtiyType(), null);
+			activityService.addActivity(pictureUri, user.getProfileId(), modifier.toMediaActivtiyType(), null);
 		}
 		if (modifier == ApprovalModifier.LIKE) {
 			linkService.increaseActivityWeight(user.getProfileId(), picture.getProfileId(), MediaConstants.LIKE_WEIGHT);

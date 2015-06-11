@@ -15,12 +15,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bravson.socialalert.app.domain.ProfileStatisticUpdate;
 import com.bravson.socialalert.app.entities.AlertComment;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.repositories.AlertCommentRepository;
 import com.bravson.socialalert.common.domain.ActivityInfo;
+import com.bravson.socialalert.common.domain.ApprovalModifier;
 import com.bravson.socialalert.common.domain.CommentInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 
@@ -98,5 +100,18 @@ public class AlertCommentServiceImpl implements AlertCommentService {
 			throw new DataMissingException("Cannot find comment "  + commentId);
 		}
 		return entity.toCommentInfo();
+	}
+	
+	@Transactional(rollbackFor={Throwable.class})
+	@Override
+	public CommentInfo updateApproval(UUID commentId, ApprovalModifier oldModifier, ApprovalModifier newModifier) {
+		AlertComment comment = commentRepository.lockById(commentId);
+		if (comment == null) {
+			throw new DataMissingException("No comment with UUID " + commentId);
+		}
+		int delta = ApprovalModifier.computeApprovalDelta(oldModifier, newModifier);
+		comment.updateApprovalCount(delta);
+		commentRepository.save(comment);
+		return comment.toCommentInfo();
 	}
 }

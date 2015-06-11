@@ -2,7 +2,8 @@
 <schema name="alertInteraction" version="1.5">
 	<fields>
 		<field name="interactionId" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-		<field name="mediaUri" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+		<field name="mediaUri" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="commentId" type="uuid" indexed="true" stored="true" required="false" multiValued="false"/>
 		<field name="profileId" type="uuid" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="lastUpdate" type="date" indexed="false" stored="true" required="true" multiValued="false"/>
 		<field name="creation" type="date" indexed="false" stored="true" required="true" multiValued="false"/>
