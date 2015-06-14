@@ -22,10 +22,9 @@ import com.bravson.socialalert.common.domain.UserConstants;
 import com.bravson.socialalert.common.domain.UserInfo;
 import com.bravson.socialalert.common.domain.UserRole;
 import com.bravson.socialalert.common.facade.UserFacade;
-import com.bravson.socialalert.pages.OAuthLogin;
-import com.bravson.socialalert.pages.OpenIdLogin;
 import com.bravson.socialalert.pages.Index;
 import com.bravson.socialalert.pages.InitiateResetPassword;
+import com.bravson.socialalert.pages.OAuthLogin;
 import com.bravson.socialalert.pages.UserHome;
 import com.bravson.socialalert.services.DisplayState;
 import com.bravson.socialalert.services.ProtectedPage;
@@ -103,8 +102,8 @@ public class Login {
     }
     
     Object onGoogleLogin() throws IOException {
-    	Link redirectLink = pageRenderLinkSource.createPageRenderLink(OpenIdLogin.class);
-    	return userService.beginOpenIdLogin(googleLoginUrl, new URL(redirectLink.toAbsoluteURI()));
+    	Link redirectLink = pageRenderLinkSource.createPageRenderLink(OAuthLogin.class);
+    	return userService.beginOAuthLogin("google", new URL(redirectLink.toAbsoluteURI()));
     }
     
     Object onHotmailLogin() throws IOException {

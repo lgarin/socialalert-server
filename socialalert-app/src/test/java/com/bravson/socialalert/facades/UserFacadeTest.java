@@ -1,13 +1,6 @@
 package com.bravson.socialalert.facades;
 
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.annotation.Resource;
 import javax.validation.ValidationException;
@@ -23,10 +16,8 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.bravson.socialalert.app.domain.ExternalProfileInfo;
 import com.bravson.socialalert.app.entities.ApplicationUser;
 import com.bravson.socialalert.app.entities.UserProfile;
-import com.bravson.socialalert.app.services.OpenIdAuthenticationService;
 import com.bravson.socialalert.common.domain.UserConstants;
 import com.bravson.socialalert.common.domain.UserInfo;
 import com.bravson.socialalert.common.domain.UserRole;
@@ -39,14 +30,11 @@ public class UserFacadeTest extends DataServiceTest {
 	@Resource
 	private UserFacade facade;
 	
-	private OpenIdAuthenticationService openIdService;
-	
 	@Before
 	public void setUp() throws Exception {
 		fullImport(ApplicationUser.class);
 		fullImport(UserProfile.class);
 		SecurityContextHolder.clearContext();
-		openIdService = createMock(facade, "openIdService", OpenIdAuthenticationService.class);
 	}
 	
 	@Test(expected=ValidationException.class)
@@ -246,98 +234,6 @@ public class UserFacadeTest extends DataServiceTest {
 	@Test(expected=UsernameNotFoundException.class)
 	public void resetPasswordForUnknownUser() throws IOException {
 		facade.resetPassword("xyz@test.com", "badtoken", "123");
-	}
-	
-	
-	@Test
-	public void beginGoogleLogin() throws MalformedURLException, IOException {
-		URL providerUrl = new URL("https://www.google.com/accounts/o8/id");
-		URL redirectUrl = new URL("http://localhost:9092/loginSuccess");
-		expect(openIdService.beginOpenIdConsumption(eq(providerUrl), eq(redirectUrl))).andReturn(new URL("https://www.google.com/accounts/o8/ud"));
-		replay(openIdService);
-		URL url = facade.beginOpenIdLogin(providerUrl, redirectUrl);
-		assertNotNull(url);
-		assertTrue(url.toString().startsWith("https://www.google.com/accounts/o8/ud"));
-		assertNull(SecurityContextHolder.getContext().getAuthentication());
-		verify(openIdService);
-	}
-	
-	public void completeOpenIdLoginForNewUser() throws MalformedURLException, IOException {
-		URL response = new URL("http://localhost:9092/loginSuccess?openid.mode=id_res");
-		ExternalProfileInfo openIdInfo = new ExternalProfileInfo();
-		openIdInfo.setEmail("newUser@test.com");
-		openIdInfo.setNickname("NewUser");
-		openIdInfo.setIdentifier("newUser");
-		expect(openIdService.endOpenIdConsumption(eq(response))).andReturn(openIdInfo);
-		replay(openIdService);
-		DateTime beforeLogin = DateTime.now();
-		UserInfo userInfo = facade.completeOpenIdLogin(response);
-		assertEquals("newUser@test.com", userInfo.getEmail());
-		assertEquals("NewUser", userInfo.getNickname());
-		assertTrue(beforeLogin.isBefore(userInfo.getCreation()));
-		assertTrue(beforeLogin.isBefore(userInfo.getLastLoginSuccess()));
-		assertEquals(0, userInfo.getLoginFailureCount());
-		assertNull(userInfo.getLastLoginFailure());
-		assertEquals(UserState.ACTIVE, userInfo.getState());
-		assertTrue(userInfo.hasRole(UserRole.USER));
-		assertNotNull(SecurityContextHolder.getContext().getAuthentication());
-		assertTrue(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-		verify(openIdService);
-	}
-	
-	public void completeOpenIdLoginForGuestUser() throws MalformedURLException, IOException {
-		URL response = new URL("http://localhost:9092/loginSuccess?openid.mode=id_res");
-		ExternalProfileInfo openIdInfo = new ExternalProfileInfo();
-		openIdInfo.setEmail("unverified@test.com");
-		openIdInfo.setNickname("anotherNickname");
-		openIdInfo.setIdentifier("unverified2");
-		expect(openIdService.endOpenIdConsumption(eq(response))).andReturn(openIdInfo);
-		replay(openIdService);
-		DateTime beforeLogin = DateTime.now();
-		UserInfo userInfo = facade.completeOpenIdLogin(response);
-		assertEquals("unverified@test.com", userInfo.getEmail());
-		assertEquals("unverified", userInfo.getNickname());
-		assertTrue(beforeLogin.isAfter(userInfo.getCreation()));
-		assertTrue(beforeLogin.isBefore(userInfo.getLastLoginSuccess()));
-		assertEquals(0, userInfo.getLoginFailureCount());
-		assertNull(userInfo.getLastLoginFailure());
-		assertEquals(UserState.ACTIVE, userInfo.getState());
-		assertTrue(userInfo.hasRole(UserRole.USER));
-		assertNotNull(SecurityContextHolder.getContext().getAuthentication());
-		assertTrue(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-		verify(openIdService);
-	}
-	
-	public void completeOpenIdLoginForActiveUser() throws MalformedURLException, IOException {
-		URL response = new URL("http://localhost:9092/loginSuccess?openid.mode=id_res");
-		ExternalProfileInfo openIdInfo = new ExternalProfileInfo();
-		openIdInfo.setEmail("lucien@test.com");
-		openIdInfo.setNickname("anotherNickname");
-		openIdInfo.setIdentifier("unverified2");
-		expect(openIdService.endOpenIdConsumption(eq(response))).andReturn(openIdInfo);
-		replay(openIdService);
-		DateTime beforeLogin = DateTime.now();
-		UserInfo userInfo = facade.completeOpenIdLogin(response);
-		assertEquals("lucien@test.com", userInfo.getEmail());
-		assertEquals("sg33g5", userInfo.getNickname());
-		assertTrue(beforeLogin.isAfter(userInfo.getCreation()));
-		assertTrue(beforeLogin.isBefore(userInfo.getLastLoginSuccess()));
-		assertEquals(0, userInfo.getLoginFailureCount());
-		assertNull(userInfo.getLastLoginFailure());
-		assertEquals(UserState.ACTIVE, userInfo.getState());
-		assertTrue(userInfo.hasRole(UserRole.USER));
-		assertNotNull(SecurityContextHolder.getContext().getAuthentication());
-		assertTrue(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-		verify(openIdService);
-	}
-	
-	@Test(expected=BadCredentialsException.class)
-	public void completeGoogleLoginWithBadCredential() throws MalformedURLException, IOException {
-		URL response = new URL("http://localhost:9092/loginSuccess?openid.mode=id_res");
-		expect(openIdService.endOpenIdConsumption(eq(response))).andThrow(new BadCredentialsException("expected"));
-		replay(openIdService);
-		facade.completeOpenIdLogin(response);
-		verify(openIdService);
 	}
 	
 	@Test

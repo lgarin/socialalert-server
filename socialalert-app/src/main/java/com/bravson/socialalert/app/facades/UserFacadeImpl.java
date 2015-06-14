@@ -37,7 +37,6 @@ import com.bravson.socialalert.app.entities.UserProfile;
 import com.bravson.socialalert.app.services.ApplicationUserService;
 import com.bravson.socialalert.app.services.EmailService;
 import com.bravson.socialalert.app.services.OAuthAuthenicationService;
-import com.bravson.socialalert.app.services.OpenIdAuthenticationService;
 import com.bravson.socialalert.app.services.PasswordService;
 import com.bravson.socialalert.app.services.UserProfileService;
 import com.bravson.socialalert.app.tasks.QueuedTaskScheduler;
@@ -65,9 +64,6 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 	
 	@Resource
 	private QueuedTaskScheduler queuedTaskScheduler;
-	
-	@Resource
-	private OpenIdAuthenticationService openIdService;
 	
 	@Resource
 	private OAuthAuthenicationService oAuthService;
@@ -123,17 +119,6 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 	public UserInfo getCurrentUser() {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		return user != null ? user.toUserInfo() : null;
-	}
-	
-	@Override
-	public URL beginOpenIdLogin(URL providerUrl, URL redirectUrl) {
-		return openIdService.beginOpenIdConsumption(providerUrl, redirectUrl);
-	}
-	
-	@Override
-	public UserInfo completeOpenIdLogin(URL receivingUrl) {
-		ExternalProfileInfo openIdInfo = openIdService.endOpenIdConsumption(receivingUrl);
-		return completeExternalLogin(openIdInfo);
 	}
 
 	private UserInfo completeExternalLogin(ExternalProfileInfo info) {

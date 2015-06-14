@@ -24,10 +24,6 @@ public interface UserFacade {
 
 	UserInfo getCurrentUser() throws IOException;
 	
-	URL beginOpenIdLogin(@JsonRpcParam("providerUrl") @NotNull URL providerUrl, @JsonRpcParam("redirectUrl") @NotNull URL redirectUrl) throws IOException;
-	
-	UserInfo completeOpenIdLogin(@JsonRpcParam("receivingUrl") @NotNull URL receivingUrl) throws IOException;
-	
 	URL beginOAuthLogin(@JsonRpcParam("providerId") @NotEmpty String providerId, @JsonRpcParam("successUrl") @NotNull URL successUrl) throws IOException;
 
 	public UserInfo completeOAuthLogin(@JsonRpcParam("receivingUrl") @NotNull URL receivingUrl) throws IOException;
