@@ -12,6 +12,8 @@ import com.bravson.socialalert.common.domain.GeoArea;
 @Validated
 public interface GeocoderService {
 
+	public String queryCountry(@NotEmpty String ipAddress);
+	
 	public String encodeLatLon(Double latitude, Double longitude, @Min(0) @Max(24) int precision);
 	
 	public GeoArea decodeGeoHash(@NotEmpty String geoHash);

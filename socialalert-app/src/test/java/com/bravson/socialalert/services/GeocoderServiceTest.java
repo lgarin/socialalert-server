@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.bravson.socialalert.app.entities.AlertMedia;
 import com.bravson.socialalert.app.services.GeocoderService;
@@ -18,6 +19,23 @@ public class GeocoderServiceTest extends SimpleServiceTest {
 	@Resource
 	private GeocoderService service;
 
+	@Test
+	public void queryKnownIpAddressCountry() {
+		String result = service.queryCountry("8.8.8.8");
+		assertEquals("US", result);
+	}
+	
+	@Test
+	public void queryLocalIpAddressCountry() {
+		String result = service.queryCountry("192.168.120.85");
+		assertEquals("undefined", result);
+	}
+	
+	@Test(expected=HttpClientErrorException.class)
+	public void queryInvalidIpAddressCountry() {
+		service.queryCountry("a.b.c");
+	}
+	
 	@Test
 	public void computeGeohash() {
 		String geohash0 = service.encodeLatLon(46.95, 7.50, 0);

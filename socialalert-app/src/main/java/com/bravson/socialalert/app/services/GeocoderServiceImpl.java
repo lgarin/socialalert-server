@@ -1,6 +1,9 @@
 package com.bravson.socialalert.app.services;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.bravson.socialalert.common.domain.GeoArea;
 import com.spatial4j.core.context.SpatialContext;
@@ -12,6 +15,13 @@ import com.spatial4j.core.shape.Rectangle;
 @Service
 public class GeocoderServiceImpl implements GeocoderService {
 
+	@Resource
+	private RestTemplate restTemplate;
+	
+	public String queryCountry(String ipAddress) {
+		return restTemplate.getForObject("http://ipinfo.io/" + ipAddress + "/country", String.class).trim();
+	}
+	
 	public String encodeLatLon(Double latitude, Double longitude, int precision) {
 		if (latitude == null || longitude == null) {
 			return null;

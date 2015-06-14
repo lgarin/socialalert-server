@@ -21,6 +21,9 @@
 
 	<!-- Marshaller -->
 	<oxm:jaxb2-marshaller id="marshaller" context-path="com.bravson.socialalert.app.domain"/>
+	
+	<!-- RestTemplate -->
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
 
 	<!-- Transaction -->
     <bean id="transactionManager" class="com.bravson.socialalert.app.infrastructure.LocalTransactionManager" >
