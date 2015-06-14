@@ -22,9 +22,9 @@ import org.joda.time.format.DateTimeFormatter;
 import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.GeoAddress;
 import com.bravson.socialalert.common.domain.MediaCategory;
-import com.bravson.socialalert.common.domain.PictureInfo;
+import com.bravson.socialalert.common.domain.MediaInfo;
 import com.bravson.socialalert.common.domain.UserRole;
-import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.MediaFacade;
 import com.bravson.socialalert.common.facade.ProfileFacade;
 import com.bravson.socialalert.components.CreateComment;
 import com.bravson.socialalert.components.ListComments;
@@ -40,7 +40,7 @@ public class PictureDetail {
 	@Persist
 	private URI pictureUri;
 	
-	private PictureInfo info;
+	private MediaInfo info;
 	
 	@InjectComponent
 	private CreateComment createComment;
@@ -65,7 +65,7 @@ public class PictureDetail {
 	private DateTimeFormatter dateTimeFormat = DateTimeFormat.forStyle("MM");
 	
 	@Inject
-    private PictureFacade pictureService;
+    private MediaFacade pictureService;
 	
 	@Inject
     private ProfileFacade profileService;
@@ -85,7 +85,7 @@ public class PictureDetail {
 	}
 	
 	Object onRepost(URI pictureUri) throws IOException {
-		pictureService.repostPicture(pictureUri);
+		pictureService.repostMedia(pictureUri);
 		return this;
 	}
 	
@@ -97,7 +97,7 @@ public class PictureDetail {
 	@SetupRender
 	void setupRender() throws IOException {
 		if (pictureUri != null) {
-			info = pictureService.viewPictureDetail(pictureUri);
+			info = pictureService.viewMediaDetail(pictureUri);
 		}
 	}
 	
@@ -154,14 +154,14 @@ public class PictureDetail {
 	}
 
 	public String getFormattedPosition() {
-		if (info == null || info.getPictureLatitude() == null || info.getPictureLongitude() == null) {
+		if (info == null || info.getLatitude() == null || info.getLongitude() == null) {
 			return "";
 		}
-		return info.getPictureLatitude() + " - " + info.getPictureLongitude();
+		return info.getLatitude() + " - " + info.getLongitude();
 	}
 	
 	public String getPictureUri() {
-		return info == null ? "" : info.getPictureUri().toString();
+		return info == null ? "" : info.getMediaUri().toString();
 	}
 	
 	public String getFormattedCategories() {
@@ -180,15 +180,15 @@ public class PictureDetail {
 	}
 	
 	public String getFormattedDate() {
-		return  info == null ? "" : dateTimeFormat.withLocale(locale).print(info.getPictureTimestamp());
+		return  info == null ? "" : dateTimeFormat.withLocale(locale).print(info.getTimestamp());
 	}
 	
 	public Double getLongitude() {
-		return info == null ? null : info.getPictureLongitude();
+		return info == null ? null : info.getLongitude();
 	}
 	
 	public Double getLatitude() {
-		return info == null ? null : info.getPictureLatitude();
+		return info == null ? null : info.getLatitude();
 	}
 	
 	public UUID getProfileId() {
@@ -197,13 +197,13 @@ public class PictureDetail {
 	
 	public Object onSuccess() throws ClientProtocolException, IOException
     {
-		info = pictureService.viewPictureDetail(pictureUri);
+		info = pictureService.viewMediaDetail(pictureUri);
 		GeoAddress address = new GeoAddress(7.5, 46.9, "Terrassenrain 6, 3072 Ostermundigen, Suisse", "Ostermundigen", "Switzerland");
 		ArrayList<MediaCategory> categoryList = new ArrayList<>(info.getCategories().size());
 		for (String category : info.getCategories()) {
 			categoryList.add(typeCoercer.coerce(category, MediaCategory.class));
 		}
-		pictureService.updatePictureInfo(pictureUri, info.getTitle(), newDescription, address, null, null, null, categoryList, info.getTags());
+		pictureService.updateMediaInfo(pictureUri, info.getTitle(), newDescription, address, null, null, null, categoryList, info.getTags());
 		return this;
     }
 }

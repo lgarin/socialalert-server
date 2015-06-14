@@ -24,7 +24,7 @@ import org.apache.tapestry5.util.EnumValueEncoder;
 import com.bravson.socialalert.common.domain.GeoAddress;
 import com.bravson.socialalert.common.domain.MediaCategory;
 import com.bravson.socialalert.common.domain.UserRole;
-import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.MediaFacade;
 import com.bravson.socialalert.services.ProtectedPage;
 
 @ProtectedPage(allow={UserRole.USER})
@@ -58,7 +58,7 @@ public class ClaimPicture {
 	private TypeCoercer typeCoercer;
 
 	@Inject
-    private PictureFacade pictureService;
+    private MediaFacade pictureService;
 
 	Object onCancel() {
     	return UserHome.class;

@@ -13,13 +13,13 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.CommentInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
-import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.MediaFacade;
 import com.bravson.socialalert.common.facade.ProfileFacade;
 
 public class ListComments {
 
 	@Inject
-    private PictureFacade pictureService;
+    private MediaFacade pictureService;
 	
 	@Persist
 	private URI pictureUri;

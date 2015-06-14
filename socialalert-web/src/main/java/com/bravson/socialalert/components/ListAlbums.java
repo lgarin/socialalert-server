@@ -14,12 +14,12 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 
 import com.bravson.socialalert.common.domain.AlbumInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
-import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.MediaFacade;
 
 public class ListAlbums {
 
 	@Inject
-    private PictureFacade pictureService;
+    private MediaFacade pictureService;
 	
 	@Parameter
 	private UUID profileId;

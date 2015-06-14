@@ -1,21 +1,8 @@
 package com.bravson.socialalert.app.services;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
-import com.bravson.socialalert.common.domain.GeoAddress;
 import com.bravson.socialalert.common.domain.GeoArea;
-import com.google.code.geocoder.Geocoder;
-import com.google.code.geocoder.model.GeocodeResponse;
-import com.google.code.geocoder.model.GeocoderAddressComponent;
-import com.google.code.geocoder.model.GeocoderRequest;
-import com.google.code.geocoder.model.GeocoderResult;
-import com.google.code.geocoder.model.LatLng;
 import com.spatial4j.core.context.SpatialContext;
 import com.spatial4j.core.distance.DistanceUtils;
 import com.spatial4j.core.io.GeohashUtils;
@@ -24,49 +11,6 @@ import com.spatial4j.core.shape.Rectangle;
 
 @Service
 public class GeocoderServiceImpl implements GeocoderService {
-
-	private Geocoder geocoder = new Geocoder();
-	
-	public List<GeoAddress> findLocation(String address, String region, String preferredLanguage) {
-		GeocoderRequest request = new GeocoderRequest(address, preferredLanguage);
-		request.setRegion(region);
-		GeocodeResponse response;
-		try {
-			response = geocoder.geocode(request);
-		} catch (IOException e) {
-			throw new RuntimeException("Geocoding failed", e);
-		}
-		switch (response.getStatus()) {
-		case ZERO_RESULTS:
-			return Collections.emptyList();
-		case OK:
-			return toGeoAddresses(response.getResults());
-		default:
-			throw new RuntimeException("Status : " + response.getStatus().name());
-		}
-	}
-
-
-	private List<GeoAddress> toGeoAddresses(List<GeocoderResult> addresses) {
-		ArrayList<GeoAddress> result = new ArrayList<>(addresses.size());
-		for (GeocoderResult address : addresses) {
-			LatLng location = address.getGeometry().getLocation();
-			String country = findAddressComponent(address.getAddressComponents(), Arrays.asList("country", "political"));
-			String locality = findAddressComponent(address.getAddressComponents(), Arrays.asList("locality", "political"));
-			result.add(new GeoAddress(location.getLat().doubleValue(), location.getLng().doubleValue(), address.getFormattedAddress(), locality, country));
-		}
-		return result;
-	}
-
-	private String findAddressComponent(List<GeocoderAddressComponent> addressComponents, List<String> types) {
-		for (GeocoderAddressComponent component : addressComponents) {
-			if (component.getTypes().containsAll(types)) {
-				return component.getLongName();
-			}
-		}
-		return null;
-	}
-
 
 	public String encodeLatLon(Double latitude, Double longitude, int precision) {
 		if (latitude == null || longitude == null) {

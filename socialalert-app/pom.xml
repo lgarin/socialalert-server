@@ -131,11 +131,6 @@
 	      <artifactId>humble-video-all</artifactId>
 	      <version>0.2.1</version>
 	    </dependency>
-		<dependency>
-    		<groupId>com.google.code.geocoder-java</groupId>
-    		<artifactId>geocoder-java</artifactId>
-    		<version>0.16</version>
-  		</dependency>
   		<dependency>
 			<groupId>com.spatial4j</groupId>
 	 		<artifactId>spatial4j</artifactId>

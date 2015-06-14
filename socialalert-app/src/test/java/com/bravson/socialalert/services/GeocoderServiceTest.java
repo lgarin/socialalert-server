@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.bravson.socialalert.app.entities.AlertMedia;
@@ -17,44 +18,6 @@ public class GeocoderServiceTest extends SimpleServiceTest {
 	@Resource
 	private GeocoderService service;
 
-	@Test
-	public void lookupHomeAddress() {
-		List<GeoAddress> result = service.findLocation("Terrassenrain 6, 3072 Ostermundigen", "CH", "FR");
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertEquals("Terrassenrain 6, 3072 Ostermundigen, Suisse", result.get(0).getFormattedAddress());
-		assertEquals(7.50, result.get(0).getLongitude(), 0.01);
-		assertEquals(46.95, result.get(0).getLatitude(), 0.01);
-		assertEquals("Ostermundigen", result.get(0).getLocality());
-		assertEquals("Suisse", result.get(0).getCountry());
-	}
-	
-	@Test
-	public void lookupHomeAddressWithDefaultLanguage() {
-		List<GeoAddress> result = service.findLocation("Terrassenrain 6, 3072 Ostermundigen", "CH", null);
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertEquals("Terrassenrain 6, 3072 Ostermundigen, Switzerland", result.get(0).getFormattedAddress());
-		assertEquals(7.50, result.get(0).getLongitude(), 0.01);
-		assertEquals(46.95, result.get(0).getLatitude(), 0.01);
-		assertEquals("Ostermundigen", result.get(0).getLocality());
-		assertEquals("Switzerland", result.get(0).getCountry());
-	}
-	
-	@Test
-	public void lookupInvalidAddress() {
-		List<GeoAddress> result = service.findLocation("fdsfs 12d, 9999 fsfsd", "CH", "FR");
-		assertNotNull(result);
-		assertEquals(0, result.size());
-	}
-	
-	@Test
-	public void lookupInexactAddress() {
-		List<GeoAddress> result = service.findLocation("Monbijoux, Bern", null, "FR");
-		assertNotNull(result);
-		assertEquals(3, result.size());
-	}
-	
 	@Test
 	public void computeGeohash() {
 		String geohash0 = service.encodeLatLon(46.95, 7.50, 0);

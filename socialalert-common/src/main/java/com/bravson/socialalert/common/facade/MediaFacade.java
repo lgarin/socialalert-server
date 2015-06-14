@@ -52,8 +52,6 @@ public interface MediaFacade {
 	void deleteMedia(@JsonRpcParam("mediaUri") @NotNull URI mediaUri) throws IOException;
 	
 	MediaInfo setMediaApproval(@JsonRpcParam("mediaUri") @NotNull URI mediaUri, @JsonRpcParam("modifier") ApprovalModifier modifier) throws IOException;
-	
-	List<GeoAddress> findLocation(@JsonRpcParam("address") @NotEmpty String address, @JsonRpcParam("region") String region, @JsonRpcParam("preferredLanguage") String preferredLanguage) throws IOException;
 
 	CommentInfo addComment(@JsonRpcParam("mediaUri") @NotNull URI mediaUri, @JsonRpcParam("comment") @NotEmpty String comment) throws IOException;
 	

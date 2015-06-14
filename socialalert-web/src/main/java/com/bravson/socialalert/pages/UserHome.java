@@ -2,11 +2,9 @@ package com.bravson.socialalert.pages;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SessionState;
@@ -16,14 +14,14 @@ import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import com.bravson.socialalert.common.domain.MediaCategory;
-import com.bravson.socialalert.common.domain.PictureInfo;
+import com.bravson.socialalert.common.domain.MediaInfo;
+import com.bravson.socialalert.common.domain.MediaType;
 import com.bravson.socialalert.common.domain.ProfileStatisticInfo;
 import com.bravson.socialalert.common.domain.PublicProfileInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 import com.bravson.socialalert.common.domain.UserInfo;
 import com.bravson.socialalert.common.domain.UserRole;
-import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.MediaFacade;
 import com.bravson.socialalert.common.facade.ProfileFacade;
 import com.bravson.socialalert.services.ProtectedPage;
 
@@ -31,7 +29,7 @@ import com.bravson.socialalert.services.ProtectedPage;
 public class UserHome {
 
 	@Inject
-    private PictureFacade pictureService;
+    private MediaFacade pictureService;
 	
 	@Inject
 	private ProfileFacade profileService;
@@ -43,7 +41,7 @@ public class UserHome {
 	private ProfileStatisticInfo statisticInfo;
 	
 	@Property
-	private QueryResult<PictureInfo> userPictures;
+	private QueryResult<MediaInfo> userPictures;
 	
 	@Property
 	private List<PublicProfileInfo> followedProfiles;
@@ -71,7 +69,7 @@ public class UserHome {
 	@SetupRender
 	void setupRender() throws IOException {
 		if (userInfo != null && userInfo.getProfileId() != null) {
-			userPictures = pictureService.listPicturesByProfile(userInfo.getProfileId(), pageNumber, 5);
+			userPictures = pictureService.listMediaByProfile(MediaType.PICTURE, userInfo.getProfileId(), pageNumber, 5);
 			statisticInfo = profileService.getUserProfile(userInfo.getProfileId());
 			followedProfiles = profileService.getFollowedProfiles(0, 10).getContent();
 			followerProfiles = profileService.getFollowerProfiles(0, 10).getContent();

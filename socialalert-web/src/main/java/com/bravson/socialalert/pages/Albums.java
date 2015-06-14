@@ -12,14 +12,14 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 
 import com.bravson.socialalert.common.domain.UserInfo;
 import com.bravson.socialalert.common.domain.UserRole;
-import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.MediaFacade;
 import com.bravson.socialalert.services.ProtectedPage;
 
 @ProtectedPage(disallow={UserRole.ANONYMOUS})
 public class Albums {
 
 	@Inject
-    private PictureFacade pictureService;
+    private MediaFacade pictureService;
 	
 	@SessionState(create=false)
 	@Property

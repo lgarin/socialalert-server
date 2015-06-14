@@ -2,6 +2,7 @@ package com.bravson.socialalert.pages;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,17 +19,18 @@ import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.services.SelectModelFactory;
 
 import com.bravson.socialalert.common.domain.GeoAddress;
-import com.bravson.socialalert.common.domain.PictureInfo;
+import com.bravson.socialalert.common.domain.MediaInfo;
+import com.bravson.socialalert.common.domain.MediaType;
 import com.bravson.socialalert.common.domain.QueryResult;
 import com.bravson.socialalert.common.domain.UserRole;
-import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.MediaFacade;
 import com.bravson.socialalert.services.ProtectedPage;
 
 @ProtectedPage(allow={UserRole.USER,UserRole.GUEST})
 public class RecentPictures {
 	
 	@Inject
-    private PictureFacade pictureService;
+    private MediaFacade pictureService;
 	
 	@Inject
 	@Symbol("default.max.distance")
@@ -39,7 +41,7 @@ public class RecentPictures {
 	private int pageNumber;
 	
 	@Property
-	QueryResult<PictureInfo> searchResult;
+	QueryResult<MediaInfo> searchResult;
 	
 	@Persist
 	@Property
@@ -95,7 +97,7 @@ public class RecentPictures {
 		if (maxDistance == null) {
 			maxDistance = defaultMaxDistance;
 		}
-		searchResult = pictureService.searchPictures(latitude, longitude, maxDistance, keywords, 360L * DateUtils.MILLIS_PER_DAY, pageNumber, 5);
+		searchResult = pictureService.searchMedia(MediaType.PICTURE, latitude, longitude, maxDistance, keywords, 360L * DateUtils.MILLIS_PER_DAY, pageNumber, 5);
 	}
 	
 	
@@ -110,7 +112,8 @@ public class RecentPictures {
 	
 	void onValidateFromSearch() throws IOException {
 		if (addressQuery != null) {
-			addressList = pictureService.findLocation(addressQuery, locale.getCountry(), locale.getLanguage());
+			addressList = Collections.emptyList();
+			//addressList = pictureService.findLocation(addressQuery, locale.getCountry(), locale.getLanguage());
 			if (addressList.isEmpty()) {
 				searchForm.recordError(addressField, "No matching address found");
 			} else if (addressList.size() > 1) {
@@ -127,6 +130,6 @@ public class RecentPictures {
 	}
 	
 	List<String> onProvideCompletionsFromKeywords(String partial) throws IOException {
-		return pictureService.findKeywordSuggestions(partial);
+		return pictureService.findKeywordSuggestions(MediaType.PICTURE, partial);
 	}
 }

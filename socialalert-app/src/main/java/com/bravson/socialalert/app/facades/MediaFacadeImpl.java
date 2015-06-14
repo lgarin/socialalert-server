@@ -303,12 +303,6 @@ public class MediaFacadeImpl implements MediaFacade {
 		userService.updateOnlineStatus(Collections.singletonList(result));
 		return result;
 	}
-	
-	@Override
-	@PreAuthorize("hasRole('USER')")
-	public List<GeoAddress> findLocation(String address, String region, String preferredLanguage) {
-		return geocoderService.findLocation(address, region, preferredLanguage);
-	}
 
 	@Override
 	@PreAuthorize("hasRole('USER')")

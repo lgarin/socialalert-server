@@ -14,23 +14,23 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 
 import com.bravson.socialalert.common.domain.ApprovalModifier;
-import com.bravson.socialalert.common.domain.PictureInfo;
+import com.bravson.socialalert.common.domain.MediaInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
-import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.MediaFacade;
 import com.bravson.socialalert.pages.PictureDetail;
 import com.bravson.socialalert.services.DisplayState;
 
 public class PicturePager {
 
 	@Inject
-    private PictureFacade pictureService;
+    private MediaFacade pictureService;
 	
 	@Property
 	@Parameter(defaultPrefix=BindingConstants.LITERAL)
 	String title;
 	
 	@Parameter
-	QueryResult<PictureInfo> result;
+	QueryResult<MediaInfo> result;
 	
 	@Parameter
 	private int pageNumber;
@@ -38,10 +38,10 @@ public class PicturePager {
 	private int pageCount;
 	
 	@Property
-	private List<PictureInfo> pictureList;
+	private List<MediaInfo> pictureList;
 	
 	@Property
-	private PictureInfo currentPicture;
+	private MediaInfo currentPicture;
 	
 	@Property
 	@Inject
@@ -91,17 +91,17 @@ public class PicturePager {
 	}
 	
 	Object onDelete(URI pictureUri) throws IOException {
-		pictureService.deletePicture(pictureUri);
+		pictureService.deleteMedia(pictureUri);
 		return null;
 	}
 	
 	Object onLike(URI pictureUri) throws IOException {
-		pictureService.setPictureApproval(pictureUri, ApprovalModifier.LIKE);
+		pictureService.setMediaApproval(pictureUri, ApprovalModifier.LIKE);
 		return null;
 	}
 	
 	Object onDislike(URI pictureUri) throws IOException {
-		pictureService.setPictureApproval(pictureUri, ApprovalModifier.DISLIKE);
+		pictureService.setMediaApproval(pictureUri, ApprovalModifier.DISLIKE);
 		return null;
 	}
 	

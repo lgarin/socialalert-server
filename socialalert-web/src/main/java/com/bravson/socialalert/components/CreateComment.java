@@ -10,7 +10,7 @@ import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.beaneditor.Validate;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
-import com.bravson.socialalert.common.facade.PictureFacade;
+import com.bravson.socialalert.common.facade.MediaFacade;
 import com.bravson.socialalert.pages.PictureDetail;
 import com.bravson.socialalert.services.DisplayState;
 
@@ -27,7 +27,7 @@ public class CreateComment {
     private String text;
 	
 	@Inject
-    private PictureFacade pictureService;
+    private MediaFacade pictureService;
 
 	public void init(URI pictureUri) {
 		this.pictureUri = pictureUri;
