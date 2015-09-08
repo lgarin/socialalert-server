@@ -1,16 +1,12 @@
 package com.bravson.socialalert.services;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.bravson.socialalert.app.entities.AlertMedia;
 import com.bravson.socialalert.app.services.GeocoderService;
-import com.bravson.socialalert.common.domain.GeoAddress;
 import com.bravson.socialalert.common.domain.GeoArea;
 import com.bravson.socialalert.infrastructure.SimpleServiceTest;
 

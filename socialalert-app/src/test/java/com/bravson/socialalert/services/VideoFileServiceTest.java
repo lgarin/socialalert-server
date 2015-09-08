@@ -1,5 +1,7 @@
 package com.bravson.socialalert.services;
 
+import io.humble.video.Codec;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -17,7 +19,6 @@ import com.bravson.socialalert.app.domain.VideoMetadata;
 import com.bravson.socialalert.app.services.VideoFileService;
 import com.bravson.socialalert.infrastructure.SimpleServiceTest;
 
-@Ignore
 public class VideoFileServiceTest extends SimpleServiceTest {
 
 	@Resource
@@ -44,6 +45,15 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 	}
 	
 	@Test
+	public void listInstalledCodecs() {
+		for (Codec codec : Codec.getInstalledCodecs()) {
+			if (codec.canEncode()) {
+				System.out.println(codec.getName() + ": " + codec.getLongName());
+			}
+		}
+	}
+	
+	@Test
 	public void parseMetaData() throws IOException, InterruptedException {
 		VideoMetadata metadata = service.parseMetadata(new File("src/test/resources/media/IMG_0236.MOV"));
 		assertNotNull(metadata);
@@ -61,6 +71,11 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 	public void testPreview() throws IOException {
 		File file = service.createPreview(new File("src/test/resources/media/IMG_0236.MOV"));
 		assertEquals(new File("src/test/resources/media/preview-IMG_0236.avi"), file);
+	}
+	
+	@Test
+	public void testAudio() throws IOException {
+		service.extractAudio(new File("src/test/resources/media/IMG_0236.MOV"), new File("C:/Temp/audio.mp3"));
 	}
 }
 
