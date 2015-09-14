@@ -22,9 +22,10 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.exceptions.SystemExeption;
+import com.bravson.socialalert.common.domain.MediaConstants;
 
 @Service
-public class MediaStorageServiceImpl implements MediaStorageService {
+public class MediaStorageServiceImpl implements MediaStorageService, MediaConstants {
 
 	@Value("${media.max.size}")
 	private int maxSize;
@@ -52,7 +53,7 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 	@Override
 	public URI storePicture(InputStream inputStream, int contentLength) throws IOException {
 		
-		File outputFile = storeMedia(inputStream, contentLength, "jpg");
+		File outputFile = storeMedia(inputStream, contentLength, JPG_EXTENSION);
 		
 		try {
 			pictureFileService.parseJpegMetadata(outputFile);
@@ -146,11 +147,11 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 		if (mediaFile == null) {
 			return null;
 		}
-		File thumbnail = new File(mediaFile.getParentFile(), thumbnailPrefix + changeExtension(mediaFile.getName(), "jpg"));
+		File thumbnail = new File(mediaFile.getParentFile(), thumbnailPrefix + changeExtension(mediaFile.getName(), JPG_EXTENSION));
 		if (thumbnail.canRead()) {
 			return thumbnail;
 		}
-		if (mediaFile.getName().endsWith("jpg")) {
+		if (mediaFile.getName().endsWith(JPG_EXTENSION)) {
 			return pictureFileService.createJpegThumbnail(mediaFile);
 		} else {
 			return videoFileService.createThumbnail(mediaFile);
@@ -163,11 +164,14 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 		if (mediaFile == null) {
 			return null;
 		}
-		File thumbnail = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), "jpg"));
-		if (thumbnail.canRead()) {
-			return thumbnail;
+		
+		boolean picture = mediaFile.getName().endsWith(JPG_EXTENSION);
+		File preview = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), picture ? JPG_EXTENSION : MP4_EXTENSION));
+		if (preview.canRead()) {
+			return preview;
 		}
-		if (mediaFile.getName().endsWith("jpg")) {
+		
+		if (picture) {
 			return pictureFileService.createJpegPreview(mediaFile);
 		} else {
 			return videoFileService.createPreview(mediaFile);
@@ -187,8 +191,9 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 		if (!tempFile.isFile()) {
 			throw new DataMissingException("The media " + tempUri + " does not exists");
 		}
-		File thumbFile = new File(tempDir, thumbnailPrefix + changeExtension(tempUri.getPath(), "jpg"));
-		File previewFile = new File(tempDir, previewPrefix + changeExtension(tempUri.getPath(), "jpg"));
+		File thumbFile = new File(tempDir, thumbnailPrefix + changeExtension(tempUri.getPath(), JPG_EXTENSION));
+		boolean picture = tempFile.getName().endsWith(JPG_EXTENSION);
+		File previewFile = new File(tempDir, previewPrefix + changeExtension(tempUri.getPath(), picture ? JPG_EXTENSION : MP4_EXTENSION));
 	
 		File destFile = new File(baseDir, finalUri.getPath());
 		File destDir = destFile.getParentFile();
@@ -225,12 +230,13 @@ public class MediaStorageServiceImpl implements MediaStorageService {
 			throw new SystemExeption("Cannot delete media file " + mediaFile);
 		}
 		
-		File thumbFile = new File(mediaFile.getParentFile(), thumbnailPrefix + changeExtension(mediaFile.getName(), "jpg"));
+		File thumbFile = new File(mediaFile.getParentFile(), thumbnailPrefix + changeExtension(mediaFile.getName(), JPG_EXTENSION));
 		if (thumbFile != null && thumbFile.canWrite() && !FileUtils.deleteQuietly(thumbFile)) {
 			throw new SystemExeption("Cannot delete thumbnail file " + thumbFile);
 		}
 		
-		File previewFile = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), "jpg"));
+		boolean picture = mediaFile.getName().endsWith(JPG_EXTENSION);
+		File previewFile = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), picture ? JPG_EXTENSION : MP4_EXTENSION));
 		if (previewFile != null && previewFile.canWrite() && !FileUtils.deleteQuietly(previewFile)) {
 			throw new SystemExeption("Cannot delete preview file " + previewFile);
 		}

@@ -19,13 +19,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.bravson.socialalert.app.services.MediaStorageService;
+import com.bravson.socialalert.common.domain.MediaConstants;
 
 @Component
-public class UploadServlet implements HttpRequestHandler {
-	
-	private static final String MOV_MEDIA_TYPE = "video/quicktime";
-	private static final String MP4_MEDIA_TYPE = "video/mp4";
-	private static final String JPG_MEDIA_TYPE = MediaType.IMAGE_JPEG_VALUE;
+public class UploadServlet implements HttpRequestHandler, MediaConstants {
 	
 	@Resource
 	private MediaStorageService storageService;
@@ -44,13 +41,13 @@ public class UploadServlet implements HttpRequestHandler {
 				response.setHeader("Location", uri.getPath());
 				response.setStatus(HttpStatus.CREATED.value());
 			} else if (MP4_MEDIA_TYPE.equals(request.getContentType())) {
-				URI uri = storageService.storeVideo(request.getInputStream(), request.getContentLength(), "mp4");
+				URI uri = storageService.storeVideo(request.getInputStream(), request.getContentLength(), MP4_EXTENSION);
 				request.getInputStream().close();
 				// TODO absolute path?
 				response.setHeader("Location", uri.getPath());
 				response.setStatus(HttpStatus.CREATED.value());
 			} else if (MOV_MEDIA_TYPE.equals(request.getContentType())) {
-				URI uri = storageService.storeVideo(request.getInputStream(), request.getContentLength(), "mov");
+				URI uri = storageService.storeVideo(request.getInputStream(), request.getContentLength(), MOV_EXTENSION);
 				request.getInputStream().close();
 				// TODO absolute path?
 				response.setHeader("Location", uri.getPath());

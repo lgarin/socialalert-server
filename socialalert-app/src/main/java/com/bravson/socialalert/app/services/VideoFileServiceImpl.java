@@ -48,6 +48,7 @@ import org.springframework.data.solr.core.query.result.Cursor.State;
 import org.springframework.stereotype.Service;
 
 import com.bravson.socialalert.app.domain.VideoMetadata;
+import com.bravson.socialalert.common.domain.MediaConstants;
 
 @Service
 public class VideoFileServiceImpl implements VideoFileService {
@@ -104,7 +105,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 		if (!sourceFile.canRead()) {
 			throw new IOException("Cannot read file " + sourceFile);
 		}
-		final File outputFile = new File(sourceFile.getParent(), FilenameUtils.getBaseName(sourceFile.getName()) + ".jpg");
+		final File outputFile = new File(sourceFile.getParent(), FilenameUtils.getBaseName(sourceFile.getName()) + "." + MediaConstants.JPG_EXTENSION);
 		if (outputFile.canRead()) {
 			return outputFile;
 		}
@@ -117,7 +118,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 			MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(
 					MediaPictureConverterFactory.HUMBLE_BGR_24, picture);
 			BufferedImage image = converter.toImage(null, picture);
-			ImageIO.write(image, "jpg", outputFile);
+			ImageIO.write(image, MediaConstants.JPG_EXTENSION, outputFile);
 			return outputFile;
 		} catch (InterruptedException e) {
 			throw new IOException(e);
@@ -128,7 +129,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 	
 	@Override
 	public File createPreview(File sourceFile) throws IOException {
-		final File outputFile = new File(sourceFile.getParent(), previewPrefix + FilenameUtils.getBaseName(sourceFile.getName()) + ".avi");
+		final File outputFile = new File(sourceFile.getParent(), previewPrefix + FilenameUtils.getBaseName(sourceFile.getName()) + "." + MediaConstants.MP4_EXTENSION);
 		watermark(sourceFile, outputFile);
 		return outputFile;
 	}

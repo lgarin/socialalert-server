@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component;
 
 import com.bravson.socialalert.app.infrastructure.FileHttpRequestHandler;
 import com.bravson.socialalert.app.services.MediaStorageService;
+import com.bravson.socialalert.common.domain.MediaConstants;
 
 @Component
-public class ThumbnailServlet extends FileHttpRequestHandler {
+public class ThumbnailServlet extends FileHttpRequestHandler implements MediaConstants {
 
 	@Autowired
 	private MediaStorageService storageService;
@@ -25,6 +26,13 @@ public class ThumbnailServlet extends FileHttpRequestHandler {
 	
 	@Override
 	protected MediaType getMediaType(Resource resource) {
-		return MediaType.IMAGE_JPEG;
+		if (resource.getFilename().endsWith(JPG_EXTENSION)) {
+			return MediaType.valueOf(JPG_MEDIA_TYPE);
+		} else if (resource.getFilename().endsWith(MP4_EXTENSION)) {
+			return MediaType.valueOf(JPG_MEDIA_TYPE);
+		} else if (resource.getFilename().endsWith(MOV_EXTENSION)) {
+			return MediaType.valueOf(JPG_MEDIA_TYPE);
+		}
+		return null;
 	}
 }
