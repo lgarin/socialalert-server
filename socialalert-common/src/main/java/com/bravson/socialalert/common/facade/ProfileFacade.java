@@ -42,7 +42,7 @@ public interface ProfileFacade {
 	
 	QueryResult<PublicProfileInfo> getFollowerProfiles(@JsonRpcParam("pageNumber") @Min(0) int pageNumber, @JsonRpcParam("pageSize") @Min(1) int pageSize) throws IOException;
 	
-	boolean isFollowing(@JsonRpcParam("profileId") @NotNull UUID profileId) throws IOException;
+	DateTime isFollowingSince(@JsonRpcParam("profileId") @NotNull UUID profileId) throws IOException;
 	
 	boolean follow(@JsonRpcParam("profileId") @NotNull UUID profileId) throws IOException;
 	

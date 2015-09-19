@@ -169,14 +169,14 @@ public class ProfileFacadeTest extends DataServiceTest {
 	 @Test
 	 public void isFollowing() throws IOException {
 		userFacade.login("lucien@test.com", "123");
-		assertTrue(profileFacade.isFollowing(UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593")));
+		assertNotNull(profileFacade.isFollowingSince(UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593")));
 	 }
 	 
 	 @Test
 	 public void unfollow() throws IOException {
 		 userFacade.login("lucien@test.com", "123");
 		 assertTrue(profileFacade.unfollow(UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593")));
-		 assertFalse(profileFacade.isFollowing(UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593")));
+		 assertNull(profileFacade.isFollowingSince(UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593")));
 	 }
 	 
 	 @Test

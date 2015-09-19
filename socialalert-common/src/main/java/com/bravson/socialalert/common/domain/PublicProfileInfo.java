@@ -3,6 +3,8 @@ package com.bravson.socialalert.common.domain;
 import java.net.URI;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+
 public class PublicProfileInfo implements UserContent {
 
 	private UUID profileId;
@@ -10,7 +12,7 @@ public class PublicProfileInfo implements UserContent {
 	private String nickname;
 	private String biography;
 	private boolean online;
-	private boolean followed;
+	private DateTime followedSince;
 	
 	public UUID getProfileId() {
 		return profileId;
@@ -51,9 +53,12 @@ public class PublicProfileInfo implements UserContent {
 		this.nickname = creator;
 	}
 	public boolean isFollowed() {
-		return followed;
+		return followedSince != null;
 	}
-	public void setFollowed(boolean followed) {
-		this.followed = followed;
+	public DateTime getFollowedSince() {
+		return followedSince;
+	}
+	public void setFollowedSince(DateTime followedSince) {
+		this.followedSince = followedSince;
 	}
 }

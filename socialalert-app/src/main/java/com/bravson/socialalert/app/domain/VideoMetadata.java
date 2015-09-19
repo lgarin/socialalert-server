@@ -92,4 +92,8 @@ public class VideoMetadata {
 			longitude = defaultLongitude;
 		}
 	}
+	
+	public boolean hasLocation() {
+		return longitude != null && latitude != null;
+	}
 }

@@ -30,14 +30,14 @@ public class ProfileLinkServiceTest extends DataServiceTest {
 	public void isObserver() {
 		UUID sourceProfileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
 		UUID targetProfileId = UUID.fromString("e7d166ae-9b3f-4405-be0d-fa1567728593");
-		assertTrue(service.isObserverOf(sourceProfileId, targetProfileId));
+		assertNotNull(service.getLinkTimestamp(sourceProfileId, targetProfileId));
 	}
 	
 	@Test
 	public void isNotObserver() {
 		UUID sourceProfileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
 		UUID targetProfileId = UUID.fromString("a7d166ae-9b3f-4405-be0d-fa156772859a");
-		assertFalse(service.isObserverOf(sourceProfileId, targetProfileId));
+		assertNull(service.getLinkTimestamp(sourceProfileId, targetProfileId));
 	}
 	
 	@Test

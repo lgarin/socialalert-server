@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -23,6 +24,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.bravson.socialalert.app.domain.PictureMetadata;
 import com.bravson.socialalert.app.entities.AlertAlbum;
 import com.bravson.socialalert.app.entities.AlertComment;
 import com.bravson.socialalert.app.entities.AlertInteraction;
@@ -88,8 +90,8 @@ public class MediaFacadeTest extends DataServiceTest {
 	public void claimValidPicture() throws IOException {
 		userFacade.login("lucien@test.com", "123");
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI uri = storageService.storePicture(FileUtils.openInputStream(file), (int) file.length());
-		MediaInfo info = facade.claimPicture(uri, "Test", null, Collections.<MediaCategory>emptyList(), Collections.<String>emptyList());
+		Pair<URI, PictureMetadata> pair = storageService.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		MediaInfo info = facade.claimPicture(pair.getKey(), "Test", null, Collections.<MediaCategory>emptyList(), Collections.<String>emptyList());
 		assertNotNull(info);
 		assertEquals("sg33g5", info.getCreator());
 		assertEquals("Test", info.getTitle());
@@ -112,7 +114,8 @@ public class MediaFacadeTest extends DataServiceTest {
 	public void claimValidPictureTwice() throws IOException {
 		userFacade.login("lucien@test.com", "123");
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI uri = storageService.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		Pair<URI, PictureMetadata> pair = storageService.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		URI uri = pair.getKey();
 		facade.claimPicture(uri, "Test", null, Collections.<MediaCategory>emptyList(), Collections.<String>emptyList());
 		URI finalUri = storageService.buildFinalMediaUri(uri, DateTime.now());
 		storageService.archiveMedia(uri, finalUri);
@@ -124,8 +127,8 @@ public class MediaFacadeTest extends DataServiceTest {
 	public void claimPictureWithGuest() throws IOException {
 		userFacade.login("unverified@test.com", "123");
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI uri = storageService.storePicture(FileUtils.openInputStream(file), (int) file.length());
-		facade.claimPicture(uri, "Test", new GeoAddress(), Collections.<MediaCategory>emptyList(), Collections.<String>emptyList());
+		Pair<URI, PictureMetadata> pair = storageService.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		facade.claimPicture(pair.getKey(), "Test", new GeoAddress(), Collections.<MediaCategory>emptyList(), Collections.<String>emptyList());
 	}
 	
 	@Test(expected=DataMissingException.class)
@@ -138,8 +141,8 @@ public class MediaFacadeTest extends DataServiceTest {
 	@Test(expected=AuthenticationCredentialsNotFoundException.class)
 	public void claimPictureWithoutLogin() throws IOException {
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI uri = storageService.storePicture(FileUtils.openInputStream(file), (int) file.length());
-		facade.claimPicture(uri, "Test", null, Collections.<MediaCategory>emptyList(), Collections.<String>emptyList());
+		Pair<URI, PictureMetadata> pair = storageService.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		facade.claimPicture(pair.getKey(), "Test", null, Collections.<MediaCategory>emptyList(), Collections.<String>emptyList());
 	}
 	
 	@Test

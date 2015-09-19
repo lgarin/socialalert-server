@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bravson.socialalert.app.domain.ExternalProfileInfo;
+import com.bravson.socialalert.app.domain.PictureMetadata;
 import com.bravson.socialalert.app.entities.UserProfile;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.repositories.UserProfileRepository;
@@ -92,8 +94,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 	@Transactional(rollbackFor={Throwable.class})
 	public UserProfile downloadProfilePicture(UUID profileId, URL pictureUrl) throws IOException {
 		UserProfile profile = lock(profileId);
-		URI pictureUri = storageService.storeRemotePicture(pictureUrl);
-		return updateImage(profile, pictureUri);
+		Pair<URI, PictureMetadata> picture = storageService.storeRemotePicture(pictureUrl);
+		return updateImage(profile, picture.getKey());
 	}
 	
 	@Override

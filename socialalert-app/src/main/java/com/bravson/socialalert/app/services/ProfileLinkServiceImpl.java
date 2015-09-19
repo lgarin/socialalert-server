@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotNull;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,12 +19,10 @@ import org.springframework.data.solr.core.query.UpdateAction;
 import org.springframework.data.solr.core.query.UpdateField;
 import org.springframework.stereotype.Service;
 
-import com.bravson.socialalert.app.entities.ApplicationUser;
 import com.bravson.socialalert.app.entities.ProfileLink;
 import com.bravson.socialalert.app.repositories.ProfileLinkRepository;
 import com.bravson.socialalert.common.domain.PublicProfileInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
-import com.bravson.socialalert.common.domain.UserContent;
 
 @Service
 public class ProfileLinkServiceImpl implements ProfileLinkService {
@@ -65,14 +63,15 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
 	}
 
 	@Override
-	public boolean isObserverOf(UUID sourceProfileId, UUID observedProfileId) {
+	public DateTime getLinkTimestamp(UUID sourceProfileId, UUID observedProfileId) {
 		String linkId = ProfileLink.buildLinkId(sourceProfileId, observedProfileId);
-		return linkRepository.exists(linkId);
+		ProfileLink link = linkRepository.findOne(linkId);
+		return link != null ? link.getCreation() : null;
 	}
 
 	@Override
 	public boolean addObservedProfile(UUID sourceProfileId, UUID observedProfileId) {
-		boolean result = isObserverOf(sourceProfileId, observedProfileId);
+		boolean result = getLinkTimestamp(sourceProfileId, observedProfileId) != null;
 		if (result) {
 			return false;
 		}
@@ -82,7 +81,7 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
 
 	@Override
 	public boolean removeObservedProfile(UUID sourceProfileId, UUID observedProfileId) {
-		boolean result = isObserverOf(sourceProfileId, observedProfileId);
+		boolean result = getLinkTimestamp(sourceProfileId, observedProfileId) != null;
 		if (!result) {
 			return false;
 		}
@@ -103,15 +102,12 @@ public class ProfileLinkServiceImpl implements ProfileLinkService {
 
 	@Override
 	public void updateObservedStatus(UUID sourceProfileId, Collection<? extends PublicProfileInfo> profiles) {
-		HashMap<String, Boolean> observedMap = new HashMap<>(profiles.size());
-		for (PublicProfileInfo profile : profiles) {
-			observedMap.put(ProfileLink.buildLinkId(sourceProfileId, profile.getProfileId()), Boolean.FALSE);
-		}
+		HashMap<String, DateTime> observedMap = new HashMap<>(profiles.size());
 		for (ProfileLink link : linkRepository.findAll(observedMap.keySet())) {
-			observedMap.put(link.getId(), Boolean.TRUE);
+			observedMap.put(link.getId(), link.getCreation());
 		}
 		for (PublicProfileInfo profile : profiles) {
-			profile.setFollowed(observedMap.get(ProfileLink.buildLinkId(sourceProfileId, profile.getProfileId())));
+			profile.setFollowedSince(observedMap.get(ProfileLink.buildLinkId(sourceProfileId, profile.getProfileId())));
 		}
 	}
 }

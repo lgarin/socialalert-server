@@ -33,4 +33,7 @@ public abstract class VersionedEntity {
 		lastUpdate = DateTime.now(DateTimeZone.UTC);
 	}
 
+	public DateTime getCreation() {
+		return creation;
+	}
 }

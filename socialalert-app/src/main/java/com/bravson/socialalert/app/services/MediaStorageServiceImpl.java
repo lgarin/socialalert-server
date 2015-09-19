@@ -14,12 +14,16 @@ import javax.annotation.Resource;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.bravson.socialalert.app.domain.PictureMetadata;
+import com.bravson.socialalert.app.domain.VideoMetadata;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.exceptions.SystemExeption;
 import com.bravson.socialalert.common.domain.MediaConstants;
@@ -51,33 +55,29 @@ public class MediaStorageServiceImpl implements MediaStorageService, MediaConsta
 	// TODO authorization should be done at the servlet level
 	//@PreAuthorize("hasRole('USER')")
 	@Override
-	public URI storePicture(InputStream inputStream, int contentLength) throws IOException {
+	public Pair<URI, PictureMetadata> storePicture(InputStream inputStream, int contentLength) throws IOException {
 		
 		File outputFile = storeMedia(inputStream, contentLength, JPG_EXTENSION);
 		
 		try {
-			pictureFileService.parseJpegMetadata(outputFile);
+			return new ImmutablePair<>(URI.create(outputFile.getName()), pictureFileService.parseJpegMetadata(outputFile));
 		} catch (Exception e) {
 			throw new HttpClientErrorException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
 		}
-		
-		return URI.create(outputFile.getName());
 	}
 	
 	// TODO authorization should be done at the servlet level
 	//@PreAuthorize("hasRole('USER')")
 	@Override
-	public URI storeVideo(InputStream inputStream, int contentLength, String format) throws IOException {
+	public Pair<URI, VideoMetadata> storeVideo(InputStream inputStream, int contentLength, String format) throws IOException {
 		
 		File outputFile = storeMedia(inputStream, contentLength, format);
 		
 		try {
-			videoFileService.parseMetadata(outputFile);
+			return new ImmutablePair<>(URI.create(outputFile.getName()), videoFileService.parseMetadata(outputFile));
 		} catch (Exception e) {
 			throw new HttpClientErrorException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
 		}
-		
-		return URI.create(outputFile.getName());
 	}
 
 	private File storeMedia(InputStream inputStream, int contentLength, String extension) throws IOException, FileNotFoundException {
@@ -99,7 +99,7 @@ public class MediaStorageServiceImpl implements MediaStorageService, MediaConsta
 	}
 	
 	@Override
-	public URI storeRemotePicture(URL sourceUrl) throws IOException {
+	public Pair<URI, PictureMetadata> storeRemotePicture(URL sourceUrl) throws IOException {
 		URLConnection connection = sourceUrl.openConnection();
 		connection.connect();
 		try (InputStream is = connection.getInputStream()) {
