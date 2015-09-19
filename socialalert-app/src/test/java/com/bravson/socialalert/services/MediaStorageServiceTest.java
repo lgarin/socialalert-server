@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import javax.validation.ValidationException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.bravson.socialalert.app.domain.PictureMetadata;
+import com.bravson.socialalert.app.domain.VideoMetadata;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.services.MediaStorageService;
 import com.bravson.socialalert.infrastructure.SimpleServiceTest;
@@ -51,7 +54,8 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 	@Test
 	public void storeValidPicture() throws IOException {
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI uri = service.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		Pair<URI, PictureMetadata> pair = service.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		URI uri = pair.getKey();
 		assertNotNull(uri);
 		assertEquals("7e9a5a5bd5e64171c176ac6c7b32d685.jpg", uri.getPath());
 		File outputFile = new File(tempDir, uri.getPath());
@@ -98,8 +102,8 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 	public void storePictureWithIncorrectContentLength() throws IOException {
 		// TODO check if this could happen in reality
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI uri = service.storePicture(FileUtils.openInputStream(file), 100);
-		assertNotNull(uri);
+		Pair<URI, PictureMetadata> pair = service.storePicture(FileUtils.openInputStream(file), 100);
+		assertNotNull(pair);
 	}
 
 	@Test(expected=ValidationException.class)
@@ -109,8 +113,8 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 	
 	@Test
 	public void storeValidRemotePicture() throws MalformedURLException, IOException {
-		URI uri = service.storeRemotePicture(new URL("http://www.w3.org/MarkUp/Test/xhtml-print/20050519/tests/jpeg420exif.jpg"));
-		assertNotNull(uri);
+		Pair<URI, PictureMetadata> pair = service.storeRemotePicture(new URL("http://www.w3.org/MarkUp/Test/xhtml-print/20050519/tests/jpeg420exif.jpg"));
+		assertNotNull(pair);
 	}
 	
 	@Test
@@ -341,7 +345,8 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 	@Test
 	public void claimNewFile() throws IOException {
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI tempUri = service.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		Pair<URI, PictureMetadata> pair = service.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		URI tempUri = pair.getKey();
 		DateTime claimDate = new DateTime(2013, 7, 1, 0, 0, 0);
 		URI finalUri = service.buildFinalMediaUri(tempUri, claimDate);
 		URI finalUri2 = service.archiveMedia(tempUri, finalUri);
@@ -360,14 +365,15 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 	@Test
 	public void deleteNewFile() throws IOException {
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI tempUri = service.storePicture(FileUtils.openInputStream(file), (int) file.length());
-		service.deleteMedia(tempUri);
+		Pair<URI, PictureMetadata> pair = service.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		service.deleteMedia(pair.getKey());
 	}
 	
 	@Test
 	public void storeValidVideo() throws IOException {
 		File file = new File("src/test/resources/media/msmpeg4.avi");
-		URI uri = service.storeVideo(FileUtils.openInputStream(file), (int) file.length(), "avi");
+		Pair<URI, VideoMetadata> pair = service.storeVideo(FileUtils.openInputStream(file), (int) file.length(), "avi");
+		URI uri = pair.getKey();
 		assertNotNull(uri);
 		assertEquals("431d9a264140516a042d7019726ab3c8.avi", uri.getPath());
 		File outputFile = new File(tempDir, uri.getPath());
@@ -378,7 +384,8 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 	@Test
 	public void archiveVideoFile() throws IOException {
 		File file = new File("src/test/resources/media/msmpeg4.avi");
-		URI tempUri = service.storeVideo(FileUtils.openInputStream(file), (int) file.length(), "avi");
+		Pair<URI, VideoMetadata> pair = service.storeVideo(FileUtils.openInputStream(file), (int) file.length(), "avi");
+		URI tempUri = pair.getKey();
 		DateTime claimDate = new DateTime(2015, 1, 7, 0, 0, 0);
 		URI finalUri = service.buildFinalMediaUri(tempUri, claimDate);
 		URI finalUri2 = service.archiveMedia(tempUri, finalUri);
@@ -392,7 +399,8 @@ public class MediaStorageServiceTest extends SimpleServiceTest {
 	@Ignore
 	public void resolveArchivedVideoThumbnail() throws IOException {
 		File file = new File("src/test/resources/media/msmpeg4.avi");
-		URI tempUri = service.storeVideo(FileUtils.openInputStream(file), (int) file.length(), "avi");
+		Pair<URI, VideoMetadata> pair = service.storeVideo(FileUtils.openInputStream(file), (int) file.length(), "avi");
+		URI tempUri = pair.getKey();
 		DateTime claimDate = new DateTime(2015, 1, 7, 0, 0, 0);
 		URI finalUri = service.buildFinalMediaUri(tempUri, claimDate);
 		URI finalUri2 = service.archiveMedia(tempUri, finalUri);

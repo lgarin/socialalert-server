@@ -13,6 +13,7 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.bravson.socialalert.app.domain.ExternalProfileInfo;
+import com.bravson.socialalert.app.domain.PictureMetadata;
 import com.bravson.socialalert.app.entities.UserProfile;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.services.MediaStorageService;
@@ -202,8 +204,8 @@ public class UserProfileServiceTest extends DataServiceTest {
 	public void claimExistingProfilePicture() throws IOException, URISyntaxException {
 		UUID uuid = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI uri = storage.storePicture(FileUtils.openInputStream(file), (int) file.length());
-		UserProfile profile = service.claimProfilePicture(uuid, uri);
+		Pair<URI, PictureMetadata> pair = storage.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		UserProfile profile = service.claimProfilePicture(uuid, pair.getKey());
 		assertNotNull(profile);
 		URI finalUri = URI.create("profiles/a95472c0-e0e6-11e2-a28f-0800200c9a77.jpg");
 		assertEquals(finalUri, profile.getImage());
@@ -216,7 +218,8 @@ public class UserProfileServiceTest extends DataServiceTest {
 	public void claimExistingProfilePictureTwice() throws IOException, URISyntaxException {
 		UUID uuid = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI uri = storage.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		Pair<URI, PictureMetadata> pair = storage.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		URI uri = pair.getKey();
 		UserProfile profile = service.claimProfilePicture(uuid, uri);
 		assertNotNull(profile);
 		URI finalUri = URI.create("profiles/a95472c0-e0e6-11e2-a28f-0800200c9a77.jpg");
@@ -228,13 +231,15 @@ public class UserProfileServiceTest extends DataServiceTest {
 	public void changeProfilePictureTwice() throws IOException, URISyntaxException {
 		UUID uuid = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
 		File file = new File("src/test/resources/media/IMG_0397.JPG");
-		URI uri = storage.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		Pair<URI, PictureMetadata> pair = storage.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		URI uri = pair.getKey();
 		UserProfile profile = service.claimProfilePicture(uuid, uri);
 		assertNotNull(profile);
 		URI finalUri = URI.create("profiles/a95472c0-e0e6-11e2-a28f-0800200c9a77.jpg");
 		assertEquals(finalUri, profile.getImage());
 		
-		URI uri2 = storage.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		Pair<URI, PictureMetadata> pair2 = storage.storePicture(FileUtils.openInputStream(file), (int) file.length());
+		URI uri2 = pair2.getKey();
 		UserProfile profile2 = service.claimProfilePicture(uuid, uri2);
 		assertNotNull(profile2);
 		assertEquals(finalUri, profile2.getImage());

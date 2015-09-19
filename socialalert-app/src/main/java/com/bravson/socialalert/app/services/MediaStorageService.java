@@ -8,17 +8,21 @@ import java.net.URL;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.validation.annotation.Validated;
+
+import com.bravson.socialalert.app.domain.PictureMetadata;
+import com.bravson.socialalert.app.domain.VideoMetadata;
 
 @Validated
 public interface MediaStorageService {
 
-	public URI storePicture(@NotNull InputStream inputStream, int contentLength) throws IOException;
+	public Pair<URI, PictureMetadata> storePicture(@NotNull InputStream inputStream, int contentLength) throws IOException;
 	
-	public URI storeVideo(@NotNull InputStream inputStream, int contentLength, @NotNull String format) throws IOException;
+	public Pair<URI, VideoMetadata> storeVideo(@NotNull InputStream inputStream, int contentLength, @NotNull String format) throws IOException;
 	
-	public URI storeRemotePicture(@NotNull URL sourceUrl) throws IOException;
+	public Pair<URI, PictureMetadata> storeRemotePicture(@NotNull URL sourceUrl) throws IOException;
 	
 	public File resolveMediaUri(@NotNull URI uri);
 	

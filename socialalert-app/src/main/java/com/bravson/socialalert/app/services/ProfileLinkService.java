@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.joda.time.DateTime;
 import org.springframework.validation.annotation.Validated;
 
 import com.bravson.socialalert.common.domain.PublicProfileInfo;
@@ -18,7 +19,7 @@ public interface ProfileLinkService {
 	
 	public QueryResult<UUID> getObserverProfiles(@NotNull UUID targetProfileId, @Min(0) int pageNumber, @Min(1) int pageSize);
 	
-	public boolean isObserverOf(@NotNull UUID sourceProfileId, @NotNull UUID observedProfileId);
+	public DateTime getLinkTimestamp(@NotNull UUID sourceProfileId, @NotNull UUID observedProfileId);
 	
 	public boolean addObservedProfile(@NotNull UUID sourceProfileId, @NotNull UUID observedProfileId);
 	

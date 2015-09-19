@@ -118,7 +118,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 		userService.updateOnlineStatus(Collections.singleton(info));
 		ApplicationUser currentUser = SecurityUtils.findAuthenticatedPrincipal();
 		if (currentUser != null && currentUser.getProfileId() != null) {
-			info.setFollowed(linkService.isObserverOf(currentUser.getProfileId(), profileId));
+			info.setFollowedSince(linkService.getLinkTimestamp(currentUser.getProfileId(), profileId));
 		}
 		return info;
 	}
@@ -153,9 +153,9 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	
 	@Override
 	@PreAuthorize("hasRole('USER')")
-	public boolean isFollowing(UUID profileId) {
+	public DateTime isFollowingSince(UUID profileId) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
-		return linkService.isObserverOf(user.getProfileId(), profileId);
+		return linkService.getLinkTimestamp(user.getProfileId(), profileId);
 	}
 	
 	@Override
