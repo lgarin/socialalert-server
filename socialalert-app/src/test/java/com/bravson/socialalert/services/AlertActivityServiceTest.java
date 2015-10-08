@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import com.bravson.socialalert.app.entities.AlertActivity;
 import com.bravson.socialalert.app.entities.AlertMedia;
+import com.bravson.socialalert.app.entities.UserProfile;
 import com.bravson.socialalert.app.exceptions.DataMissingException;
 import com.bravson.socialalert.app.services.AlertActivityService;
 import com.bravson.socialalert.common.domain.ActivityCount;
@@ -30,11 +31,12 @@ public class AlertActivityServiceTest extends DataServiceTest {
 	public void setUp() throws Exception {
 		fullImport(AlertMedia.class);
 		fullImport(AlertActivity.class);
+		fullImport(UserProfile.class);
 	}
 	
 	@Test
 	public void createNewActivity() {
-		UUID profileId = UUID.fromString("12345678-e0e6-11e2-a28f-0800200c9a77");
+		UUID profileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
 		URI mediaUri = URI.create("20130716/f317f3c7918c83ff6ec24aabb6c017fd.jpg");
 		ActivityInfo activity = service.addActivity(mediaUri, profileId, ActivityType.LIKE_MEDIA, null);
 		assertNotNull(activity);
@@ -48,7 +50,7 @@ public class AlertActivityServiceTest extends DataServiceTest {
 	
 	@Test(expected=DataMissingException.class)
 	public void createNewActivityForInvalidMedia() {
-		UUID profileId = UUID.fromString("12345678-e0e6-11e2-a28f-0800200c9a77");
+		UUID profileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
 		URI mediaUri = URI.create("xyz.jpg");
 		service.addActivity(mediaUri, profileId, ActivityType.LIKE_MEDIA, null);
 	}

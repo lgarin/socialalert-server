@@ -2,12 +2,13 @@
 <schema name="user" version="1.5">
 	<fields>
 		<field name="uuid" type="uuid" indexed="true" stored="true" required="true" multiValued="false" />
-		<field name="timestamp" type="date" indexed="true" stored="true" required="true" multiValued="false"/>
-		<field name="ipAddress" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+		<field name="ipAddress" type="string" indexed="true" stored="true" required="false" multiValued="false" />
 		<field name="profileId" type="uuid" indexed="true" stored="true" required="true" multiValued="false" />
 		<field name="country" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
 		<field name="action" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="parameter" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
+		<field name="lastUpdate" type="date" indexed="false" stored="true" required="true" multiValued="false"/>
+		<field name="creation" type="date" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="_version_" type="long" indexed="true" stored="true"/>
 	</fields>
 

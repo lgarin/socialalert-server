@@ -33,13 +33,21 @@ public class AlertActivity extends VersionedEntity {
 	@Field
 	private UUID commentId;
 	
-	public AlertActivity(URI mediaUri, UUID profileId, UUID sourceId, ActivityType activityType, UUID commentId) {
+	@Field
+	private String ipAddress;
+	
+	@Field
+	private String country;
+	
+	public AlertActivity(URI mediaUri, UUID profileId, UUID sourceId, ActivityType activityType, UUID commentId, String country, String ipAddress) {
 		this.activityId = UUID.randomUUID();
 		this.mediaUri = mediaUri;
 		this.sourceId = sourceId;
 		this.profileId = profileId;
 		this.activityType = activityType;
 		this.commentId = commentId;
+		this.ipAddress = ipAddress;
+		this.country = country;
 	}
 
 	public UUID getId() {
