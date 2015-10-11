@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import com.bravson.socialalert.app.entities.AlertActivity;
 import com.bravson.socialalert.app.entities.UserProfile;
 import com.bravson.socialalert.app.repositories.AlertActivityRepository;
-import com.bravson.socialalert.app.repositories.ApplicationEventRepository;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
 import com.bravson.socialalert.common.domain.ActivityType;

@@ -1,6 +1,6 @@
 package com.bravson.socialalert.infrastructure;
 
-import org.hibernate.validator.internal.constraintvalidators.EmailValidator;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.junit.Ignore;
 
 import com.bravson.socialalert.app.services.EmailService;

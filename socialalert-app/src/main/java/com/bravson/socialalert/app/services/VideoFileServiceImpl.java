@@ -3,7 +3,6 @@ package com.bravson.socialalert.app.services;
 import io.humble.video.AudioChannel;
 import io.humble.video.AudioFormat;
 import io.humble.video.Codec;
-import io.humble.video.Coder.Flag;
 import io.humble.video.Decoder;
 import io.humble.video.Demuxer;
 import io.humble.video.DemuxerStream;
@@ -44,7 +43,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.data.solr.core.query.result.Cursor.State;
 import org.springframework.stereotype.Service;
 
 import com.bravson.socialalert.app.domain.VideoMetadata;

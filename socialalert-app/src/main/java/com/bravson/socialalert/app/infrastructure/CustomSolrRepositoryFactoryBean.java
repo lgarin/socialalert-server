@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.core.NamedQueries;
+import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 import org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport;
@@ -91,7 +92,7 @@ public class CustomSolrRepositoryFactoryBean<T, ID extends Serializable> extends
         
         @SuppressWarnings("unchecked")
 		@Override
-        protected Object getTargetRepository(RepositoryMetadata metadata) {
+        protected Object getTargetRepository(RepositoryInformation metadata) {
             return new CustomBaseRepositoryImpl<T, ID>((SolrEntityInformation<T, ID>) getEntityInformation(metadata.getDomainType()), determineSolrOperation(metadata));
         }
 

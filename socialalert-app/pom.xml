@@ -4,10 +4,10 @@
 	<artifactId>socialalert-app</artifactId>
 	<name>Social Alert App</name>
 	<properties>
-		<spring-release-version>4.1.6.RELEASE</spring-release-version>
-		<spring-security-version>4.0.0.RELEASE</spring-security-version>
-		<solr-release-version>4.9.1</solr-release-version>
-		<spring-solr-version>1.4.0.RELEASE</spring-solr-version>
+		<spring-release-version>4.1.7.RELEASE</spring-release-version>
+		<spring-security-version>4.0.2.RELEASE</spring-security-version>
+		<solr-release-version>4.10.4</solr-release-version>
+		<spring-solr-version>1.5.0.RELEASE</spring-solr-version>
 	</properties>
 
 	<dependencies>
