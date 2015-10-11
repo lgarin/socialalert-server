@@ -5,12 +5,14 @@ import java.net.URL;
 
 import javax.annotation.Resource;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.security.authentication.AuthenticationServiceException;
 
 import com.bravson.socialalert.app.services.OAuthAuthenicationService;
 import com.bravson.socialalert.infrastructure.SimpleServiceTest;
 
+@Ignore
 public class OAuthAuthenicationServiceTest extends SimpleServiceTest {
 
 	@Resource
