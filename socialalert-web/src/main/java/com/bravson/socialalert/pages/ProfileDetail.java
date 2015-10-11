@@ -45,7 +45,7 @@ public class ProfileDetail {
 		}
 		info = profileService.getUserProfile(profileId);
 		statistic = profileService.getUserProfile(profileId);
-		followed = profileService.isFollowing(profileId);
+		followed = profileService.isFollowingSince(profileId) != null;
 		return true;
 	}
 	

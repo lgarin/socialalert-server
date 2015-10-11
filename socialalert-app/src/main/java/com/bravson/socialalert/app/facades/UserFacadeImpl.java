@@ -34,6 +34,7 @@ import com.bravson.socialalert.app.domain.PasswordResetEmailTaskPayload;
 import com.bravson.socialalert.app.domain.StoreProfilePictureTaskPayload;
 import com.bravson.socialalert.app.entities.ApplicationUser;
 import com.bravson.socialalert.app.entities.UserProfile;
+import com.bravson.socialalert.app.services.ApplicationEventService;
 import com.bravson.socialalert.app.services.ApplicationUserService;
 import com.bravson.socialalert.app.services.EmailService;
 import com.bravson.socialalert.app.services.OAuthAuthenicationService;
@@ -72,6 +73,9 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 	private UserProfileService profileService;
 	
 	@Resource
+	private ApplicationEventService eventService;
+	
+	@Resource
 	private QueuedTaskScheduler taskScheduler;
 	
 	@Resource
@@ -106,6 +110,10 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 			throw e;
 		}
 		ApplicationUser user = SecurityUtils.findPrincipal(auth);
+		if (user != null && user.getProfileId() != null) {
+			eventService.createEvent(user.getProfileId(), "login", username);	
+		}
+		
 		if (user != null) {
 			user = userService.updateLastLoginSuccess(username);
 			SecurityContextHolder.getContext().setAuthentication(auth);
@@ -141,6 +149,9 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 		
 		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(UserRole.USER.name());
 		OpenIDAuthenticationToken auth = new OpenIDAuthenticationToken(user, Collections.singletonList(authority), info.getIdentifier(), null);
+		if (user != null && user.getProfileId() != null) {
+			eventService.createEvent(user.getProfileId(), "externalLogin", info.getIdentifier());	
+		}
 		user = userService.updateLastLoginSuccess(user.getUsername());
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		return user.toUserInfo();
@@ -169,6 +180,10 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 			throw new CredentialsExpiredException("New password must differ from previous one");
 		}
 		userService.changePassword(username, newPassword);
+		
+		if (user.getProfileId() != null) {
+			eventService.createEvent(user.getProfileId(), "changePassword", username);	
+		}
 	}
 	
 	@Override
@@ -176,6 +191,9 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 	@Transactional(rollbackFor={Throwable.class})
 	public void logout() {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
+		if (user != null && user.getProfileId() != null) {
+			eventService.createEvent(user.getProfileId(), "logout", user.getUsername());	
+		}
 		if (user != null) {
 			userService.clearLoginFailures(user.getUsername());
 		}
@@ -191,6 +209,9 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 	public void activateUser(String token) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		userService.activateUser(user.getUsername(), token);
+		if (user != null && user.getProfileId() != null) {
+			eventService.createEvent(user.getProfileId(), "activateUser", user.getUsername());	
+		}
 	}
 	
 	@Override
@@ -204,6 +225,11 @@ public class UserFacadeImpl implements UserFacade, ApplicationListener<HttpSessi
 	@Transactional(rollbackFor={Throwable.class})
 	public void resetPassword(String username, String token, String newPassword) throws IOException {
 		userService.resetPassword(username, token, newPassword);
+		/* TODO
+		if (user != null && user.getProfileId() != null) {
+			eventService.createEvent(user.getProfileId(), "resetPassword", user.getUsername());	
+		}
+		*/
 	}
 	
 	@Override

@@ -22,6 +22,7 @@ import com.bravson.socialalert.app.entities.UserProfile;
 import com.bravson.socialalert.app.services.AbuseReportService;
 import com.bravson.socialalert.app.services.AlertActivityService;
 import com.bravson.socialalert.app.services.AlertCommentService;
+import com.bravson.socialalert.app.services.ApplicationEventService;
 import com.bravson.socialalert.app.services.ApplicationUserService;
 import com.bravson.socialalert.app.services.ProfileLinkService;
 import com.bravson.socialalert.app.services.ProfileStatisticService;
@@ -62,6 +63,9 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	@Resource
 	private AbuseReportService abuseService;
 	
+	@Resource
+	private ApplicationEventService eventService;
+	
 	@Value("${query.max.result}")
 	private int maxPageSize;
 	
@@ -80,6 +84,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	public ProfileInfo updateProfile(ProfileInfo info) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		info.setNickname(user.getNickname());
+		eventService.createEvent(user.getProfileId(), "updateProfile", info.getCountry());
 		return profileService.updateProfile(user.getProfileId(), info).toProfileInfo();
 	}
 
@@ -88,6 +93,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 	public ProfileInfo claimProfilePicture(URI pictureUri) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		UserProfile profile = profileService.claimProfilePicture(user.getProfileId(), pictureUri);
+		eventService.createEvent(user.getProfileId(), "claimProfilePicture", pictureUri.toString());
 		return profile.toProfileInfo();
 	}
 
@@ -171,6 +177,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 		if (result) {
 			statisticService.updateProfileStatistic(profileId, ProfileStatisticUpdate.INCREMENT_FOLLOWER_COUNT);
 		}
+		eventService.createEvent(user.getProfileId(), "follow", profileId.toString());
 		return result;
 	}
 	
@@ -182,6 +189,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 		if (result) {
 			statisticService.updateProfileStatistic(profileId, ProfileStatisticUpdate.DECREMENT_FOLLOWER_COUNT);
 		}
+		eventService.createEvent(user.getProfileId(), "unfollow", profileId.toString());
 		return result;
 	}
 	
@@ -233,6 +241,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 		AbuseInfo result = abuseService.reportAbusiveComment(commentId, user.getProfileId(), country, reason);
 		userService.populateCreators(Collections.singletonList(result));
 		userService.updateOnlineStatus(Collections.singletonList(result));
+		eventService.createEvent(user.getProfileId(), "reportAbusiveComment", commentId.toString());
 		return result;
 	}
 	
@@ -243,6 +252,7 @@ public class ProfileFacadeImpl implements ProfileFacade {
 		AbuseInfo result = abuseService.reportAbusiveMedia(mediaId, user.getProfileId(), country, reason);
 		userService.populateCreators(Collections.singletonList(result));
 		userService.updateOnlineStatus(Collections.singletonList(result));
+		eventService.createEvent(user.getProfileId(), "reportAbusiveMedia", mediaId.toString());
 		return result;
 	}
 }

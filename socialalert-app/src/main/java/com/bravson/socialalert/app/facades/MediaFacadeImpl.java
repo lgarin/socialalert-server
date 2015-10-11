@@ -34,6 +34,7 @@ import com.bravson.socialalert.app.services.AlertAlbumService;
 import com.bravson.socialalert.app.services.AlertCommentService;
 import com.bravson.socialalert.app.services.AlertInteractionService;
 import com.bravson.socialalert.app.services.AlertMediaService;
+import com.bravson.socialalert.app.services.ApplicationEventService;
 import com.bravson.socialalert.app.services.ApplicationUserService;
 import com.bravson.socialalert.app.services.GeocoderService;
 import com.bravson.socialalert.app.services.MediaStorageService;
@@ -111,6 +112,9 @@ public class MediaFacadeImpl implements MediaFacade {
 	@Resource
 	private UserSessionService sessionService;
 	
+	@Resource
+	private ApplicationEventService eventService;
+	
 	@Value("${media.delete.delay}")
 	private long mediaDeleteDelay;
 	
@@ -132,6 +136,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		activityService.addActivity(finalUri, user.getProfileId(), ActivityType.NEW_PICTURE, null);
 		info.setCreator(user.getNickname());
 		queuedTaskScheduler.scheduleTask(new ArchiveMediaTaskPayload(pictureUri, finalUri));
+		eventService.createEvent(user.getProfileId(), "claimPicture", pictureUri.toString());
 		return info;
 	}
 	
@@ -165,6 +170,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		activityService.addActivity(finalUri, user.getProfileId(), ActivityType.NEW_PICTURE, null);
 		info.setCreator(user.getNickname());
 		queuedTaskScheduler.scheduleTask(new ArchiveMediaTaskPayload(videoUri, finalUri));
+		eventService.createEvent(user.getProfileId(), "claimVideo", videoUri.toString());
 		return info;
 	}
 	
@@ -187,6 +193,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		MediaInfo info = alertService.updateAlert(mediaUri, user.getProfileId(), title, description, newLocation, cameraMaker, cameraModel, pictureTimestamp, categories, tags);
 		info.setCreator(user.getNickname());
+		eventService.createEvent(user.getProfileId(), "updateMediaInfo", mediaUri.toString());
 		return info;
 	}
 	
@@ -267,10 +274,12 @@ public class MediaFacadeImpl implements MediaFacade {
 		ApprovalModifier modifier = null;
 		if (user != null && user.getProfileId() != null) {
 			modifier = interactionService.getMediaApprovalModifier(mediaUri, user.getProfileId());
+			activityService.addActivity(mediaUri, user.getProfileId(), ActivityType.WATCH_MEDIA, null);
 		}
 		MediaInfo result = alertService.viewMediaDetail(mediaUri).enrich(modifier);
 		userService.populateCreators(Collections.singletonList(result));
 		userService.updateOnlineStatus(Collections.singletonList(result));
+		eventService.createEvent(user.getProfileId(), "viewMediaDetail", mediaUri.toString());
 		return result;
 	}
 	
@@ -281,6 +290,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		alertService.deleteMedia(mediaUri, user.getProfileId());
 		queuedTaskScheduler.scheduleTask(new DeleteMediaTaskPayload(mediaUri, mediaDeleteDelay));
+		eventService.createEvent(user.getProfileId(), "deleteMedia", mediaUri.toString());
 	}
 	
 	@Override
@@ -301,6 +311,11 @@ public class MediaFacadeImpl implements MediaFacade {
 		
 		userService.populateCreators(Collections.singletonList(result));
 		userService.updateOnlineStatus(Collections.singletonList(result));
+		if (modifier == ApprovalModifier.LIKE) {
+			eventService.createEvent(user.getProfileId(), "likeMedia", mediaUri.toString());
+		} else if (modifier == ApprovalModifier.DISLIKE) {
+			eventService.createEvent(user.getProfileId(), "dislikeMedia", mediaUri.toString());
+		}
 		return result;
 	}
 
@@ -314,6 +329,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		activityService.addActivity(mediaUri, user.getProfileId(), ActivityType.NEW_COMMENT, info.getCommentId());
 		linkService.increaseActivityWeight(user.getProfileId(), media.getProfileId(), 1);
 		alertService.increaseCommentCount(mediaUri);
+		eventService.createEvent(user.getProfileId(), "addComment", mediaUri.toString());
 		info.setCreator(user.getNickname());
 		info.setOnline(true);
 		return info;
@@ -329,9 +345,13 @@ public class MediaFacadeImpl implements MediaFacade {
 		if (modifier != null) {
 			activityService.addActivity(result.getMediaUri(), user.getProfileId(), modifier.toCommentActivtiyType(), commentId);
 		}
-		
 		userService.populateCreators(Collections.singletonList(result));
 		userService.updateOnlineStatus(Collections.singletonList(result));
+		if (modifier == ApprovalModifier.LIKE) {
+			eventService.createEvent(user.getProfileId(), "likeComment", commentId.toString());
+		} else if (modifier == ApprovalModifier.DISLIKE) {
+			eventService.createEvent(user.getProfileId(), "dislikeComment", commentId.toString());
+		}
 		return result;
 	}
 	
@@ -349,6 +369,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		activity.setCreator(user.getNickname());
 		activity.setMessage(comment.getComment());
 		userService.updateOnlineStatus(Collections.singleton(activity));
+		eventService.createEvent(user.getProfileId(), "repostComment", commentId.toString());
 		return activity;
 	}
 	
@@ -365,6 +386,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		linkService.increaseActivityWeight(user.getProfileId(), media.getProfileId(), 1);
 		activity.setCreator(user.getNickname());
 		userService.updateOnlineStatus(Collections.singleton(activity));
+		eventService.createEvent(user.getProfileId(), "repostMedia", mediaUri.toString());
 		return activity;
 	}
 	
@@ -397,6 +419,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		AlbumInfo item = albumService.createEmptyAlbum(user.getProfileId(), title, description);
 		userService.populateCreators(Collections.singletonList(item));
 		userService.updateOnlineStatus(Collections.singletonList(item));
+		eventService.createEvent(user.getProfileId(), "createEmptyAlbum", item.getAlbumId().toString());
 		return item;
 	}
 	
@@ -408,6 +431,7 @@ public class MediaFacadeImpl implements MediaFacade {
 		AlbumInfo item = albumService.updateAlbum(albumId, user.getProfileId(), title, description, mediaList);
 		userService.populateCreators(Collections.singletonList(item));
 		userService.updateOnlineStatus(Collections.singletonList(item));
+		eventService.createEvent(user.getProfileId(), "updateAlbum", albumId.toString());
 		return item;
 	}
 	
@@ -417,6 +441,7 @@ public class MediaFacadeImpl implements MediaFacade {
 	public void deleteAlbum(UUID albumId) {
 		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
 		albumService.deleteAlbum(albumId, user.getProfileId());
+		eventService.createEvent(user.getProfileId(), "deleteAlbum", albumId.toString());
 	}
 	
 	@Override

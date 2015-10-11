@@ -39,17 +39,17 @@ public class UploadServlet implements HttpRequestHandler, MediaConstants {
 			if (JPG_MEDIA_TYPE.equals(request.getContentType())) {
 				Pair<URI, PictureMetadata> picture = storageService.storePicture(request.getInputStream(), request.getContentLength());
 				request.getInputStream().close();
-				writeResponse(response, picture.getKey(), picture.getValue().getLatitude(), picture.getValue().getLatitude(), picture.getValue().getCameraMaker(), picture.getValue().getCameraModel());
+				writeResponse(response, picture.getKey(), picture.getValue().getLatitude(), picture.getValue().getLongitude(), picture.getValue().getCameraMaker(), picture.getValue().getCameraModel());
 				response.setStatus(HttpStatus.CREATED.value());
 			} else if (MP4_MEDIA_TYPE.equals(request.getContentType())) {
 				Pair<URI, VideoMetadata> video = storageService.storeVideo(request.getInputStream(), request.getContentLength(), MP4_EXTENSION);
 				request.getInputStream().close();
-				writeResponse(response, video.getKey(), video.getValue().getLatitude(), video.getValue().getLatitude(), video.getValue().getCameraMaker(), video.getValue().getCameraModel());
+				writeResponse(response, video.getKey(), video.getValue().getLatitude(), video.getValue().getLongitude(), video.getValue().getCameraMaker(), video.getValue().getCameraModel());
 				response.setStatus(HttpStatus.CREATED.value());
 			} else if (MOV_MEDIA_TYPE.equals(request.getContentType())) {
 				Pair<URI, VideoMetadata> video = storageService.storeVideo(request.getInputStream(), request.getContentLength(), MOV_EXTENSION);
 				request.getInputStream().close();
-				writeResponse(response, video.getKey(), video.getValue().getLatitude(), video.getValue().getLatitude(), video.getValue().getCameraMaker(), video.getValue().getCameraModel());
+				writeResponse(response, video.getKey(), video.getValue().getLatitude(), video.getValue().getLongitude(), video.getValue().getCameraMaker(), video.getValue().getCameraModel());
 				response.setStatus(HttpStatus.CREATED.value());
 			} else {
 				throw new HttpClientErrorException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, request.getContentType() + " is not supported");

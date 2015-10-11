@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +19,9 @@ import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.stereotype.Service;
 
 import com.bravson.socialalert.app.entities.AlertActivity;
+import com.bravson.socialalert.app.entities.UserProfile;
 import com.bravson.socialalert.app.repositories.AlertActivityRepository;
+import com.bravson.socialalert.app.repositories.ApplicationEventRepository;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
 import com.bravson.socialalert.common.domain.ActivityType;
@@ -33,6 +37,12 @@ public class AlertActivityServiceImpl implements AlertActivityService {
 	@Resource
 	private AlertMediaService mediaService;
 	
+	@Autowired
+	private UserProfileService profileService;
+	
+	@Autowired(required=false)
+	private HttpServletRequest httpRequest;
+	
 	@Value("${query.max.result}")
 	private int maxPageSize;
 	
@@ -47,7 +57,9 @@ public class AlertActivityServiceImpl implements AlertActivityService {
 	@Override
 	public ActivityInfo addActivity(URI mediaUri, UUID profileId, ActivityType activityType, UUID commentId) {
 		MediaInfo picture = mediaService.getMediaInfo(mediaUri);
-		return activityRepository.save(new AlertActivity(mediaUri, picture.getProfileId(), profileId, activityType, commentId)).toActivityInfo();
+		UserProfile userProfile = profileService.getProfileById(profileId);
+		String ipAddress = httpRequest != null ? httpRequest.getRemoteAddr() : null;
+		return activityRepository.save(new AlertActivity(mediaUri, picture.getProfileId(), profileId, activityType, commentId, userProfile.getCountry(), ipAddress)).toActivityInfo();
 	}
 	
 	private static QueryResult<ActivityInfo> toQueryResult(Page<AlertActivity> page) {
