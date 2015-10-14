@@ -22,6 +22,8 @@ public class ActivityInfo implements UserContent {
 	private String creator;
 	
 	private boolean online;
+	
+	private String country;
 
 	public URI getMediaUri() {
 		return mediaUri;
@@ -89,5 +91,13 @@ public class ActivityInfo implements UserContent {
 	@Override
 	public void setOnline(boolean online) {
 		this.online = online;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 }

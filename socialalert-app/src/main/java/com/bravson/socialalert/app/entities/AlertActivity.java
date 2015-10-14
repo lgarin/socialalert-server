@@ -77,6 +77,7 @@ public class AlertActivity extends VersionedEntity {
 		info.setMediaUri(mediaUri);
 		info.setProfileId(sourceId);
 		info.setCommentId(commentId);
+		info.setCountry(country);
 		return info;
 	}
 }

@@ -19,6 +19,7 @@ import com.bravson.socialalert.app.services.AlertActivityService;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
 import com.bravson.socialalert.common.domain.ActivityType;
+import com.bravson.socialalert.common.domain.CountryActivityStatistic;
 import com.bravson.socialalert.common.domain.QueryResult;
 import com.bravson.socialalert.infrastructure.DataServiceTest;
 
@@ -89,5 +90,16 @@ public class AlertActivityServiceTest extends DataServiceTest {
 		ActivityCount activity = statistic.get(0);
 		assertEquals(1, activity.getCount());
 		assertEquals(ActivityType.NEW_COMMENT, activity.getType());
+	}
+	
+	@Test
+	public void getCountryActivityStatistic() {
+		UUID profileId = UUID.fromString("a95472c0-e0e6-11e2-a28f-0800200c9a77");
+		List<CountryActivityStatistic> statistic = service.buildCountryActivityCount(profileId, ActivityType.NEW_COMMENT, new DateTime(2012, 8, 13, 3, 0));
+		assertNotNull(statistic);
+		assertEquals(1, statistic.size());
+		CountryActivityStatistic entry = statistic.get(0);
+		assertEquals(1, entry.getCount());
+		assertEquals("CHE", entry.getCountry());
 	}
 }

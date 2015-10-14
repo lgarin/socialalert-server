@@ -24,12 +24,15 @@ import com.bravson.socialalert.app.repositories.AlertActivityRepository;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
 import com.bravson.socialalert.common.domain.ActivityType;
+import com.bravson.socialalert.common.domain.CountryActivityStatistic;
 import com.bravson.socialalert.common.domain.MediaInfo;
 import com.bravson.socialalert.common.domain.QueryResult;
 
 @Service
 public class AlertActivityServiceImpl implements AlertActivityService {
 
+	public static final int MAX_FACET_RESULTS = 1000;
+	
 	@Resource
 	private AlertActivityRepository activityRepository;
 	
@@ -85,6 +88,19 @@ public class AlertActivityServiceImpl implements AlertActivityService {
 			ActivityType activityType = ActivityType.valueOf(entry.getValue());
 			long value = entry.getValueCount();
 			result.add(new ActivityCount(activityType, value));
+		}
+		return result;
+	}
+
+	@Override
+	public List<CountryActivityStatistic> buildCountryActivityCount(UUID profileId, ActivityType activityType, DateTime minTime) {
+		
+		Page<FacetFieldEntry> page = activityRepository.groupCountryActivity(profileId, activityType, minTime, createPageRequest(0, maxPageSize)).getFacetResultPages().iterator().next();
+		ArrayList<CountryActivityStatistic> result = new ArrayList<>(page.getNumberOfElements());
+		for (FacetFieldEntry entry : page) {
+			String country = entry.getValue();
+			long value = entry.getValueCount();
+			result.add(new CountryActivityStatistic(country, value));
 		}
 		return result;
 	}
