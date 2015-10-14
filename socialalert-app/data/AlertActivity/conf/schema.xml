@@ -3,7 +3,7 @@
 	<fields>
 		<field name="activityId" type="uuid" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="mediaUri" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-		<field name="profileId" type="uuid" indexed="false" stored="true" required="true" multiValued="false"/>
+		<field name="profileId" type="uuid" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="sourceId" type="uuid" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="activityType" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
 		<field name="commentId" type="uuid" indexed="false" stored="true" required="false" multiValued="false"/>

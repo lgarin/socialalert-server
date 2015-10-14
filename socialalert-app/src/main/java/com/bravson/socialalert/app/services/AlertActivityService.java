@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
 import com.bravson.socialalert.common.domain.ActivityType;
+import com.bravson.socialalert.common.domain.CountryActivityStatistic;
 import com.bravson.socialalert.common.domain.QueryResult;
 
 @Validated
@@ -23,5 +24,7 @@ public interface AlertActivityService {
 
 	public QueryResult<ActivityInfo> searchActivityBySourceProfileId(@NotEmpty List<UUID> profileIdList, @Min(0) int pageNumber, @Min(1) int pageSize);
 	
-	public List<ActivityCount> getRecentActivityStatistic(@NotNull List<UUID> profileIdList, @NotNull DateTime lastCheck); 
+	public List<ActivityCount> getRecentActivityStatistic(@NotNull List<UUID> profileIdList, @NotNull DateTime lastCheck);
+	
+	public List<CountryActivityStatistic> buildCountryActivityCount(@NotNull UUID profileId, @NotNull ActivityType activityType, @NotNull DateTime minTime);
 }

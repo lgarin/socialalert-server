@@ -12,6 +12,7 @@ import org.springframework.data.solr.repository.Query;
 
 import com.bravson.socialalert.app.entities.AlertActivity;
 import com.bravson.socialalert.app.infrastructure.CustomBaseRepository;
+import com.bravson.socialalert.common.domain.ActivityType;
 
 public interface AlertActivityRepository extends CustomBaseRepository<AlertActivity, UUID> {
 
@@ -23,4 +24,8 @@ public interface AlertActivityRepository extends CustomBaseRepository<AlertActiv
 	@Facet(fields={"activityType"}, limit=MAX_FACET_RESULTS, minCount=1)
 	@Query(value="*:*", filters={"creation:[?0 TO *]", "sourceId:(?1)"})
 	FacetPage<AlertActivity> groupRecentActivity(DateTime lastCheck, List<UUID> sourceIdList, Pageable pageable);
+	
+	@Facet(fields={"country"}, limit=MAX_FACET_RESULTS, minCount=1)
+	@Query(value="*:*", filters={"profileId:(?0)", "activityType:(?1)", "creation:[?2 TO *]"})
+	FacetPage<AlertActivity> groupCountryActivity(UUID profileId, ActivityType activityType, DateTime minTime, Pageable pageable);
 }
