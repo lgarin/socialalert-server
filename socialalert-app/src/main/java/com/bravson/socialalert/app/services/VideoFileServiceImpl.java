@@ -3,6 +3,7 @@ package com.bravson.socialalert.app.services;
 import io.humble.video.AudioChannel;
 import io.humble.video.AudioFormat;
 import io.humble.video.Codec;
+import io.humble.video.Coder.Flag;
 import io.humble.video.Decoder;
 import io.humble.video.Demuxer;
 import io.humble.video.DemuxerStream;
@@ -224,14 +225,11 @@ public class VideoFileServiceImpl implements VideoFileService {
 				if (inputPacket.isComplete()) {
 					if (audioStream.getIndex() == inputPacket.getStreamIndex()) {
 						if (decodeAudio(inputPacket, audioDecoder, sourceAudio)) {
-							encodeAudio(muxer, audioPacket, audioEncoder, sourceAudio);
-							/*
 							audioSource.addAudio(sourceAudio);
 							
 							if (audioSink.getAudio(targetAudio) >= 0) {
 								encodeAudio(muxer, audioPacket, audioEncoder, targetAudio);
 							}
-							*/
 						}
 					}
 
@@ -294,14 +292,12 @@ public class VideoFileServiceImpl implements VideoFileService {
 			while (demuxer.read(inputPacket) >= 0) {
 				if (inputPacket.isComplete()) {
 					if (audioStream.getIndex() == inputPacket.getStreamIndex()) {
-						/*
 						if (decodeAudio(inputPacket, audioDecoder, sourceAudio)) {
 							audioSource.addAudio(sourceAudio);
 							if (audioSink.getAudio(targetAudio) >= 0) {
 								encodeAudio(muxer, audioPacket, audioEncoder, targetAudio);
 							}
 						}
-						*/
 					} else if (videoStream.getIndex() == inputPacket.getStreamIndex()) {
 						if (decodePicture(inputPacket, videoDecoder, sourcePicture)) {
 							watermarkPicture.setTimeStamp(sourcePicture.getTimeStamp());
@@ -315,6 +311,9 @@ public class VideoFileServiceImpl implements VideoFileService {
 
 				}
 			}
+			
+			encodeAudio(muxer, audioPacket, audioEncoder, null);
+			encodePicture(muxer, videoPacket, videoEncoder, null);
 		} catch (InterruptedException e) {
 			throw new IOException(e);
 		} finally {
@@ -360,7 +359,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 		audioEncoder.setChannels(1);
 		audioEncoder.setChannelLayout(AudioChannel.Layout.CH_LAYOUT_MONO);
 		audioEncoder.setSampleFormat(AudioFormat.Type.SAMPLE_FMT_FLTP);
-		audioEncoder.setTimeBase(Rational.make(1, 44100)); // TODO
+		audioEncoder.setTimeBase(Rational.make(1, 60)); // TODO the decoder does not deliver the correct value
 		
 		if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
 			audioEncoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
@@ -371,21 +370,21 @@ public class VideoFileServiceImpl implements VideoFileService {
 	}
 
 	private void encodeAudio(Muxer muxer, MediaPacket audioPacket, Encoder audioEncoder, MediaAudio targetAudio) {
-		do {
-			audioEncoder.encode(audioPacket, targetAudio);
+		//do {
+			audioEncoder.encodeAudio(audioPacket, targetAudio);
 		    if (audioPacket.isComplete()) {
 		      muxer.write(audioPacket, false);
 		    }
-		} while (audioPacket.isComplete());
+		//} while (audioPacket.isComplete());
 	}
 
 	private void encodePicture(Muxer muxer, MediaPacket videoPacket, Encoder videoEncoder, MediaPicture targetPicture) {
-		do {
-			videoEncoder.encode(videoPacket, targetPicture);
+		//do {
+			videoEncoder.encodeVideo(videoPacket, targetPicture);
 		    if (videoPacket.isComplete()) {
 		      muxer.write(videoPacket, false);
 		    }
-		} while (videoPacket.isComplete());
+		//} while (videoPacket.isComplete());
 	}
 
 	private MediaPicture createWatermarkPicture() {
