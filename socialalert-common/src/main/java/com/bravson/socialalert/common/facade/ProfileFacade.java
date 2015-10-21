@@ -16,6 +16,8 @@ import com.bravson.socialalert.common.domain.AbuseInfo;
 import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
+import com.bravson.socialalert.common.domain.ActivityType;
+import com.bravson.socialalert.common.domain.CountryActivityStatistic;
 import com.bravson.socialalert.common.domain.ProfileInfo;
 import com.bravson.socialalert.common.domain.ProfileStatisticInfo;
 import com.bravson.socialalert.common.domain.PublicProfileInfo;
@@ -59,4 +61,6 @@ public interface ProfileFacade {
 	AbuseInfo reportAbusiveComment(@JsonRpcParam("commentId") @NotNull UUID commentId, @JsonRpcParam("country") String country, @JsonRpcParam("reason") @NotNull AbuseReason reason) throws IOException;
 	
 	AbuseInfo reportAbusiveMedia(@JsonRpcParam("mediaId") @NotNull URI mediaId, @JsonRpcParam("country") String country, @JsonRpcParam("reason") @NotNull AbuseReason reason) throws IOException;
+
+	List<CountryActivityStatistic> getCountryActivityStatistic(@JsonRpcParam("activityType") @NotNull ActivityType activityType, @JsonRpcParam("startTime") @NotNull DateTime startTime);
 }

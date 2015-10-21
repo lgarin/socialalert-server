@@ -32,6 +32,8 @@ import com.bravson.socialalert.common.domain.AbuseInfo;
 import com.bravson.socialalert.common.domain.AbuseReason;
 import com.bravson.socialalert.common.domain.ActivityCount;
 import com.bravson.socialalert.common.domain.ActivityInfo;
+import com.bravson.socialalert.common.domain.ActivityType;
+import com.bravson.socialalert.common.domain.CountryActivityStatistic;
 import com.bravson.socialalert.common.domain.ProfileInfo;
 import com.bravson.socialalert.common.domain.ProfileStatisticInfo;
 import com.bravson.socialalert.common.domain.PublicProfileInfo;
@@ -254,5 +256,13 @@ public class ProfileFacadeImpl implements ProfileFacade {
 		userService.updateOnlineStatus(Collections.singletonList(result));
 		eventService.createEvent(user.getProfileId(), "reportAbusiveMedia", mediaId.toString());
 		return result;
+	}
+	
+	@Override
+	@PreAuthorize("hasRole('USER')")
+	public List<CountryActivityStatistic> getCountryActivityStatistic(ActivityType activityType, DateTime startTime) {
+		ApplicationUser user = SecurityUtils.findAuthenticatedPrincipal();
+		eventService.createEvent(user.getProfileId(), "getCountryActivityStatistic", activityType.toString());
+		return activityService.buildCountryActivityCount(user.getProfileId(), activityType, startTime);
 	}
 }
