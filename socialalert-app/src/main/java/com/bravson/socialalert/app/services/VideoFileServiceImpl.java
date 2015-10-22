@@ -3,7 +3,6 @@ package com.bravson.socialalert.app.services;
 import io.humble.video.AudioChannel;
 import io.humble.video.AudioFormat;
 import io.humble.video.Codec;
-import io.humble.video.Coder.Flag;
 import io.humble.video.Decoder;
 import io.humble.video.Demuxer;
 import io.humble.video.DemuxerStream;
@@ -192,58 +191,6 @@ public class VideoFileServiceImpl implements VideoFileService {
 		return result;
 	}
 	
-	@Override
-	public void extractAudio(File sourceFile, File outputFile) throws IOException {
-		Demuxer demuxer = Demuxer.make();
-		MuxerFormat format = MuxerFormat.guessFormat(null, outputFile.getName(), null);
-		Muxer muxer = Muxer.make(outputFile.toString(), format, null);
-		
-		MediaPacket inputPacket = MediaPacket.make();
-		MediaPacket audioPacket = MediaPacket.make();
-		
-		try {
-			demuxer.open(sourceFile.toString(), null, false, true, null, null);
-			
-			DemuxerStream audioStream = findStream(demuxer, MediaDescriptor.Type.MEDIA_AUDIO);
-			Decoder audioDecoder = audioStream.getDecoder();
-			audioDecoder.open(null, null);
-			
-			Encoder audioEncoder = createAudioEncoder(format);
-			
-			muxer.addNewStream(audioEncoder);
-			muxer.open(null, null);
-				
-			FilterGraph audioGraph = FilterGraph.make();
-			FilterAudioSource audioSource = audioGraph.addAudioSource("input", audioDecoder.getSampleRate(), audioDecoder.getChannelLayout(), audioDecoder.getSampleFormat(), audioDecoder.getTimeBase());
-			FilterAudioSink audioSink = audioGraph.addAudioSink("output", audioEncoder.getSampleRate(), audioEncoder.getChannelLayout(), audioEncoder.getSampleFormat());
-			audioGraph.open("[input] aformat='sample_fmts=fltp:sample_rates=44100:channel_layouts=mono' [output]");
-			
-			MediaAudio sourceAudio = MediaAudio.make(audioDecoder.getFrameSize(), audioDecoder.getSampleRate(), audioDecoder.getChannels(), audioDecoder.getChannelLayout(), audioDecoder.getSampleFormat());
-			MediaAudio targetAudio = MediaAudio.make(audioEncoder.getFrameSize(), audioEncoder.getSampleRate(), audioEncoder.getChannels(), audioEncoder.getChannelLayout(), audioEncoder.getSampleFormat());
-
-			while (demuxer.read(inputPacket) >= 0) {
-				if (inputPacket.isComplete()) {
-					if (audioStream.getIndex() == inputPacket.getStreamIndex()) {
-						if (decodeAudio(inputPacket, audioDecoder, sourceAudio)) {
-							audioSource.addAudio(sourceAudio);
-							
-							if (audioSink.getAudio(targetAudio) >= 0) {
-								encodeAudio(muxer, audioPacket, audioEncoder, targetAudio);
-							}
-						}
-					}
-
-				}
-			}
-		} catch (InterruptedException e) {
-			throw new IOException(e);
-		} finally {
-			closeMuxer(muxer);
-			closeDemuxer(demuxer);
-		}
-	}
-
-	
 	private void watermark(File sourceFile, File outputFile) throws IOException {
 		
 		Demuxer demuxer = Demuxer.make();
@@ -312,8 +259,9 @@ public class VideoFileServiceImpl implements VideoFileService {
 				}
 			}
 			
-			encodeAudio(muxer, audioPacket, audioEncoder, null);
 			encodePicture(muxer, videoPacket, videoEncoder, null);
+			encodeAudio(muxer, audioPacket, audioEncoder, null);
+			
 		} catch (InterruptedException e) {
 			throw new IOException(e);
 		} finally {
@@ -359,8 +307,6 @@ public class VideoFileServiceImpl implements VideoFileService {
 		audioEncoder.setChannels(1);
 		audioEncoder.setChannelLayout(AudioChannel.Layout.CH_LAYOUT_MONO);
 		audioEncoder.setSampleFormat(AudioFormat.Type.SAMPLE_FMT_FLTP);
-		audioEncoder.setTimeBase(Rational.make(1, 60)); // TODO the decoder does not deliver the correct value
-		
 		if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
 			audioEncoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
 		}
@@ -379,12 +325,12 @@ public class VideoFileServiceImpl implements VideoFileService {
 	}
 
 	private void encodePicture(Muxer muxer, MediaPacket videoPacket, Encoder videoEncoder, MediaPicture targetPicture) {
-		//do {
+		do {
 			videoEncoder.encodeVideo(videoPacket, targetPicture);
 		    if (videoPacket.isComplete()) {
 		      muxer.write(videoPacket, false);
 		    }
-		//} while (videoPacket.isComplete());
+		} while (videoPacket.isComplete());
 	}
 
 	private MediaPicture createWatermarkPicture() {

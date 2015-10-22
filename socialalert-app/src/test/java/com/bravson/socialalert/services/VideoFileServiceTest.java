@@ -11,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -19,7 +18,6 @@ import com.bravson.socialalert.app.domain.VideoMetadata;
 import com.bravson.socialalert.app.services.VideoFileService;
 import com.bravson.socialalert.infrastructure.SimpleServiceTest;
 
-@Ignore
 public class VideoFileServiceTest extends SimpleServiceTest {
 
 	@Resource
@@ -72,11 +70,6 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 	public void testPreview() throws IOException {
 		File file = service.createPreview(new File("src/test/resources/media/IMG_0236.MOV"));
 		assertEquals(new File("src/test/resources/media/preview-IMG_0236.mp4"), file);
-	}
-	
-	@Test
-	public void testAudio() throws IOException {
-		service.extractAudio(new File("src/test/resources/media/IMG_0236.MOV"), new File("C:/Temp/audio.mp3"));
 	}
 }
 
