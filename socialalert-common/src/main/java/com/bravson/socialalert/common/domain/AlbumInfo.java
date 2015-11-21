@@ -66,12 +66,9 @@ public class AlbumInfo implements UserContent {
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
-	@Override
 	public boolean isOnline() {
 		return online;
 	}
-	
-	@Override
 	public void setOnline(boolean online) {
 		this.online = online;
 	}

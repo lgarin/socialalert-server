@@ -44,11 +44,9 @@ public class PublicProfileInfo implements UserContent {
 	public void setOnline(boolean online) {
 		this.online = online;
 	}
-	@Override
 	public String getCreator() {
 		return nickname;
 	}
-	@Override
 	public void setCreator(String creator) {
 		this.nickname = creator;
 	}

@@ -94,12 +94,10 @@ public class CommentInfo implements UserContent {
 		this.creator = creator;
 	}
 	
-	@Override
 	public boolean isOnline() {
 		return online;
 	}
 	
-	@Override
 	public void setOnline(boolean online) {
 		this.online = online;
 	}

@@ -91,22 +91,18 @@ public class AbuseInfo implements UserContent {
 		this.message = message;
 	}
 	
-	@Override
 	public String getCreator() {
 		return creator;
 	}
 	
-	@Override
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
 	
-	@Override
 	public boolean isOnline() {
 		return online;
 	}
 	
-	@Override
 	public void setOnline(boolean online) {
 		this.online = online;
 	}
