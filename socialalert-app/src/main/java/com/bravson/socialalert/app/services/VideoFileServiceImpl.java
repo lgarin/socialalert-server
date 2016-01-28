@@ -295,8 +295,11 @@ public class VideoFileServiceImpl implements VideoFileService {
 		if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
 			videoEncoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
 		}
-		videoEncoder.setProperty("crf", 20L);
-		videoEncoder.setProperty("preset", "slow");
+		videoEncoder.setProperty("crf", 24L);
+		videoEncoder.setProperty("preset", "fast");
+		videoEncoder.setProperty("profile", "baseline");
+		videoEncoder.setProperty("refs", "1");
+		videoEncoder.setProperty("x264-params", "movflags=+faststart:level=3.0");
 		videoEncoder.open(null, null);
 		return videoEncoder;
 	}

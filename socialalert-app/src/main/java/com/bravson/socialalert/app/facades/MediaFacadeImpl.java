@@ -279,7 +279,9 @@ public class MediaFacadeImpl implements MediaFacade {
 		MediaInfo result = alertService.viewMediaDetail(mediaUri).enrich(modifier);
 		userService.populateCreators(Collections.singletonList(result));
 		userService.updateOnlineStatus(Collections.singletonList(result));
-		eventService.createEvent(user.getProfileId(), "viewMediaDetail", mediaUri.toString());
+		if (user != null) {
+			eventService.createEvent(user.getProfileId(), "viewMediaDetail", mediaUri.toString());
+		}
 		return result;
 	}
 	

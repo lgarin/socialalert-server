@@ -1,5 +1,6 @@
 package com.bravson.socialalert.common.domain;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -7,9 +8,11 @@ import java.util.UUID;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-public class MediaInfo implements UserContent {
+public class MediaInfo implements UserContent, Serializable {
 
-    private URI mediaUri;
+	private static final long serialVersionUID = 1L;
+
+	private URI mediaUri;
     
     private MediaType type;
 
