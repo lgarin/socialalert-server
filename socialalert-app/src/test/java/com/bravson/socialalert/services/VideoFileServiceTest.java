@@ -69,7 +69,7 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 	@Test
 	public void testPreview() throws IOException {
 		File file = service.createPreview(new File("src/test/resources/media/IMG_0236.MOV"));
-		assertEquals(new File("src/test/resources/media/preview-IMG_0236.mp4"), file);
+		assertEquals(new File("src/test/resources/media/preview-IMG_0236.m3u8"), file);
 	}
 }
 

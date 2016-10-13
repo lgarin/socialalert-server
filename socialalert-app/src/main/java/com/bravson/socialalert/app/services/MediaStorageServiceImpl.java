@@ -166,7 +166,7 @@ public class MediaStorageServiceImpl implements MediaStorageService, MediaConsta
 		}
 		
 		boolean picture = mediaFile.getName().endsWith(JPG_EXTENSION);
-		File preview = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), picture ? JPG_EXTENSION : MP4_EXTENSION));
+		File preview = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), picture ? JPG_EXTENSION : HLS_EXTENSION));
 		if (preview.canRead()) {
 			return preview;
 		}
@@ -193,7 +193,7 @@ public class MediaStorageServiceImpl implements MediaStorageService, MediaConsta
 		}
 		File thumbFile = new File(tempDir, thumbnailPrefix + changeExtension(tempUri.getPath(), JPG_EXTENSION));
 		boolean picture = tempFile.getName().endsWith(JPG_EXTENSION);
-		File previewFile = new File(tempDir, previewPrefix + changeExtension(tempUri.getPath(), picture ? JPG_EXTENSION : MP4_EXTENSION));
+		File previewFile = new File(tempDir, previewPrefix + changeExtension(tempUri.getPath(), picture ? JPG_EXTENSION : HLS_EXTENSION));
 	
 		File destFile = new File(baseDir, finalUri.getPath());
 		File destDir = destFile.getParentFile();
@@ -236,7 +236,7 @@ public class MediaStorageServiceImpl implements MediaStorageService, MediaConsta
 		}
 		
 		boolean picture = mediaFile.getName().endsWith(JPG_EXTENSION);
-		File previewFile = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), picture ? JPG_EXTENSION : MP4_EXTENSION));
+		File previewFile = new File(mediaFile.getParentFile(), previewPrefix + changeExtension(mediaFile.getName(), picture ? JPG_EXTENSION : HLS_EXTENSION));
 		if (previewFile != null && previewFile.canWrite() && !FileUtils.deleteQuietly(previewFile)) {
 			throw new SystemExeption("Cannot delete preview file " + previewFile);
 		}

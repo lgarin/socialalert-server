@@ -29,9 +29,11 @@ public class PreviewServlet extends FileHttpRequestHandler implements MediaConst
 		if (resource.getFilename().endsWith(JPG_EXTENSION)) {
 			return MediaType.valueOf(JPG_MEDIA_TYPE);
 		} else if (resource.getFilename().endsWith(MP4_EXTENSION)) {
-			return MediaType.valueOf(MP4_MEDIA_TYPE);
+			return MediaType.valueOf(HLS_MEDIA_TYPE);
 		} else if (resource.getFilename().endsWith(MOV_EXTENSION)) {
-			return MediaType.valueOf(MP4_MEDIA_TYPE);
+			return MediaType.valueOf(HLS_MEDIA_TYPE);
+		} else if (resource.getFilename().endsWith(HLS_EXTENSION)) {
+			return MediaType.valueOf(HLS_MEDIA_TYPE);
 		}
 		return null;
 	}
