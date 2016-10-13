@@ -195,7 +195,7 @@
 	               <configuration>
 	                 <tasks>
 	                   <copy file="${project.build.directory}/${project.build.finalName}.war"
-	                         todir="\\GD04B\Dev\tomcat7\webapps" overwrite="true"/>
+	                         todir="\\GD04B\Dev\tomcat8\webapps" overwrite="true"/>
 	                 </tasks>
 	               </configuration>
 	             </execution>
