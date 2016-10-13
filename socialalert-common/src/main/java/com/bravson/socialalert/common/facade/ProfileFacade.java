@@ -25,7 +25,7 @@ import com.bravson.socialalert.common.domain.QueryResult;
 import com.googlecode.jsonrpc4j.JsonRpcParam;
 import com.googlecode.jsonrpc4j.JsonRpcService;
 
-@JsonRpcService(value="profileFacade", useNamedParams=true)
+@JsonRpcService("profileFacade")
 public interface ProfileFacade {
 
 	ProfileInfo getCurrentUserProfile() throws IOException;

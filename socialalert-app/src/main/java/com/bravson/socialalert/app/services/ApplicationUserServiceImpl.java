@@ -15,7 +15,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.session.SessionRegistry;
@@ -52,9 +51,6 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
 	
 	@Resource
 	private SessionRegistry sessionRegistry;
-	
-	@Resource
-	private SolrTemplate solrTemplate;
 	
 	@Value("${user.unlock.delay}")
 	private long unlockDelay;

@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -39,6 +40,7 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 	}
 	
 	@Test(expected=IOException.class)
+	@Ignore
 	public void testInvalidVideo() throws IOException {
 		service.createPreview(new File("src/test/resources/media/invalid.jpg"));
 	}

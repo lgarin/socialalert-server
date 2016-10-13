@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.googlecode.jsonrpc4j.JsonRpcParam;
 import com.googlecode.jsonrpc4j.JsonRpcService;
 
-@JsonRpcService(value="controlFacade", useNamedParams=true)
+@JsonRpcService("controlFacade")
 public interface ControlFacade {
 
 	List<String> listValidValues(@JsonRpcParam("valueSet") @NotEmpty String valueSet) throws IOException;

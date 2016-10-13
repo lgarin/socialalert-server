@@ -15,7 +15,7 @@ import com.bravson.socialalert.common.domain.UserInfo;
 import com.googlecode.jsonrpc4j.JsonRpcParam;
 import com.googlecode.jsonrpc4j.JsonRpcService;
 
-@JsonRpcService(value="userFacade", useNamedParams=true)
+@JsonRpcService("userFacade")
 public interface UserFacade {
 
 	UserInfo create(@JsonRpcParam("email") @NotBlank @Size(max=UserConstants.MAX_USERNAME_LENGTH) String username, @JsonRpcParam("nickname") @NotBlank @Size(max=UserConstants.MAX_NICKNAME_LENGTH) String nickname, @JsonRpcParam("password") @Length(min=UserConstants.MIN_PASSWORD_LENGTH, max=UserConstants.MAX_PASSWORD_LENGTH) String password) throws IOException;
