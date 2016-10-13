@@ -228,6 +228,6 @@
 		<module>../socialalert-app</module>
 		<module>../socialalert-common</module>
 		<module>../socialalert-data</module>
-		<module>../socialalert-web</module>
+		
 	</modules>
 </project>
