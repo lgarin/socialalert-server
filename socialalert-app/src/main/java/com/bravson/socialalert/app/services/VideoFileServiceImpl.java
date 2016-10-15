@@ -2,7 +2,6 @@ package com.bravson.socialalert.app.services;
 
 import io.humble.video.AudioChannel;
 import io.humble.video.AudioFormat;
-import io.humble.video.BitStreamFilter;
 import io.humble.video.Codec;
 import io.humble.video.Decoder;
 import io.humble.video.Demuxer;
@@ -128,7 +127,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 	
 	@Override
 	public File createPreview(File sourceFile) throws IOException {
-		final File outputFile = new File(sourceFile.getParent(), previewPrefix + FilenameUtils.getBaseName(sourceFile.getName()) + "." + MediaConstants.HLS_EXTENSION);
+		final File outputFile = new File(sourceFile.getParent(), previewPrefix + FilenameUtils.getBaseName(sourceFile.getName()) + "." + MediaConstants.MP4_EXTENSION);
 		watermark(sourceFile, outputFile);
 		return outputFile;
 	}
@@ -196,9 +195,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 		
 		Demuxer demuxer = Demuxer.make();
 		MuxerFormat format = MuxerFormat.guessFormat(null, outputFile.getName(), null);
-		Muxer muxer = Muxer.make(outputFile.toString(), format, "hls");
-		muxer.setProperty("hls_time", "1000");
-		
+		Muxer muxer = Muxer.make(outputFile.toString(), format, null);
 		
 		MediaPacket inputPacket = MediaPacket.make();
 		MediaPacket audioPacket = MediaPacket.make();
@@ -239,16 +236,13 @@ public class VideoFileServiceImpl implements VideoFileService {
 			MediaPicture targetPicture = MediaPicture.make(videoEncoder.getWidth(), videoEncoder.getHeight(), videoDecoder.getPixelFormat());
       		MediaPicture sourcePicture = MediaPicture.make(videoDecoder.getWidth(), videoDecoder.getHeight(), videoDecoder.getPixelFormat());
 
-      		BitStreamFilter videoFilter = BitStreamFilter.make("h264_mp4toannexb");
-      		BitStreamFilter audioFilter = null;
-      		
 			while (demuxer.read(inputPacket) >= 0) {
 				if (inputPacket.isComplete()) {
 					if (audioStream.getIndex() == inputPacket.getStreamIndex()) {
 						if (decodeAudio(inputPacket, audioDecoder, sourceAudio)) {
 							audioSource.addAudio(sourceAudio);
 							if (audioSink.getAudio(targetAudio) >= 0) {
-								encodeAudio(muxer, audioPacket, audioEncoder, audioFilter, targetAudio);
+								encodeAudio(muxer, audioPacket, audioEncoder, targetAudio);
 							}
 						}
 					} else if (videoStream.getIndex() == inputPacket.getStreamIndex()) {
@@ -257,7 +251,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 							watermark.addPicture(watermarkPicture);
 							videoSource.addPicture(sourcePicture);
 							if (videoSink.getPicture(targetPicture) >= 0) {
-								encodePicture(muxer, videoPacket, videoEncoder, videoFilter, targetPicture);
+								encodePicture(muxer, videoPacket, videoEncoder, targetPicture);
 							}
 						}
 					}
@@ -265,8 +259,8 @@ public class VideoFileServiceImpl implements VideoFileService {
 				}
 			}
 			
-			encodePicture(muxer, videoPacket, videoEncoder, videoFilter, null);
-			encodeAudio(muxer, audioPacket, audioEncoder, audioFilter, null);
+			encodePicture(muxer, videoPacket, videoEncoder, null);
+			encodeAudio(muxer, audioPacket, audioEncoder, null);
 			
 		} catch (InterruptedException e) {
 			throw new IOException(e);
@@ -324,25 +318,19 @@ public class VideoFileServiceImpl implements VideoFileService {
 		return audioEncoder;
 	}
 
-	private void encodeAudio(Muxer muxer, MediaPacket audioPacket, Encoder audioEncoder, BitStreamFilter audioFilter, MediaAudio targetAudio) {
+	private void encodeAudio(Muxer muxer, MediaPacket audioPacket, Encoder audioEncoder, MediaAudio targetAudio) {
 		//do {
 			audioEncoder.encodeAudio(audioPacket, targetAudio);
 		    if (audioPacket.isComplete()) {
-		      if (audioFilter != null) {
-		    	  audioFilter.filter(audioPacket, null);
-		      }
 		      muxer.write(audioPacket, false);
 		    }
 		//} while (audioPacket.isComplete());
 	}
 
-	private void encodePicture(Muxer muxer, MediaPacket videoPacket, Encoder videoEncoder, BitStreamFilter videoFilter, MediaPicture targetPicture) {
+	private void encodePicture(Muxer muxer, MediaPacket videoPacket, Encoder videoEncoder, MediaPicture targetPicture) {
 		do {
 			videoEncoder.encodeVideo(videoPacket, targetPicture);
 		    if (videoPacket.isComplete()) {
-		      if (videoFilter != null) {
-		    	  videoFilter.filter(videoPacket, null);
-		      }
 		      muxer.write(videoPacket, false);
 		    }
 		} while (videoPacket.isComplete());
