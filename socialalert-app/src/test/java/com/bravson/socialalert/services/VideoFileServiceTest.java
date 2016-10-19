@@ -1,7 +1,5 @@
 package com.bravson.socialalert.services;
 
-import io.humble.video.Codec;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -11,13 +9,14 @@ import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.bravson.socialalert.app.domain.VideoMetadata;
 import com.bravson.socialalert.app.services.VideoFileService;
 import com.bravson.socialalert.infrastructure.SimpleServiceTest;
+
+import io.humble.video.Codec;
 
 public class VideoFileServiceTest extends SimpleServiceTest {
 
@@ -40,7 +39,6 @@ public class VideoFileServiceTest extends SimpleServiceTest {
 	}
 	
 	@Test(expected=IOException.class)
-	@Ignore
 	public void testInvalidVideo() throws IOException {
 		service.createPreview(new File("src/test/resources/media/invalid.jpg"));
 	}

@@ -32,7 +32,7 @@ public class MediaServlet extends FileHttpRequestHandler implements MediaConstan
 		} else if (resource.getFilename().endsWith(MP4_EXTENSION)) {
 			return MediaType.valueOf(MP4_MEDIA_TYPE);
 		} else if (resource.getFilename().endsWith(MOV_EXTENSION)) {
-			return MediaType.valueOf(MP4_MEDIA_TYPE);
+			return MediaType.valueOf(MOV_MEDIA_TYPE);
 		}
 		return null;
 	}

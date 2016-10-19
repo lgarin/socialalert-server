@@ -3,6 +3,7 @@ package com.bravson.socialalert.app.services;
 import io.humble.video.AudioChannel;
 import io.humble.video.AudioFormat;
 import io.humble.video.Codec;
+import io.humble.video.Coder.Flag;
 import io.humble.video.Decoder;
 import io.humble.video.Demuxer;
 import io.humble.video.DemuxerStream;
@@ -216,7 +217,10 @@ public class VideoFileServiceImpl implements VideoFileService {
 			
 			muxer.addNewStream(videoEncoder);
 			muxer.addNewStream(audioEncoder);
-			muxer.open(null, null);
+			KeyValueBag muxerOptions = KeyValueBag.make();
+			//muxerOptions.setValue("movflags", "faststart");
+			muxerOptions.setValue("moov_size", "100000");
+			muxer.open(muxerOptions, null);
 			
 			MediaPicture watermarkPicture = createWatermarkPicture();
 			
@@ -295,11 +299,14 @@ public class VideoFileServiceImpl implements VideoFileService {
 		if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
 			videoEncoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
 		}
-		videoEncoder.setProperty("crf", 24L);
+		videoEncoder.setFlag(Flag.FLAG_4MV, true);
+		videoEncoder.setFlag(Flag.FLAG_LOOP_FILTER, true);
+		//videoEncoder.setProperty("crf", 24L);
 		videoEncoder.setProperty("preset", "fast");
 		videoEncoder.setProperty("profile", "baseline");
-		videoEncoder.setProperty("refs", "1");
-		videoEncoder.setProperty("x264-params", "movflags=+faststart:level=3.0");
+		videoEncoder.setProperty("refs", "5");
+		videoEncoder.setProperty("level", "3.0");
+		//videoEncoder.setProperty("tune", "zerolatency");
 		videoEncoder.open(null, null);
 		return videoEncoder;
 	}
