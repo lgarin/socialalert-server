@@ -233,7 +233,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 			FilterGraph audioGraph = FilterGraph.make();
 			FilterAudioSource audioSource = audioGraph.addAudioSource("input", audioDecoder.getSampleRate(), audioDecoder.getChannelLayout(), audioDecoder.getSampleFormat(), audioDecoder.getTimeBase());
 			FilterAudioSink audioSink = audioGraph.addAudioSink("output", audioEncoder.getSampleRate(), audioEncoder.getChannelLayout(), audioEncoder.getSampleFormat());
-			audioGraph.open("[input] aformat='sample_fmts=fltp:sample_rates=44100:channel_layouts=mono' [output]");
+			audioGraph.open("[input] aformat='sample_fmts=s16:sample_rates=44100:channel_layouts=mono' [output]");
 			
 			MediaAudio sourceAudio = MediaAudio.make(audioDecoder.getFrameSize(), audioDecoder.getSampleRate(), audioDecoder.getChannels(), audioDecoder.getChannelLayout(), audioDecoder.getSampleFormat());
 			MediaAudio targetAudio = MediaAudio.make(audioEncoder.getFrameSize(), audioEncoder.getSampleRate(), audioEncoder.getChannels(), audioEncoder.getChannelLayout(), audioEncoder.getSampleFormat());
@@ -312,15 +312,15 @@ public class VideoFileServiceImpl implements VideoFileService {
 	}
 
 	private Encoder createAudioEncoder(MuxerFormat format) {
-		Encoder audioEncoder = Encoder.make(Codec.findEncodingCodecByName("libmp3lame")); // TODO aac
+		Encoder audioEncoder = Encoder.make(Codec.findEncodingCodecByName("libvo_aacenc"));
 		audioEncoder.setSampleRate(44100);
 		audioEncoder.setChannels(1);
 		audioEncoder.setChannelLayout(AudioChannel.Layout.CH_LAYOUT_MONO);
-		audioEncoder.setSampleFormat(AudioFormat.Type.SAMPLE_FMT_FLTP);
+		audioEncoder.setSampleFormat(AudioFormat.Type.SAMPLE_FMT_S16);
 		if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
 			audioEncoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
 		}
-		audioEncoder.setProperty("ab", 192L);
+		audioEncoder.setProperty("b", 64L);
 		audioEncoder.open(null, null);
 		return audioEncoder;
 	}
