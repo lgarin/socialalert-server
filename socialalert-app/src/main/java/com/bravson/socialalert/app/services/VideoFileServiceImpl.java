@@ -224,8 +224,8 @@ public class VideoFileServiceImpl implements VideoFileService {
 			
 			MediaPicture watermarkPicture = createWatermarkPicture();
 			
-			KeyValueBag metadata = demuxer.getMetaData();
-			String rotation = metadata.getValue("Rotation");
+			KeyValueBag metadata = videoStream.getMetaData();
+			String rotation = metadata.getValue("rotate");
 			int rotationAngle = 0;
 			if (rotation != null) {
 				rotationAngle = Integer.parseInt(rotation);
