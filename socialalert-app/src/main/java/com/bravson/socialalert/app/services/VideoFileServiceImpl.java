@@ -212,7 +212,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 			Decoder audioDecoder = audioStream.getDecoder();
 			audioDecoder.open(null, null);
 			
-			Encoder videoEncoder = createVideoEncoder(format);
+			Encoder videoEncoder = createVideoEncoder(format, videoDecoder.getTimeBase());
 			Encoder audioEncoder = createAudioEncoder(format);
 			
 			muxer.addNewStream(videoEncoder);
@@ -224,11 +224,18 @@ public class VideoFileServiceImpl implements VideoFileService {
 			
 			MediaPicture watermarkPicture = createWatermarkPicture();
 			
+			KeyValueBag metadata = demuxer.getMetaData();
+			String rotation = metadata.getValue("Rotation");
+			int rotationAngle = 0;
+			if (rotation != null) {
+				rotationAngle = Integer.parseInt(rotation);
+			}
+			
 			FilterGraph videoGraph = FilterGraph.make();
 			FilterPictureSource videoSource = videoGraph.addPictureSource("input", videoDecoder.getWidth(), videoDecoder.getHeight(), videoDecoder.getPixelFormat(), videoDecoder.getTimeBase(), null);
 			FilterPictureSource watermark = videoGraph.addPictureSource("watermark", watermarkPicture.getWidth(), watermarkPicture.getHeight(), watermarkPicture.getFormat(), videoDecoder.getTimeBase(), null);
-			FilterPictureSink videoSink = videoGraph.addPictureSink("output", videoDecoder.getPixelFormat());
-			videoGraph.open("[watermark] lutrgb='a=128' [over];[input][over] overlay='x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2', scale='h=-1:w=" + previewWidth + ":force_original_aspect_ratio=decrease', pad='h=" + previewHeight + ":w=" + previewWidth + ":x=(ow-iw)/2:y=(oh-ih)/2' [output]");
+			FilterPictureSink videoSink = videoGraph.addPictureSink("output", videoEncoder.getPixelFormat());
+			videoGraph.open("[watermark] lutrgb='a=128' [over];[input] scale='h=-1:w=" + previewWidth + ":force_original_aspect_ratio=decrease', rotate='oh=" + previewHeight + ":ow=" + previewWidth + ":a=" + rotationAngle + "*PI/180' [vid]; [vid][over] overlay='x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2' [output]");
 			
 			FilterGraph audioGraph = FilterGraph.make();
 			FilterAudioSource audioSource = audioGraph.addAudioSource("input", audioDecoder.getSampleRate(), audioDecoder.getChannelLayout(), audioDecoder.getSampleFormat(), audioDecoder.getTimeBase());
@@ -237,7 +244,7 @@ public class VideoFileServiceImpl implements VideoFileService {
 			
 			MediaAudio sourceAudio = MediaAudio.make(audioDecoder.getFrameSize(), audioDecoder.getSampleRate(), audioDecoder.getChannels(), audioDecoder.getChannelLayout(), audioDecoder.getSampleFormat());
 			MediaAudio targetAudio = MediaAudio.make(audioEncoder.getFrameSize(), audioEncoder.getSampleRate(), audioEncoder.getChannels(), audioEncoder.getChannelLayout(), audioEncoder.getSampleFormat());
-			MediaPicture targetPicture = MediaPicture.make(videoEncoder.getWidth(), videoEncoder.getHeight(), videoDecoder.getPixelFormat());
+			MediaPicture targetPicture = MediaPicture.make(videoEncoder.getWidth(), videoEncoder.getHeight(), videoEncoder.getPixelFormat());
       		MediaPicture sourcePicture = MediaPicture.make(videoDecoder.getWidth(), videoDecoder.getHeight(), videoDecoder.getPixelFormat());
 
 			while (demuxer.read(inputPacket) >= 0) {
@@ -290,12 +297,12 @@ public class VideoFileServiceImpl implements VideoFileService {
 		}
 	}
 
-	private Encoder createVideoEncoder(MuxerFormat format) {
+	private Encoder createVideoEncoder(MuxerFormat format, Rational timeBase) {
 		Encoder videoEncoder = Encoder.make(Codec.findEncodingCodecByName("libx264"));
 		videoEncoder.setWidth(previewWidth);
 		videoEncoder.setHeight(previewHeight);
 		videoEncoder.setPixelFormat(PixelFormat.Type.PIX_FMT_YUV420P);
-		videoEncoder.setTimeBase(Rational.make(1, 600)); // TODO the decoder does not deliver the correct value
+		videoEncoder.setTimeBase(Rational.make(timeBase.getNumerator() * 2, timeBase.getDenominator()));
 		if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
 			videoEncoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
 		}
