@@ -8,7 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	
 	<properties>
-		<jackson-release-version>2.7.8</jackson-release-version>
+		<jackson-release-version>2.10.1</jackson-release-version>
 		<jsonrpc4j-release-version>1.4.6</jsonrpc4j-release-version>
 	</properties>
 	
